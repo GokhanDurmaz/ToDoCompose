@@ -64,7 +64,7 @@ fun MainHomeScreen(
         )
     )
 
-    val navigationDrawerContentDescription+ = stringResource(R.string.default_song_content)
+    val navigationDrawerContentDescription = stringResource(R.string.default_song_content)
     PermanentNavigationDrawer(
         drawerContent = {
             PermanentDrawerSheet(
