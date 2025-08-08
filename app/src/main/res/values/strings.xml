@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">WorkSpace</string>
+    <string name="default_song_name">Unknown</string>
+    <string name="default_song_content">Unknown</string>
+    <string name="logo">Logo</string>
+    <string name="profile">Profile</string>
 </resources>
