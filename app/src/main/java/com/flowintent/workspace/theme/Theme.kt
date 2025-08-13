@@ -93,7 +93,7 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 @Composable
-fun MainTheme(
+fun ToDoTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
@@ -125,17 +125,3 @@ fun MainTheme(
         content = content
     )
 }
-
-
-
-
-@Composable
-fun foo() {
-    MainTheme {
-
-    }
-}
-
-
-
-

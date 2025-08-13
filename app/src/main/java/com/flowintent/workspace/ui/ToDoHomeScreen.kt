@@ -3,29 +3,27 @@ package com.flowintent.workspace.ui
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -46,7 +44,7 @@ import com.flowintent.workspace.util.MainContentType
 import com.flowintent.workspace.util.MainNavigationType
 
 @Composable
-fun MainHomeScreen(
+fun ToDoHomeScreen(
     navigationType: MainNavigationType,
     contentType: MainContentType,
     songUiState: ToDoUiState,
@@ -64,40 +62,82 @@ fun MainHomeScreen(
         )
     )
 
-    val navigationDrawerContentDescription = stringResource(R.string.default_song_content)
-    PermanentNavigationDrawer(
-        drawerContent = {
-            PermanentDrawerSheet(
-                modifier = Modifier.width(240.dp),
-                drawerContainerColor = MaterialTheme.colorScheme.inverseOnSurface,
-            ) {
-                NavigationDrawerContent(
-                    selectedDestination = songUiState.songListType,
-                    onTabPressed = onTabPressed,
-                    navigationItemContentList = navigationItemContentList,
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .fillMaxHeight()
-                        .background(MaterialTheme.colorScheme.inverseOnSurface)
-                        .padding(12.dp)
-                )
-            }
-        },
-        modifier = Modifier.testTag(navigationDrawerContentDescription)
+    ToDoAppContent(modifier = modifier)
+}
+
+@Composable
+private fun ToDoAppContent(modifier: Modifier) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        MainAppContent(
-            navigationType = navigationType,
-            contentType = contentType,
-            songUiState = songUiState,
-            onTabPressed = onTabPressed,
-            onSongCardPressed = onSongCardPressed,
-            onDetailScreenBackPressed = onDetailScreenBackPressed,
-            navigationItemContentList = navigationItemContentList,
-            modifier = modifier,
+        EmptyTaskView()
+        AddTaskButton(modifier)
+        TaskButton()
+    }
+}
+
+@Composable
+private fun EmptyTaskView() {
+    Row {
+        Column {
+            Spacer(modifier = Modifier.height(50.dp))
+            Image(
+                painter = painterResource(R.drawable.no_task),
+                contentDescription = stringResource(R.string.empty_task),
+                modifier = Modifier.size(90.dp)
+            )
+            Text(text = stringResource(R.string.empty_task))
+        }
+    }
+}
+
+@Composable
+private fun AddTaskButton(modifier: Modifier) {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            modifier = Modifier.align(alignment = Alignment.CenterVertically),
+            onClick = {
+
+            },
+            content = {
+                Text(text = "Add New Task")
+            }
         )
     }
-
 }
+
+// It will be expandable view when touching the task view.
+@Composable
+private fun TaskButton() {
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            modifier = Modifier.align(alignment = Alignment.CenterVertically),
+            colors = ButtonColors(
+                containerColor = Color.Blue,
+                contentColor = Color.White,
+                disabledContainerColor = Color.Black,
+                disabledContentColor = Color.White,
+            ),
+            onClick = {
+
+            },
+            content = {
+                Text(text = "Add New Task")
+            }
+        )
+    }
+}
+
 
 @Composable
 private fun MainAppContent(

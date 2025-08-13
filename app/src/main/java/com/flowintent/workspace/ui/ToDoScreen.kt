@@ -7,11 +7,12 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.flowintent.workspace.data.Task
 import com.flowintent.workspace.data.TaskType
+import com.flowintent.workspace.ui.vm.ToDoViewModel
 import com.flowintent.workspace.util.MainContentType
 import com.flowintent.workspace.util.MainNavigationType
 
 @Composable
-fun MainScreen(
+fun ToDoScreen(
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ) {
@@ -39,7 +40,7 @@ fun MainScreen(
         }
     }
 
-    MainHomeScreen(
+    ToDoHomeScreen(
         navigationType = navigationType,
         contentType = contentType,
         songUiState = songUiState,

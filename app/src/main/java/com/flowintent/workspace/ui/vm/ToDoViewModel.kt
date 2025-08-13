@@ -1,9 +1,9 @@
-package com.flowintent.workspace.ui
+package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
-import com.flowintent.workspace.data.ToDoUiState
 import com.flowintent.workspace.data.Task
 import com.flowintent.workspace.data.TaskType
+import com.flowintent.workspace.data.ToDoUiState
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
