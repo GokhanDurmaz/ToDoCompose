@@ -40,19 +40,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.flowintent.workspace.R
 import com.flowintent.workspace.data.ToDoUiState
-import com.flowintent.workspace.data.Task
+import com.flowintent.workspace.data.local.room.Task
 import com.flowintent.workspace.data.TaskType
+import com.flowintent.workspace.data.local.LocalTaskDataProvider
+import com.flowintent.workspace.ui.vm.TaskViewModel
+import com.flowintent.workspace.ui.vm.ToDoViewModel
 import com.flowintent.workspace.util.MainContentType
 import com.flowintent.workspace.util.MainNavigationType
 
 @Composable
 fun ToDoHomeScreen(
-    navigationType: MainNavigationType,
-    contentType: MainContentType,
-    songUiState: ToDoUiState,
-    onTabPressed: (TaskType) -> Unit,
-    onSongCardPressed: (Task) -> Unit,
-    onDetailScreenBackPressed: () -> Unit,
+    viewModel: TaskViewModel,
     modifier: Modifier
 ) {
 
@@ -60,22 +58,25 @@ fun ToDoHomeScreen(
         NavigationItemContent(
             songType = TaskType.REMOTE_TASKS,
             icon = Icons.Default.Image,
-            text = stringResource(R.string.default_song_content)
+            text = stringResource(R.string.default_task_content)
         )
     )
 
-    ToDoAppContent(modifier = modifier)
+    ToDoAppContent(viewModel, modifier)
 }
 
 @Composable
-private fun ToDoAppContent(modifier: Modifier) {
+private fun ToDoAppContent(
+    viewModel: TaskViewModel,
+    modifier: Modifier
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         EmptyTaskView()
-        AddTaskButton(modifier)
+        AddTaskButton(viewModel)
         TaskButton()
     }
 }
@@ -96,7 +97,7 @@ private fun EmptyTaskView() {
 }
 
 @Composable
-private fun AddTaskButton(modifier: Modifier) {
+private fun AddTaskButton(viewModel: TaskViewModel) {
     val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxSize(),
@@ -107,6 +108,13 @@ private fun AddTaskButton(modifier: Modifier) {
             modifier = Modifier.align(alignment = Alignment.CenterVertically),
             onClick = {
                 Toast.makeText(context, "AddTaskButton", Toast.LENGTH_SHORT).show()
+                viewModel.insertTask(
+                    Task(
+                        name = LocalTaskDataProvider.defaultTask.name,
+                        content = LocalTaskDataProvider.defaultTask.content,
+                        taskType = LocalTaskDataProvider.defaultTask.taskType,
+                    )
+                )
             },
             content = {
                 Text(text = "Add New Task")
@@ -156,7 +164,7 @@ private fun MainAppContent(
     Box(modifier = modifier) {
         Row(modifier = Modifier.fillMaxSize()) {
             AnimatedVisibility(visible = true) {
-                val navigationRailContentDescription = stringResource(R.string.default_song_content)
+                val navigationRailContentDescription = stringResource(R.string.default_task_content)
                 MainNavigationRail(
                     currentTab = songUiState.taskListType,
                     onTabPressed = onTabPressed,

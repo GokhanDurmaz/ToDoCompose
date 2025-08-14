@@ -13,20 +13,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.flowintent.workspace.data.Task
-import com.flowintent.workspace.data.local.LocalTaskDataProvider
+import com.flowintent.workspace.data.local.room.Task
+import com.flowintent.workspace.ui.vm.TaskViewModel
 
-@Preview(showBackground = true)
 @Composable
-fun ToDoListScreen() {
+fun ToDoListScreen(viewModel: TaskViewModel) {
+    val taskList = viewModel.getAllTasks()
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(LocalTaskDataProvider.allTasks) { task ->
+        items(taskList) { task ->
             ToDoListCard(task = task)
         }
     }
@@ -36,7 +36,7 @@ fun ToDoListScreen() {
 private fun ToDoListCard(task: Task) {
     Card(modifier = Modifier.fillMaxWidth()
         .height(100.dp)
-        .padding(start = 12.dp, top = 12.dp, end = 12.dp)
+        .padding(bottom = 12.dp)
     ) {
         Text(
             text = task.name,

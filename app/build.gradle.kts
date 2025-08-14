@@ -108,4 +108,20 @@ dependencies {
 
     // Retrofit
     implementation(libs.retrofit)
+
+    implementation(libs.androidx.room.runtime)
+
+    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
+    // See Add the KSP plugin to your project
+    ksp(libs.androidx.room.compiler)
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    //noinspection UseTomlInstead
+    implementation("androidx.room:room-ktx:2.7.2")
+
+    // optional - Test helpers
+    testImplementation(libs.androidx.room.testing)
+
+    // Serialization/deserialization json - GSON
+    implementation(libs.gson)
 }

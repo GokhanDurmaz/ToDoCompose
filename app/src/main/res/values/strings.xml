@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">WorkSpace</string>
-    <string name="default_song_name">Unknown</string>
-    <string name="default_song_content">Unknown</string>
+    <string name="default_task_name">Task</string>
+    <string name="default_task_content">Content</string>
     <string name="logo">Logo</string>
     <string name="profile">Profile</string>
     <string name="empty_task">Empty Task</string>

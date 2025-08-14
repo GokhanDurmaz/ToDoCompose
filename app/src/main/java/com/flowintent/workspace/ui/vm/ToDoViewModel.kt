@@ -1,7 +1,7 @@
 package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
-import com.flowintent.workspace.data.Task
+import com.flowintent.workspace.data.local.room.Task
 import com.flowintent.workspace.data.TaskType
 import com.flowintent.workspace.data.ToDoUiState
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
@@ -20,7 +20,7 @@ class ToDoViewModel: ViewModel() {
 
     private fun initializeUIState() {
         val tasks: Map<TaskType, List<Task>> =
-            LocalTaskDataProvider.allTasks.groupBy { it.tasktype }
+            LocalTaskDataProvider.allTasks.groupBy { it.taskType }
         _uiState.value =
             ToDoUiState(
                 tasks = tasks,

@@ -5,21 +5,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.flowintent.workspace.data.Task
+import com.flowintent.workspace.data.local.room.Task
 import com.flowintent.workspace.data.TaskType
+import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.ui.vm.ToDoViewModel
 import com.flowintent.workspace.util.MainContentType
 import com.flowintent.workspace.util.MainNavigationType
 
 @Composable
 fun ToDoScreen(
+    viewModel: TaskViewModel,
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ) {
     val navigationType: MainNavigationType
     val contentType: MainContentType
-    val viewModel: ToDoViewModel = viewModel()
-    val songUiState = viewModel.uiState.collectAsState().value
 
     when(windowSize) {
         WindowWidthSizeClass.Compact -> {
@@ -40,24 +40,5 @@ fun ToDoScreen(
         }
     }
 
-    ToDoHomeScreen(
-        navigationType = navigationType,
-        contentType = contentType,
-        songUiState = songUiState,
-        onTabPressed = { taskType: TaskType ->
-            viewModel.updateCurrentTaskListScreen(
-                taskType = taskType
-            )
-            viewModel.resetHomeScreenStates()
-        },
-        onSongCardPressed = { task: Task ->
-            viewModel.updateDetailTaskScreenStates(
-                task = task
-            )
-        },
-        onDetailScreenBackPressed = {
-            viewModel.resetHomeScreenStates()
-        },
-        modifier = modifier
-    )
+    ToDoHomeScreen(viewModel, modifier)
 }
