@@ -12,8 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.flowintent.workspace.nav.ToDoNavigationBar
 import com.flowintent.workspace.theme.ToDoTheme
 import com.flowintent.workspace.theme.md_theme_light_primary
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
