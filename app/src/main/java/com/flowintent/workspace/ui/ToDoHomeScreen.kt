@@ -1,5 +1,6 @@
 package com.flowintent.workspace.ui
 
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -56,7 +58,7 @@ fun ToDoHomeScreen(
 
     val navigationItemContentList = listOf(
         NavigationItemContent(
-            songType = TaskType.FOREIGN_SONGS,
+            songType = TaskType.REMOTE_TASKS,
             icon = Icons.Default.Image,
             text = stringResource(R.string.default_song_content)
         )
@@ -95,6 +97,7 @@ private fun EmptyTaskView() {
 
 @Composable
 private fun AddTaskButton(modifier: Modifier) {
+    val context = LocalContext.current
     Row(
         modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.Center,
@@ -103,7 +106,7 @@ private fun AddTaskButton(modifier: Modifier) {
         Button(
             modifier = Modifier.align(alignment = Alignment.CenterVertically),
             onClick = {
-
+                Toast.makeText(context, "AddTaskButton", Toast.LENGTH_SHORT).show()
             },
             content = {
                 Text(text = "Add New Task")
@@ -155,7 +158,7 @@ private fun MainAppContent(
             AnimatedVisibility(visible = true) {
                 val navigationRailContentDescription = stringResource(R.string.default_song_content)
                 MainNavigationRail(
-                    currentTab = songUiState.songListType,
+                    currentTab = songUiState.taskListType,
                     onTabPressed = onTabPressed,
                     navigationItemContentList = navigationItemContentList,
                     modifier = Modifier.testTag(navigationRailContentDescription)

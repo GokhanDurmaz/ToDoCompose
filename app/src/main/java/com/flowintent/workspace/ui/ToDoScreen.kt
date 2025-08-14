@@ -44,15 +44,15 @@ fun ToDoScreen(
         navigationType = navigationType,
         contentType = contentType,
         songUiState = songUiState,
-        onTabPressed = { songType: TaskType ->
-            viewModel.updateCurrentSongListScreen(
-                songType = songType
+        onTabPressed = { taskType: TaskType ->
+            viewModel.updateCurrentTaskListScreen(
+                taskType = taskType
             )
             viewModel.resetHomeScreenStates()
         },
-        onSongCardPressed = { song: Task ->
-            viewModel.updateDetailSongScreenStates(
-                song = song
+        onSongCardPressed = { task: Task ->
+            viewModel.updateDetailTaskScreenStates(
+                task = task
             )
         },
         onDetailScreenBackPressed = {

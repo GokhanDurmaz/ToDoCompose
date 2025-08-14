@@ -3,10 +3,10 @@ package com.flowintent.workspace.data
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
 
 data class ToDoUiState(
-    val songs: Map<TaskType, List<Task>> = emptyMap(),
-    val songListType: TaskType = TaskType.LOCAL_SONGS,
-    val currentSong: Task = LocalTaskDataProvider.defaultSong,
+    val tasks: Map<TaskType, List<Task>> = emptyMap(),
+    val taskListType: TaskType = TaskType.LOCAL_TASKS,
+    val currentTask: Task = LocalTaskDataProvider.defaultTask,
     val isShowingMainScreen: Boolean = true
 ) {
-    val currentSongs: List<Task>?? by lazy { songs[songListType] }
+    val currentTasks: List<Task>?? by lazy { tasks[taskListType] }
 }

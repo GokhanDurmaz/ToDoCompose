@@ -19,18 +19,18 @@ class ToDoViewModel: ViewModel() {
     }
 
     private fun initializeUIState() {
-        val songs: Map<TaskType, List<Task>> =
-            LocalTaskDataProvider.allSongs.groupBy { it.song }
+        val tasks: Map<TaskType, List<Task>> =
+            LocalTaskDataProvider.allTasks.groupBy { it.tasktype }
         _uiState.value =
             ToDoUiState(
-                songs = songs,
+                tasks = tasks,
             )
     }
 
-    fun updateCurrentSongListScreen(songType: TaskType) {
+    fun updateCurrentTaskListScreen(taskType: TaskType) {
         _uiState.update {
             it.copy(
-               songListType = songType
+               taskListType = taskType
             )
         }
     }
@@ -38,16 +38,16 @@ class ToDoViewModel: ViewModel() {
     fun resetHomeScreenStates() {
         _uiState.update {
             it.copy(
-                currentSong = it.songs[it.songListType]?.get(0) ?: LocalTaskDataProvider.defaultSong,
+                currentTask = it.tasks[it.taskListType]?.get(0) ?: LocalTaskDataProvider.defaultTask,
                 isShowingMainScreen = true
             )
         }
     }
 
-    fun updateDetailSongScreenStates(song: Task) {
+    fun updateDetailTaskScreenStates(task: Task) {
         _uiState.update {
             it.copy(
-                currentSong = song,
+                currentTask = task,
                 isShowingMainScreen = false
             )
         }

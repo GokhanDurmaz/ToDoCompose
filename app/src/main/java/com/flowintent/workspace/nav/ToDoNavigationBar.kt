@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.flowintent.workspace.ui.ToDoListScreen
 import com.flowintent.workspace.ui.ToDoScreen
 
 @Composable
@@ -93,20 +94,6 @@ private fun BottomNavigationBar(startDestination: ToDoNavigation, navController:
                 label = { Text(text = navigation.label) }
             )
         }
-    }
-}
-
-@Composable
-fun ToDoListScreen() {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "List ToDo",
-            modifier = Modifier.align(alignment = Alignment.CenterHorizontally)
-        )
     }
 }
 

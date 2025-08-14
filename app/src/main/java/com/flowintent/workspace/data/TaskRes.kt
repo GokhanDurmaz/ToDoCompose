@@ -5,16 +5,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.stringResource
 
-sealed class SongRes {
-    data class SongContent(val content: String): SongRes()
-    data class SongContentRes(@StringRes val id: Int): SongRes()
+sealed class TaskRes {
+    data class TaskContent(val content: String): TaskRes()
+    data class TaskContentRes(@StringRes val id: Int): TaskRes()
 }
 
 @Composable
 @ReadOnlyComposable
-fun SongRes.asString(): String {
+fun TaskRes.asString(): String {
     return when(this) {
-        is SongRes.SongContent -> content
-        is SongRes.SongContentRes -> stringResource(id)
+        is TaskRes.TaskContent -> content
+        is TaskRes.TaskContentRes -> stringResource(id)
     }
 }

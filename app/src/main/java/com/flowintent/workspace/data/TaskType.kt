@@ -1,5 +1,5 @@
 package com.flowintent.workspace.data
 
 enum class TaskType {
-    LOCAL_SONGS, FOREIGN_SONGS, UNCATEGORIZED
+    LOCAL_TASKS, REMOTE_TASKS, UNCATEGORIZED
 }
