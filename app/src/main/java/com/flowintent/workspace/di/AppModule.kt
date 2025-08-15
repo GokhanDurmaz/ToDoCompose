@@ -2,7 +2,7 @@ package com.flowintent.workspace.di
 
 import android.content.Context
 import androidx.room.Room
-import com.flowintent.workspace.data.local.room.converters.TaskTypeConverters
+import androidx.room.RoomDatabase
 import com.flowintent.workspace.data.local.room.db.ToDoDatabase
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -23,7 +23,9 @@ object AppModule {
         app,
         ToDoDatabase::class.java,
         "todo_db"
-    ).build()
+    )
+        .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+        .build()
 
     @Singleton
     @Provides

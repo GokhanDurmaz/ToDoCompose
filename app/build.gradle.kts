@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.compose.compiler)
     id("com.google.devtools.ksp") version "2.2.0-2.0.2"
     id("com.google.dagger.hilt.android")
+    id("kotlinx-serialization")
 }
 
 android {
