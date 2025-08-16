@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WorkSpace</string>
+    <string name="app_name">ToDo App</string>
     <string name="default_task_name">Task</string>
     <string name="default_task_content">Content</string>
     <string name="logo">Logo</string>
