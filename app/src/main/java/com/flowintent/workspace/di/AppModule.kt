@@ -2,7 +2,7 @@ package com.flowintent.workspace.di
 
 import android.content.Context
 import androidx.room.Room
-import androidx.room.RoomDatabase
+import com.flowintent.workspace.data.local.room.converters.TaskTypeConverters
 import com.flowintent.workspace.data.local.room.db.ToDoDatabase
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -19,12 +19,15 @@ import javax.inject.Singleton
 object AppModule {
     @Singleton
     @Provides
-    fun provideToDoDatabase(@ApplicationContext app: Context) = Room.databaseBuilder(
+    fun provideToDoDatabase(
+        @ApplicationContext app: Context,
+        taskTypeConverter: TaskTypeConverters
+    ) = Room.databaseBuilder(
         app,
         ToDoDatabase::class.java,
         "todo_db"
     )
-        .setJournalMode(RoomDatabase.JournalMode.TRUNCATE)
+        .addTypeConverter(taskTypeConverter)
         .build()
 
     @Singleton
@@ -33,8 +36,12 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideGson(): Gson? = GsonBuilder()
+    fun provideGson(): Gson = GsonBuilder()
         .serializeNulls()
         .setStrictness(Strictness.STRICT)
         .create()
+
+    @Singleton
+    @Provides
+    fun provideTaskTypeConverters(gson: Gson) = TaskTypeConverters(gson)
 }

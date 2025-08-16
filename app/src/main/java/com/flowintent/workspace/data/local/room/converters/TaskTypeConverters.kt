@@ -1,20 +1,22 @@
 package com.flowintent.workspace.data.local.room.converters
 
+import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.flowintent.workspace.data.TaskRes
 import com.flowintent.workspace.data.TaskType
-import com.flowintent.workspace.util.TaskTypeConverterJson
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
+import com.google.gson.Gson
+import javax.inject.Inject
 
-@Serializable
 data class TaskResWrapper(
     val type: String,
     val content: String? = null,
     val id: Int? = null
 )
 
-class TaskTypeConverters {
+@ProvidedTypeConverter
+class TaskTypeConverters @Inject constructor(
+    private val gson: Gson
+) {
     @TypeConverter
     fun fromTaskType(taskType: TaskType?): String? {
         return taskType?.name
@@ -40,7 +42,7 @@ class TaskTypeConverters {
                 id = taskRes.id
             )
         }
-        return TaskTypeConverterJson.encodeToString(wrapper)
+        return gson.toJson(wrapper)
     }
 
     @TypeConverter
@@ -48,7 +50,7 @@ class TaskTypeConverters {
         if (jsonString.isNullOrEmpty()) {
             return null
         }
-        val wrapper = TaskTypeConverterJson.decodeFromString<TaskResWrapper>(jsonString)
+        val wrapper = gson.fromJson(jsonString, TaskResWrapper::class.java)
         return when(wrapper.type) {
             "TaskContent" -> TaskRes.TaskContent(content = wrapper.content ?: "")
             "TaskContentRes" -> TaskRes.TaskContentRes(id = wrapper.id ?: 0)
