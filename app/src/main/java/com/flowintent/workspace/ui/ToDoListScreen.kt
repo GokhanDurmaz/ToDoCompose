@@ -66,7 +66,7 @@ private fun ToDoListCard(
     )
 
     SwipeToDismissBox(
-        modifier = Modifier.clip(shape = RoundedCornerShape(12.dp)).fillMaxWidth(),
+        modifier = Modifier.padding(bottom = 12.dp).clip(shape = RoundedCornerShape(12.dp)).fillMaxWidth(),
         state = swipeToDismissBoxState,
         backgroundContent = {
             when (swipeToDismissBoxState.dismissDirection) {

@@ -1,6 +1,7 @@
 package com.flowintent.workspace.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.flowintent.workspace.data.TaskRes
@@ -85,6 +87,7 @@ private fun AddTaskDialog(
     viewModel: TaskViewModel,
     onDismiss: () -> Unit
 ) {
+    val context = LocalContext.current
     val toDoLabel = remember { mutableStateOf("") }
     val toDoContent = remember { mutableStateOf("") }
 
@@ -98,7 +101,7 @@ private fun AddTaskDialog(
                     },
                     placeholder = { Text(text = "label") },
                     modifier = Modifier.fillMaxWidth().padding(start = 12.dp, top = 12.dp, end = 12.dp),
-                    label = { Text(text = "Label") }
+                    label = { Text(text = "label") }
                 )
                 OutlinedTextField(
                     value = toDoContent.value,
@@ -125,7 +128,7 @@ private fun AddTaskDialog(
                     Button(
                         onClick = {
                             if (toDoContent.value.isEmpty().not()
-                                or toDoLabel.value.isEmpty().not()) {
+                                and toDoLabel.value.isEmpty().not()) {
                                 viewModel.insertTask(
                                     Task(
                                         name = toDoLabel.value,
@@ -133,6 +136,9 @@ private fun AddTaskDialog(
                                         taskType = LocalTaskDataProvider.defaultTask.taskType,
                                     )
                                 )
+                                Toast.makeText(context, "Created a task.", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Please do not type empty text.", Toast.LENGTH_SHORT).show()
                             }
                             onDismiss()
                         },
