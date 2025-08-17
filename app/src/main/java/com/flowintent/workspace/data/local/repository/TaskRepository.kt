@@ -2,6 +2,7 @@ package com.flowintent.workspace.data.local.repository
 
 import com.flowintent.workspace.data.local.room.Task
 import com.flowintent.workspace.data.local.room.dao.ToDoDao
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class TaskRepository @Inject constructor(
@@ -12,15 +13,13 @@ class TaskRepository @Inject constructor(
         toDoDao.insertTask(task)
     }
 
-    suspend fun  getAllTasks(): List<Task> {
-        return toDoDao.getAllTasks()
-    }
+    fun  getAllTasks(): Flow<List<Task>> = toDoDao.getAllTasks()
 
     suspend fun findByTaskName(taskName: String) {
         toDoDao.findByTaskName(taskName)
     }
 
-    suspend fun deleteTask(task: Task) {
-        toDoDao.delete(task)
+    suspend fun deleteTask(task: Task): Int {
+        return toDoDao.delete(task)
     }
 }

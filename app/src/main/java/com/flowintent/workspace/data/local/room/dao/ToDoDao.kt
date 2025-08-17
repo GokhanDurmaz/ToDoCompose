@@ -5,11 +5,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.flowintent.workspace.data.local.room.Task
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ToDoDao {
     @Query("SELECT * FROM Task")
-    suspend fun getAllTasks(): List<Task>
+    fun getAllTasks(): Flow<List<Task>>
 
     @Query("SELECT * FROM  Task WHERE name LIKE :name LIMIT 1")
     suspend fun findByTaskName(name: String): Task
@@ -18,5 +19,5 @@ interface ToDoDao {
     suspend fun insertTask(task: Task)
 
     @Delete
-    suspend fun delete(task: Task)
+    suspend fun delete(task: Task): Int
 }

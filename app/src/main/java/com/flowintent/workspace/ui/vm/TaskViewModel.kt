@@ -5,6 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.flowintent.workspace.data.local.repository.TaskRepository
 import com.flowintent.workspace.data.local.room.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -14,14 +18,17 @@ class TaskViewModel @Inject constructor(
     private val repository: TaskRepository
 ) : ViewModel() {
 
-    fun getAllTasks(): List<Task> = runBlocking {
-        repository.getAllTasks()
-    }
+    val tasks: StateFlow<List<Task>> = repository.getAllTasks()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     fun insertTask(task: Task) {
-       runBlocking {
-           repository.insertTask(task)
-       }
+        runBlocking {
+            repository.insertTask(task)
+        }
     }
 
     fun findByTaskName(taskName: String) {
@@ -30,9 +37,12 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun deleteTask(task: Task) {
-        viewModelScope.launch {
-            repository.deleteTask(task)
+    fun deleteTask(task: Task): Boolean {
+        viewModelScope.async {
+            if (repository.deleteTask(task) == 1) {
+                return@async true
+            }
         }
+        return false
     }
 }
