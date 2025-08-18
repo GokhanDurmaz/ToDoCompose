@@ -13,4 +13,15 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Theme.App.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Splash screen background -->
+        <item name="android:windowBackground">@color/white</item>
+        <!-- Splash screen icon -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/todo_app_icon_for_android__1_</item>
+        <!-- Splash screen animation duration -->
+        <item name="windowSplashScreenAnimationDuration">166</item>
+        <!-- Splash screen background -->
+        <item name="windowSplashScreenBackground">@color/white</item>
+    </style>
 </resources>

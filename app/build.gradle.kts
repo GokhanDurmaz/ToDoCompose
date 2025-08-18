@@ -125,4 +125,6 @@ dependencies {
 
     // Serialization/deserialization json - GSON
     implementation(libs.gson)
+
+    implementation(libs.androidx.core.splashscreen)
 }
