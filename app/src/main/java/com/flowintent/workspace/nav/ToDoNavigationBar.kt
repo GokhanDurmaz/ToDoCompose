@@ -23,14 +23,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.flowintent.workspace.ui.ToDoListScreen
 import com.flowintent.workspace.ui.ToDoScreen
-import com.flowintent.workspace.ui.vm.TaskViewModel
 
 @Composable
-fun ToDoNavigationBar(
-    modifier: Modifier,
-    viewModel: TaskViewModel,
-    windowSize: WindowWidthSizeClass
-) {
+fun ToDoNavigationBar(windowSize: WindowWidthSizeClass) {
     val navController = rememberNavController()
     val startDestination = ToDoNavigation.HOME
 
@@ -40,7 +35,6 @@ fun ToDoNavigationBar(
         AppNavHost(
             navController,
             startDestination.route,
-            viewModel,
             modifier = Modifier.padding(contentPadding),
             windowSize = windowSize
         )
@@ -51,7 +45,6 @@ fun ToDoNavigationBar(
 private fun AppNavHost(
     navController: NavHostController,
     toDoNavigation: String,
-    viewModel: TaskViewModel,
     modifier: Modifier,
     windowSize: WindowWidthSizeClass
 ) {
@@ -63,8 +56,8 @@ private fun AppNavHost(
         ToDoNavigation.entries.forEach { navigation ->
             composable(navigation.route) {
                 when(navigation) {
-                    ToDoNavigation.HOME -> { ToDoScreen(viewModel, windowSize) }
-                    ToDoNavigation.LIST_TODO -> ToDoListScreen(viewModel)
+                    ToDoNavigation.HOME -> { ToDoScreen(windowSize) }
+                    ToDoNavigation.LIST_TODO -> ToDoListScreen()
                     ToDoNavigation.REMINDER -> ReminderScreen()
                     ToDoNavigation.SETTINGS -> SettingsScreen()
                 }

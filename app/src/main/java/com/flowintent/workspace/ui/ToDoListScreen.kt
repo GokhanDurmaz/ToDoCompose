@@ -29,18 +29,19 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.workspace.data.asString
 import com.flowintent.workspace.data.local.room.Task
 import com.flowintent.workspace.ui.vm.TaskViewModel
 
 @Composable
-fun ToDoListScreen(viewModel: TaskViewModel) {
+fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
     val taskList by viewModel.tasks.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 12.dp, top = 12.dp, end = 12.dp, bottom = 12.dp),
+            .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(taskList) { task ->

@@ -3,13 +3,11 @@ package com.flowintent.workspace.ui
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.MainContentType
 import com.flowintent.workspace.util.MainNavigationType
 
 @Composable
 fun ToDoScreen(
-    viewModel: TaskViewModel,
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ) {
@@ -35,5 +33,5 @@ fun ToDoScreen(
         }
     }
 
-    ToDoHomeScreen(viewModel, modifier)
+    ToDoHomeScreen(modifier)
 }

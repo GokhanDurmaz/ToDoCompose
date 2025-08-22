@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,7 +25,7 @@ class TaskViewModel @Inject constructor(
         )
 
     fun insertTask(task: Task) {
-        runBlocking {
+        viewModelScope.async {
             repository.insertTask(task)
         }
     }

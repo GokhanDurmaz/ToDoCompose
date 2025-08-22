@@ -87,6 +87,8 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
     debugImplementation(libs.androidx.ui.test.manifest)
+    // debugImplementation because LeakCanary should only run in debug builds.
+    debugImplementation(libs.leakcanary.android)
 
     // Optional - Included automatically by material, only add when you need
     // the icons but not the material library (e.g. when using Material3 or a
@@ -105,6 +107,7 @@ dependencies {
 
     // DI tool
     implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
 
     // Retrofit

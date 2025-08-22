@@ -5,6 +5,7 @@ coreSplashscreen = "1.0.1"
 gson = "2.13.1"
 hiltAndroid = "2.57"
 hiltCompiler = "2.57"
+hiltNavigationCompose = "1.2.0"
 kotlin = "2.2.0"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -12,6 +13,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.1"
 kotlinxSerializationJson = "1.7.3"
+leakcanaryAndroid = "2.14"
 lifecycleViewmodelCompose = "2.9.2"
 material = "1.12.0"
 navigationCompose = "2.9.2"
@@ -28,6 +30,7 @@ uiTestManifest = "1.8.3"
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
@@ -53,6 +56,7 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanaryAndroid" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 androidx-material3-window-size-class1-android = { group = "androidx.compose.material3", name = "material3-window-size-class-android", version.ref = "material3WindowSizeClassAndroid" }
