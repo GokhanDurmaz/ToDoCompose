@@ -55,12 +55,12 @@ private fun ToDoListCard(
     task: Task,
     viewModel: TaskViewModel
 ) {
+    val deleteResult by viewModel.deleteResult.collectAsStateWithLifecycle()
     val swipeToDismissBoxState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.StartToEnd) {
-
-            } else if (it == SwipeToDismissBoxValue.EndToStart) {
-                return@rememberSwipeToDismissBoxState viewModel.deleteTask(task)
+            if (it == SwipeToDismissBoxValue.EndToStart) {
+                viewModel.deleteTask(task)
+                return@rememberSwipeToDismissBoxState deleteResult ?: false
             }
             it != SwipeToDismissBoxValue.StartToEnd
         }

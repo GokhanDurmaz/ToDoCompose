@@ -5,9 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.flowintent.workspace.data.local.repository.TaskRepository
 import com.flowintent.workspace.data.local.room.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,8 +25,11 @@ class TaskViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    private val _deleteResult = MutableStateFlow<Boolean?>(null)
+    val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
+
     fun insertTask(task: Task) {
-        viewModelScope.async {
+        viewModelScope.launch {
             repository.insertTask(task)
         }
     }
@@ -36,12 +40,10 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun deleteTask(task: Task): Boolean {
-        viewModelScope.async {
-            if (repository.deleteTask(task) == 1) {
-                return@async true
-            }
+    fun deleteTask(task: Task) {
+        viewModelScope.launch {
+            val isDeleted = repository.deleteTask(task) > 0
+            _deleteResult.value = isDeleted
         }
-        return false
     }
 }
