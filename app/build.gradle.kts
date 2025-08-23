@@ -5,10 +5,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
-    id("com.google.devtools.ksp") version "2.2.0-2.0.2"
-    id("com.google.dagger.hilt.android")
-    id("kotlinx-serialization")
-    id("com.google.gms.google-services") // The Google Services plugin
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.google.services) // The Google Services plugin
 }
 
 android {
@@ -122,7 +122,7 @@ dependencies {
 
     // optional - Kotlin Extensions and Coroutines support for Room
     //noinspection UseTomlInstead
-    implementation("androidx.room:room-ktx:2.7.2")
+    implementation(libs.androidx.room.ktx)
 
     // optional - Test helpers
     testImplementation(libs.androidx.room.testing)
