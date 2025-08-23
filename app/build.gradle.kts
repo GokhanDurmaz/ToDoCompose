@@ -8,6 +8,7 @@ plugins {
     id("com.google.devtools.ksp") version "2.2.0-2.0.2"
     id("com.google.dagger.hilt.android")
     id("kotlinx-serialization")
+    id("com.google.gms.google-services") // The Google Services plugin
 }
 
 android {
@@ -130,4 +131,13 @@ dependencies {
     implementation(libs.gson)
 
     implementation(libs.androidx.core.splashscreen)
+
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation(libs.firebase.analytics)
+
+    // Add the Firebase SDK for Authentication
+    implementation(libs.firebase.auth)
 }

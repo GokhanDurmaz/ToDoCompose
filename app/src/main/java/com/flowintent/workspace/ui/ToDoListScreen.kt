@@ -62,7 +62,7 @@ private fun ToDoListCard(
                 viewModel.deleteTask(task)
                 return@rememberSwipeToDismissBoxState deleteResult ?: false
             }
-            it != SwipeToDismissBoxValue.StartToEnd
+            false
         }
     )
 
