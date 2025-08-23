@@ -1,0 +1,23 @@
+Navigation Component
+1.  More than one NavHost can be used but each NavHost has its own NavControllers.
+
+Compose with Navigation Component
+1. val navController = rememberNavController(), there is a usage in this way.
+
+View with Navigation Component
+1.  - For Fragments,  Fragment.findNavController()
+    - For Views,      View.findNavController()
+    - For Activities, Activity.findNavController(viewId: Int)
+
+How to use and access to NavHost
+1.  val navHostFragment =
+        supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+    val navController = navHostFragment.navController
+
+    The Fragment Id is given to findFragmentById(id: Int) method then it is casted as NavHostFragment
+    and it can access to NavHost with this method.
+
+
+FragmentContainerView and FragmentTransaction causes a problem when:
+1. If you use Navigation.findNavController(Activity, @IdRes int) onCreate of Activity, so
+You should retrieve the NavController directly from the NavHostFragment instead.

@@ -1,0 +1,42 @@
+-- Jetpack Compose and Declarative Paradigm
+
+// Traditionally, UI's are updated with the newest data and the tree of views must be found out by findViewById()
+// It is a searching and it costs computation time with affecting UI performance.
+// Some methods like setText(), addChild() change the view nodes and states.
+
+// With these manipulation of view states, it increases the probability of errors gradually.
+// If the view elements are modified in different places, it is easy to forget to update them.
+
+// The concept of declarative paradigm plays a big role to shift the technics in industry over a few years.
+// Once the all of view is regenerated and if a change of related UI is, then applying it.
+// Compose is a declarative UI framework.
+
+// @Composable annotation is to define compose functions.
+// It informs the Compose compiler to convert function to UI.
+// The composable functions accept the parameters to deliver data to UI.
+
+// It emits the UI hierarchy by calling other composable functions like Text(), Box(), Row(), Column(), etc.
+// It does not return anything, they describe the screen state instead of constructing a UI widget.
+
+Note: It is fast, idempotent and free of side effects.
+
+
+-- Layouts
+
+// Compose transforms the UI states with following steps;
+//
+    1. Composition of elements
+    2. Layout of elements
+    3. Drawing of elements
+
+// State --> Composition --> Layout --> Drawing --> UI
+
+// Goals of layouts in Compose;
+//
+    1. High Performance
+    2. Creating a custom UI easily
+
+Important Note: Relative layout decreases the UI performance in Android views when it is used in a nested way
+                but it does not matter to write the nested UI in Android Compose because the UI in Compose does
+                not make multiple measurements.
+
