@@ -1,5 +1,7 @@
 package com.flowintent.workspace.data
 
+import com.flowintent.core.db.room.Task
+import com.flowintent.core.db.room.TaskType
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
 
 data class ToDoUiState(

@@ -1,4 +1,4 @@
-package com.flowintent.workspace.data
+package com.flowintent.core.db.room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

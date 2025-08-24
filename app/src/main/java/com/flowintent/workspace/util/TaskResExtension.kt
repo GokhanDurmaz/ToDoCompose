@@ -1,14 +1,9 @@
-package com.flowintent.workspace.data
+package com.flowintent.workspace.util
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.res.stringResource
-
-sealed class TaskRes {
-    data class TaskContent(val content: String): TaskRes()
-    data class TaskContentRes(@StringRes val id: Int): TaskRes()
-}
+import com.flowintent.core.db.room.TaskRes
 
 @Composable
 @ReadOnlyComposable
