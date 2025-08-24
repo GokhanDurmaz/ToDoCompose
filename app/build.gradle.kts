@@ -23,11 +23,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
-
-        buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
     }
 
     buildTypes {
@@ -43,15 +38,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        compose = true
+    }
     kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11
             freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
         }
-    }
-    buildFeatures {
-        compose = true
-        buildConfig = true
     }
 }
 
@@ -110,9 +104,6 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
-
-    // Retrofit
-    implementation(libs.retrofit)
 
     implementation(libs.androidx.room.runtime)
 
