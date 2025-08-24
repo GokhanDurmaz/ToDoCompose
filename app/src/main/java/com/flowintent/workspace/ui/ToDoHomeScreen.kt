@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.flowintent.workspace.data.Task
 import com.flowintent.workspace.data.TaskRes
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
-import com.flowintent.workspace.data.local.room.Task
 import com.flowintent.workspace.ui.vm.TaskViewModel
 
 @Composable

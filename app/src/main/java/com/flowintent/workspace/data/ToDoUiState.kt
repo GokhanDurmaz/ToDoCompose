@@ -1,7 +1,6 @@
 package com.flowintent.workspace.data
 
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
-import com.flowintent.workspace.data.local.room.Task
 
 data class ToDoUiState(
     val tasks: Map<TaskType, List<Task>> = emptyMap(),
