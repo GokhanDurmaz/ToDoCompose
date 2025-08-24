@@ -1,7 +1,7 @@
 package com.flowintent.workspace.data.local.repository
 
-import com.flowintent.workspace.data.Task
-import com.flowintent.workspace.data.local.room.dao.ToDoDao
+import com.flowintent.core.db.Task
+import com.flowintent.core.db.room.dao.ToDoDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

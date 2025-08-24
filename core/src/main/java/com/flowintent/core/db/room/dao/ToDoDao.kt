@@ -1,10 +1,10 @@
-package com.flowintent.workspace.data.local.room.dao
+package com.flowintent.core.db.room.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.flowintent.workspace.data.Task
+import com.flowintent.core.db.Task
 import kotlinx.coroutines.flow.Flow
 
 @Dao

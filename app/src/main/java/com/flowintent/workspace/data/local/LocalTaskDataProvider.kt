@@ -1,8 +1,8 @@
 package com.flowintent.workspace.data.local
 
+import com.flowintent.core.db.Task
+import com.flowintent.core.db.TaskRes
 import com.flowintent.workspace.R
-import com.flowintent.workspace.data.Task
-import com.flowintent.workspace.data.TaskRes
 
 object LocalTaskDataProvider {
 

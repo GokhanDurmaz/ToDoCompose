@@ -31,9 +31,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.flowintent.workspace.data.Task
-import com.flowintent.workspace.data.asString
+import com.flowintent.core.db.Task
 import com.flowintent.workspace.ui.vm.TaskViewModel
+import com.flowintent.workspace.util.asString
 
 @Composable
 fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {

@@ -1,9 +1,9 @@
-package com.flowintent.workspace.di
+package com.flowintent.core.di
 
 import android.content.Context
 import androidx.room.Room
-import com.flowintent.workspace.data.local.room.converters.TaskTypeConverters
-import com.flowintent.workspace.data.local.room.db.ToDoDatabase
+import com.flowintent.core.db.room.ToDoDatabase
+import com.flowintent.core.db.room.converters.TaskTypeConverters
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.Strictness
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object DatabaseModule {
     @Singleton
     @Provides
     fun provideToDoDatabase(

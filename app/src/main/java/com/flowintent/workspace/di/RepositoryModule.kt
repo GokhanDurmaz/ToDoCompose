@@ -1,6 +1,5 @@
 package com.flowintent.workspace.di
 
-import com.flowintent.workspace.data.TaskRes
 import com.flowintent.workspace.data.local.repository.TaskRepository
 import dagger.Binds
 import dagger.Module
@@ -15,8 +14,4 @@ abstract class RepositoryModule {
     @Singleton
     @Binds
     abstract fun bindTaskRepository(taskRepository: TaskRepository): TaskRepository
-
-    @Singleton
-    @Binds
-    abstract fun bindTaskRes(taskRes: TaskRes): TaskRes
 }
