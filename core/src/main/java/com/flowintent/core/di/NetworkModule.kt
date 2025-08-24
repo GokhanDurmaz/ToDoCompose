@@ -1,6 +1,7 @@
 package com.flowintent.core.di
 
 import com.flowintent.core.BuildConfig
+import com.flowintent.core.util.NetworkUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,8 +24,8 @@ object NetworkModule {
         trustManager: X509TrustManager
     ): OkHttpClient {
         val okHttpClient = OkHttpClient.Builder()
-            .callTimeout(60000L, TimeUnit.SECONDS)
-            .connectTimeout(60000L, TimeUnit.SECONDS)
+            .callTimeout(NetworkUtil.CALL_TIMEOUT, TimeUnit.SECONDS)
+            .connectTimeout(NetworkUtil.CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .sslSocketFactory(sslSocketFactory, trustManager)
             .build()
         return okHttpClient

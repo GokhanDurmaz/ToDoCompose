@@ -1,7 +1,7 @@
 package com.flowintent.workspace.di
 
+import com.flowintent.core.network.services.AnalyticsService
 import com.flowintent.workspace.data.remote.AnalyticsServiceImpl
-import com.flowintent.workspace.data.remote.services.AnalyticsService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
