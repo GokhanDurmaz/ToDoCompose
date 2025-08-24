@@ -2,8 +2,8 @@ package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flowintent.workspace.data.Task
 import com.flowintent.workspace.data.local.repository.TaskRepository
-import com.flowintent.workspace.data.local.room.Task
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

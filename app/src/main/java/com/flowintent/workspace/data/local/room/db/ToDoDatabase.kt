@@ -3,7 +3,7 @@ package com.flowintent.workspace.data.local.room.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.flowintent.workspace.data.local.room.Task
+import com.flowintent.workspace.data.Task
 import com.flowintent.workspace.data.local.room.converters.TaskTypeConverters
 import com.flowintent.workspace.data.local.room.dao.ToDoDao
 

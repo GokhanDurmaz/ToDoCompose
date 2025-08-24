@@ -1,10 +1,8 @@
-package com.flowintent.workspace.data.local.room
+package com.flowintent.workspace.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.flowintent.workspace.data.TaskRes
-import com.flowintent.workspace.data.TaskType
 
 @Entity
 data class Task(

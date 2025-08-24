@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -66,8 +65,6 @@ dependencies {
     // Views/Fragments integration
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
-    // Feature module support for Fragments
-    implementation(libs.androidx.navigation.dynamic.features.fragment)
     // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)
     // JSON serialization library, works with the Kotlin serialization plugin
@@ -101,7 +98,7 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     testImplementation(kotlin("test"))
 
-    // DI tool
+    // DI tool for compose
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     ksp(libs.hilt.compiler)

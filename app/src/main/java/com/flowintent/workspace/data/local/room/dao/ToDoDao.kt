@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.flowintent.workspace.data.local.room.Task
+import com.flowintent.workspace.data.Task
 import kotlinx.coroutines.flow.Flow
 
 @Dao
