@@ -33,5 +33,5 @@ fun ToDoScreen(
         }
     }
 
-    ToDoHomeScreen(modifier)
+    ToDoHomeScreen()
 }

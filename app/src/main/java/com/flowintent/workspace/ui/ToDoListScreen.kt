@@ -116,7 +116,7 @@ private fun ToDoListCard(
                     .padding(12.dp)
             ) {
                 Text(
-                    text = task.name,
+                    text = task.title,
                     fontSize = 16.sp,
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold

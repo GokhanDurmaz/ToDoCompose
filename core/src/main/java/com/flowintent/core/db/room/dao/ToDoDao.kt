@@ -12,7 +12,7 @@ interface ToDoDao {
     @Query("SELECT * FROM Task")
     fun getAllTasks(): Flow<List<Task>>
 
-    @Query("SELECT * FROM  Task WHERE name LIKE :name LIMIT 1")
+    @Query("SELECT * FROM  Task WHERE title LIKE :name LIMIT 1")
     suspend fun findByTaskName(name: String): Task
 
     @Insert
