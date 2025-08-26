@@ -1,4 +1,8 @@
+import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -8,6 +12,17 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services) // The Google Services plugin
+}
+
+fun loadProperties(): Properties {
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { inputStream ->
+            properties.load(inputStream)
+        }
+    }
+    return properties
 }
 
 android {
@@ -22,6 +37,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    applicationVariants.all {
+        outputs.all {
+            val properties = loadProperties()
+            val versionNameFromProps = properties.getProperty("versionName")
+            val versionCodeFromProps = properties.getProperty("versionCode").toIntOrNull() ?: 100
+            val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
+            val sanitizedVersionName = versionNameFromProps.replace(".", "_")
+            (this as BaseVariantOutputImpl).outputFileName = "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${timestamp}.apk"
+        }
     }
 
     buildTypes {
@@ -113,4 +139,30 @@ dependencies {
 
     // Add the Firebase SDK for Authentication
     implementation(libs.firebase.auth)
+}
+
+tasks.named("build") {
+    dependsOn(":buildApp")
+    val properties = loadProperties()
+    val versionNameFromProps = properties.getProperty("versionName")
+    val versionCodeFromProps = properties.getProperty("versionCode").toIntOrNull() ?: 100
+    val sanitizedVersionName = versionNameFromProps.replace(".", "_")
+    val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
+    val apkName = "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${timestamp}.apk"
+    println("APK file name: $apkName")
+    println("Version name: $versionNameFromProps")
+    println("Version code: $versionCodeFromProps")
+    doLast {
+        val deployScript = rootProject.file("deploy.sh")
+        if (deployScript.exists()) {
+            println("Running deploy.sh with $apkName ...")
+            exec {
+                workingDir = rootProject.rootDir
+                commandLine("sh", deployScript.absolutePath, apkName)
+                isIgnoreExitValue = true
+            }
+        } else {
+            println("missing: deploy.sh")
+        }
+    }
 }
