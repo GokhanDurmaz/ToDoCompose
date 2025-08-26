@@ -1,244 +1,198 @@
 package com.flowintent.workspace.ui
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.filled.ArtTrack
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.material3.Card
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
-import com.flowintent.workspace.ui.vm.TaskViewModel
+import com.flowintent.workspace.util.asString
 
+@Preview(showBackground = true)
 @Composable
-fun ToDoHomeScreen(modifier: Modifier) {
+fun ToDoHomeScreen() {
     ToDoAppContent()
 }
+
 
 @Composable
 private fun ToDoAppContent() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        AddTaskButton()
-    }
-}
-
-@Composable
-private fun AddTaskButton() {
-    var isShowing: Boolean by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier.padding(start = 12.dp, top = 24.dp, end = 12.dp, bottom = 6.dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.Top
-    ) {
-        Button(
+        Card(
             modifier = Modifier
-                .align(alignment = Alignment.CenterVertically)
-                .weight(1f)
-                .padding(end = 6.dp)
-                .height(height = 100.dp),
-            onClick = {
-                Log.d("AddTaskButton", "onClick -- AddTaskButton")
-                isShowing = !isShowing
-            },
-            content = {
-                Text(text = "New Task", fontSize = 16.sp)
-            },
-            shape = RoundedCornerShape(6.dp)
-        )
-        Button(
-            modifier = Modifier
-                .align(alignment = Alignment.CenterVertically)
-                .weight(1f)
-                .padding(start = 6.dp)
-                .height(height = 100.dp),
-            onClick = {
-
-            },
-            content = {
-                Text(text = "Add Quick Task", fontSize = 16.sp)
-            },
-            shape = RoundedCornerShape(6.dp)
-        )
-    }
-    Row(
-        modifier = Modifier.padding(start = 12.dp, top = 6.dp, end = 12.dp, bottom = 12. dp),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.Top
-    ) {
-        Button(
-            modifier = Modifier
-                .align(alignment = Alignment.CenterVertically)
-                .weight(1f)
-                .padding(end = 6.dp)
-                .height(height = 100.dp),
-            onClick = {
-
-            },
-            content = {
-                Text(text = "Add Urgent Task", fontSize = 16.sp)
-            },
-            shape = RoundedCornerShape(6.dp)
-        )
-        Button(
-            modifier = Modifier
-                .align(alignment = Alignment.CenterVertically)
-                .weight(1f)
-                .padding(start = 6.dp)
-                .height(height = 100.dp),
-            onClick = {
-
-            },
-            content = {
-                Text(text = "Add Reminder", fontSize = 16.sp)
-            },
-            shape = RoundedCornerShape(6.dp)
-        )
-    }
-    if (isShowing) {
-        AddTaskDialog(
-            onDismiss = {
-                isShowing = !isShowing
-            }
-        )
-    }
-}
-
-@Composable
-private fun AddTaskDialog(
-    viewModel: TaskViewModel = hiltViewModel(),
-    onDismiss: () -> Unit
-) {
-    val context = LocalContext.current
-    val toDoLabel = remember { mutableStateOf("") }
-    val toDoContent = remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
-
-    Dialog(onDismissRequest = onDismiss) {
-        Card {
-            Column {
-                OutlinedTextField(
-                    value = toDoLabel.value,
-                    onValueChange = {
-                        toDoLabel.value = it
-                    },
-                    placeholder = { Text(text = "label") },
+                .fillMaxWidth()
+                .padding(12.dp),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            ),
+            shape = RoundedCornerShape(24.dp)
+        ) {
+            Box(modifier = Modifier) {
+                LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 12.dp, top = 12.dp, end = 12.dp),
-                    label = { Text(text = "label") }
-                )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 12.dp, top = 12.dp, end = 12.dp)
+                        .padding(bottom = 16.dp)
                 ) {
-                    Button(
-                        onClick = { expanded = !expanded },
-                        content = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(text = "Choose Task Privilege")
-                                Icon(Icons.Default.Check, contentDescription = "More options")
-                            }
-                        }
-                    )
-                    DropdownMenu(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(text = "Primary") },
-                            onClick = {  }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text = "Secondary") },
-                            onClick = {  }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(text = "Less Important") },
-                            onClick = {  }
+                    item {
+                        Text(
+                            text = "Todo",
+                            fontSize = 48.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                         )
                     }
+                    itemsIndexed(LocalTaskDataProvider.allTasks) { key, task ->
+                        ToDoCard(task)
+                        ToDoCardDescription(task)
+                    }
                 }
-                OutlinedTextField(
-                    value = toDoContent.value,
-                    onValueChange = {
-                        toDoContent.value = it
-                    },
-                    placeholder = { Text(text = "describe todo content here.") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(height = 100.dp)
-                        .padding(start = 12.dp, top = 12.dp, end = 12.dp),
-                    maxLines = 4
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Button(
-                        onClick = onDismiss,
-                        content = {
-                            Text(text = "CANCEL")
-                        },
-                        modifier = Modifier.padding(start = 12.dp, top = 24.dp)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ToDoCard(tasks: List<Task>) {
+    Row {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(12.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(tasks[0].cardColor)
+            )
+        ) {
+            Column {
+                Row {
+                    Icon(
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+                        imageVector = Icons.Default.SportsGymnastics,
+                        contentDescription = tasks[0].title,
+                        tint = Color(tasks[0].iconColor)
                     )
-                    Button(
-                        onClick = {
-                            if (toDoContent.value.isEmpty().not()
-                                and toDoLabel.value.isEmpty().not()) {
-                                viewModel.insertTask(
-                                    Task(
-                                        name = toDoLabel.value,
-                                        content = TaskRes.TaskContent(toDoContent.value),
-                                        taskType = LocalTaskDataProvider.defaultTask.taskType,
-                                    )
-                                )
-                                Toast.makeText(context, "Created a task.", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, "Please do not type empty text.", Toast.LENGTH_SHORT).show()
-                            }
-                            onDismiss()
-                        },
-                        content = {
-                            Text(text = "OK")
-                        },
-                        modifier = Modifier.padding(top = 24.dp, end = 12.dp, bottom = 12.dp)
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp, top = 16.dp),
+                        text = tasks[0].title,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(tasks[0].textColor)
                     )
                 }
             }
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
+                text = tasks[0].content.asString(),
+                color = Color(tasks[0].textColor)
+            )
+        }
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(12.dp),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = Color(tasks[1].cardColor)
+            )
+        ) {
+            Column {
+                Row {
+                    Icon(
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+                        imageVector = Icons.Default.ArtTrack,
+                        contentDescription = tasks[1].title,
+                        tint = Color(tasks[1].iconColor)
+                    )
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp, top = 16.dp),
+                        text = tasks[1].title,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(tasks[1].textColor)
+                    )
+                }
+            }
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 16.dp),
+                text = tasks[1].content.asString(),
+                color = Color(tasks[1].textColor)
+            )
+        }
+    }
+}
+
+private fun isBackgroundWhite(colorCode: Int): Boolean = "ffffffff".toLong(16).toInt() == colorCode
+
+@Composable
+private fun ToDoCardDescription(tasks: List<Task>) {
+    Row {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            Text(
+                text = tasks[0].title,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp)
+            )
+            Text(
+                text = tasks[0].content.asString(),
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            Text(
+                text = tasks[1].title,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp)
+            )
+            Text(
+                text = tasks[0].content.asString(),
+                fontSize = 12.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 16.dp)
+            )
         }
     }
 }

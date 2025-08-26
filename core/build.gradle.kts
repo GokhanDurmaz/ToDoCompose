@@ -31,13 +31,20 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     buildFeatures {
         buildConfig = true
     }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+    
     kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11

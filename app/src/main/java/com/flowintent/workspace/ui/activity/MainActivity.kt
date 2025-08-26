@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.flowintent.workspace.R
 import com.flowintent.workspace.nav.ToDoNavigationBar
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@Preview(showBackground = true)
 @Composable
 fun HomeScreen() {
     ToDoTheme {
