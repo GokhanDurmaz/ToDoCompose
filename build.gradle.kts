@@ -9,3 +9,17 @@ plugins {
     id("com.google.dagger.hilt.android") version "2.57.1" apply false
     id("com.google.gms.google-services") version "4.4.3" apply false
 }
+tasks.register("clean") {
+    delete {
+        getLayout().buildDirectory
+    }
+}
+
+defaultTasks("buildApp")
+
+tasks.register("buildApp") {
+    group = "build"
+    description = "Builds both app and core modules"
+    dependsOn(":app:assemble", ":core:assemble")
+}
+
