@@ -1,6 +1,5 @@
 package com.flowintent.workspace.ui
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,8 +40,7 @@ fun ToDoHomeScreen() {
 private fun ToDoAppContent() {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xffe9e9e9)),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -53,18 +51,9 @@ private fun ToDoAppContent() {
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 8.dp
             ),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            )
+            shape = RoundedCornerShape(24.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .background(
-                        color = Color(0xffebeae8),
-                        shape = RoundedCornerShape(24.dp)
-                    )
-            ) {
+            Box(modifier = Modifier) {
                 LazyColumn(
                     modifier = Modifier
                         .padding(bottom = 16.dp)
@@ -173,7 +162,6 @@ private fun ToDoCardDescription(tasks: List<Task>) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .fillMaxWidth()
-
                     .padding(start = 16.dp, top = 16.dp)
             )
             Text(
