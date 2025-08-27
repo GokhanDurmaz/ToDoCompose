@@ -22,12 +22,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.flowintent.workspace.ui.ToDoListScreen
-import com.flowintent.workspace.ui.ToDoScreen
+import com.flowintent.workspace.ui.MainScreen
 
 @Composable
 fun ToDoNavigationBar(windowSize: WindowWidthSizeClass) {
     val navController = rememberNavController()
-    val startDestination = ToDoNavigation.HOME
+    val startDestination = Navigation.HOME
 
     Scaffold(
         bottomBar = { BottomNavigationBar(startDestination, navController) }
@@ -53,13 +53,13 @@ private fun AppNavHost(
         startDestination = toDoNavigation,
         modifier = modifier
     ) {
-        ToDoNavigation.entries.forEach { navigation ->
+        Navigation.entries.forEach { navigation ->
             composable(navigation.route) {
                 when(navigation) {
-                    ToDoNavigation.HOME -> { ToDoScreen(windowSize) }
-                    ToDoNavigation.LIST_TODO -> ToDoListScreen()
-                    ToDoNavigation.REMINDER -> ReminderScreen()
-                    ToDoNavigation.SETTINGS -> SettingsScreen()
+                    Navigation.HOME -> { MainScreen(windowSize) }
+                    Navigation.LIST_TODO -> ToDoListScreen()
+                    Navigation.REMINDER -> ReminderScreen()
+                    Navigation.SETTINGS -> SettingsScreen()
                 }
             }
         }
@@ -68,11 +68,11 @@ private fun AppNavHost(
 
 
 @Composable
-private fun BottomNavigationBar(startDestination: ToDoNavigation, navController: NavHostController) {
+private fun BottomNavigationBar(startDestination: Navigation, navController: NavHostController) {
     var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
 
     NavigationBar {
-        ToDoNavigation.entries.forEachIndexed { index, navigation ->
+        Navigation.entries.forEachIndexed { index, navigation ->
             NavigationBarItem(
                 selected = selectedDestination == index,
                 onClick = {

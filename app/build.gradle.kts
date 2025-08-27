@@ -25,6 +25,15 @@ fun loadProperties(): Properties {
     return properties
 }
 
+fun generateAppName(): String {
+    val properties = loadProperties()
+    val versionNameFromProps = properties.getProperty("versionName")
+    val versionCodeFromProps = properties.getProperty("versionCode").toIntOrNull() ?: 100
+    val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
+    val sanitizedVersionName = versionNameFromProps.replace(".", "_")
+    return "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${timestamp}.apk"
+}
+
 android {
     namespace = "com.flowintent.workspace"
     compileSdk = 36
@@ -41,12 +50,7 @@ android {
 
     applicationVariants.all {
         outputs.all {
-            val properties = loadProperties()
-            val versionNameFromProps = properties.getProperty("versionName")
-            val versionCodeFromProps = properties.getProperty("versionCode").toIntOrNull() ?: 100
-            val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
-            val sanitizedVersionName = versionNameFromProps.replace(".", "_")
-            (this as BaseVariantOutputImpl).outputFileName = "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${timestamp}.apk"
+            (this as BaseVariantOutputImpl).outputFileName = generateAppName()
         }
     }
 
@@ -124,6 +128,8 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     testImplementation(kotlin("test"))
 
+    implementation(libs.accompanist.systemuicontroller)
+
     // DI tool for compose
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -143,26 +149,29 @@ dependencies {
 
 tasks.named("build") {
     dependsOn(":buildApp")
-    val properties = loadProperties()
-    val versionNameFromProps = properties.getProperty("versionName")
-    val versionCodeFromProps = properties.getProperty("versionCode").toIntOrNull() ?: 100
-    val sanitizedVersionName = versionNameFromProps.replace(".", "_")
-    val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
-    val apkName = "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${timestamp}.apk"
+    finalizedBy("deployApk")
+}
+
+tasks.register<Exec>("deployApk") {
+    val requestedVariant = project.findProperty("variant")?.toString() ?: "debug"
+    val variant = android.applicationVariants
+        .first { it.name.equals(requestedVariant, ignoreCase = true) }
+    val apkName = variant.outputs.first().outputFile.name
     println("APK file name: $apkName")
-    println("Version name: $versionNameFromProps")
-    println("Version code: $versionCodeFromProps")
+
+    val deployScript = rootProject.file("deploy.sh")
+    if (deployScript.exists()) {
+        println("Running deploy.sh with $apkName ...")
+    } else {
+        println("missing: deploy.sh")
+    }
+
+    workingDir = rootProject.rootDir
+    commandLine("sh", rootProject.file("deploy.sh").absolutePath)
+
     doLast {
-        val deployScript = rootProject.file("deploy.sh")
-        if (deployScript.exists()) {
-            println("Running deploy.sh with $apkName ...")
-            exec {
-                workingDir = rootProject.rootDir
-                commandLine("sh", deployScript.absolutePath, apkName)
-                isIgnoreExitValue = true
-            }
-        } else {
-            println("missing: deploy.sh")
+        if (executionResult.get().exitValue != 0) {
+            println("deploy.sh failed but continuing build")
         }
     }
 }

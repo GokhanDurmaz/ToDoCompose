@@ -1,5 +1,6 @@
 package com.flowintent.workspace.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,51 +21,69 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.flowintent.workspace.R
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
 import com.flowintent.workspace.data.local.Task
+import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.util.asString
 
 @Preview(showBackground = true)
 @Composable
 fun ToDoHomeScreen() {
-    ToDoAppContent()
+    ToDoNavTopBar { paddingValues ->
+        ToDoAppContent(paddingValues)
+    }
 }
 
 
 @Composable
-private fun ToDoAppContent() {
+private fun ToDoAppContent(paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .padding(paddingValues),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Card(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 8.dp
-            ),
-            shape = RoundedCornerShape(24.dp)
+                .fillMaxSize()
         ) {
-            Text(
-                text = "Todo",
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+            Image(
+                painter = painterResource(id = R.drawable.todo_home_background),
+                contentDescription = "Background",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
-            Box(modifier = Modifier) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(8.dp)
-                ) {
-                    items(LocalTaskDataProvider.allTasks) { task ->
-                        ToDoCard(task)
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 8.dp
+                ),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                Text(
+                    text = "Todo",
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+                )
+                Box(modifier = Modifier) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(8.dp)
+                    ) {
+                        items(LocalTaskDataProvider.allTasks) { task ->
+                            ToDoCard(task)
+                        }
                     }
                 }
             }

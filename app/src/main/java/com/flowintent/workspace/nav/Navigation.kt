@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.RememberMe
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 
-enum class ToDoNavigation(
+enum class Navigation(
     val route: String,
     val label: String,
     val icon: ImageVector,
