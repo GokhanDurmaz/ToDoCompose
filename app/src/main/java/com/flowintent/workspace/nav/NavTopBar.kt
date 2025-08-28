@@ -1,6 +1,8 @@
 package com.flowintent.workspace.nav
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
@@ -14,6 +16,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Modifier
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,15 +24,21 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 fun ToDoNavTopBar(scope: @Composable (PaddingValues) -> Unit) {
     val systemUiController = rememberSystemUiController()
     val topBarColor = MaterialTheme.colorScheme.surface
+
     SideEffect {
-        systemUiController.setStatusBarColor(topBarColor)
+        systemUiController.setStatusBarColor(
+            color = topBarColor,
+            darkIcons = true
+        )
     }
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.fillMaxWidth(),
                 title = {
                     Text(text = "To-Do List")
                 },
+                windowInsets = WindowInsets(0,0,0,0),
                 navigationIcon = {
                     IconButton(onClick = {  }) {
                         Icon(

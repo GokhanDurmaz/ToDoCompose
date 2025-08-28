@@ -158,6 +158,8 @@ tasks.register<Exec>("deployApk") {
         .first { it.name.equals(requestedVariant, ignoreCase = true) }
     val apkName = variant.outputs.first().outputFile.name
     println("APK file name: $apkName")
+    println("VersionName: ${loadProperties().getProperty("versionName")}")
+    println("VersionCode: ${loadProperties().getProperty("versionCode")}")
 
     val deployScript = rootProject.file("deploy.sh")
     if (deployScript.exists()) {
