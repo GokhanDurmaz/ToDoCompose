@@ -7,7 +7,7 @@ import com.flowintent.workspace.util.MainContentType
 import com.flowintent.workspace.util.MainNavigationType
 
 @Composable
-fun ToDoScreen(
+fun MainScreen(
     windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ) {

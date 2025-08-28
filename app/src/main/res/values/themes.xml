@@ -14,14 +14,17 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.App.Splash" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Splash screen background -->
+    <style name="Theme.YourApp" parent="Theme.Material3.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.App.Splash" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
-        <!-- Splash screen icon -->
         <item name="windowSplashScreenAnimatedIcon">@drawable/todo_app_icon_for_android__1_</item>
-        <!-- Splash screen animation duration -->
-        <item name="windowSplashScreenAnimationDuration">166</item>
-        <!-- Splash screen background -->
+        <item name="windowSplashScreenAnimationDuration">500</item>
         <item name="windowSplashScreenBackground">@color/white</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 </resources>
