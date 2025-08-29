@@ -3,6 +3,7 @@ package com.flowintent.workspace.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,21 +28,31 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.Task
+import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.asString
 
+@Preview(showBackground = true)
 @Composable
-fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
+fun ToDoListScreen() {
+    ToDoNavTopBar { paddingValues ->
+        ListCardContent(paddingTopOffset = paddingValues)
+    }
+}
+
+@Composable
+private fun ListCardContent(viewModel: TaskViewModel = hiltViewModel(), paddingTopOffset: PaddingValues) {
     val taskList by viewModel.tasks.collectAsStateWithLifecycle()
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(12.dp),
+            .padding(paddingTopOffset),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(taskList) { task ->

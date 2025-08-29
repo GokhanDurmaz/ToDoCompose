@@ -15,22 +15,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToDoNavTopBar(scope: @Composable (PaddingValues) -> Unit) {
-    val systemUiController = rememberSystemUiController()
-    val topBarColor = MaterialTheme.colorScheme.surface
-
-    SideEffect {
-        systemUiController.setStatusBarColor(
-            color = topBarColor,
-            darkIcons = true
-        )
-    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -56,7 +45,7 @@ fun ToDoNavTopBar(scope: @Composable (PaddingValues) -> Unit) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = topBarColor
+                    containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         }

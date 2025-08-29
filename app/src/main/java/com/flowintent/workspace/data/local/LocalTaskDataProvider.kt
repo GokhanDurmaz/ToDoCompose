@@ -1,68 +1,46 @@
 package com.flowintent.workspace.data.local
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.ArtTrack
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.HealthAndSafety
-import androidx.compose.material.icons.filled.SportsGymnastics
-import androidx.compose.ui.graphics.vector.ImageVector
-import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.TaskType
+import com.flowintent.core.db.source.AssetDataSource
+import com.flowintent.workspace.data.parser.JsonParser
+import javax.inject.Inject
 
-object LocalTaskDataProvider {
+class LocalTaskDataProvider @Inject constructor(
+    private val jsonDataSource: AssetDataSource,
+    private val jsonParser: JsonParser
+) {
+    suspend fun getAllCategories(): List<TaskCategory> {
+        val jsonString = jsonDataSource.readJsonString(JSON_FILE)
+        return jsonParser.fromJsonList(jsonString, TaskCategory::class.java)
+    }
 
-    val allTasks = listOf(
-        Task(
-            title = "Gym",
-            content = TaskRes.TaskContent("Ideal space for strength, endurance, and fitness."),
-            icon = Icons.Default.SportsGymnastics,
-            cardColor = "ff56b0a6".toLong(16).toInt(),
-            iconColor = "ffffffff".toLong(16).toInt(),
-            textColor = "ffffffff".toLong(16).toInt()
-        ),
-        Task(
-            title = "Art",
-            content = TaskRes.TaskContent("Unique world where creativity meets vibrant colors."),
-            icon = Icons.Default.ArtTrack,
-            cardColor = "ff8e70c8".toLong(16).toInt(),
-            iconColor = "ffffffff".toLong(16).toInt(),
-            textColor = "ffffffff".toLong(16).toInt()
-        ),
-        Task(
-            title = "Sent",
-            content = TaskRes.TaskContent("Tasks delivered swiftly, connecting ideas effortlessly."),
-            icon = Icons.AutoMirrored.Filled.Send,
-            cardColor = "ffffffff".toLong(16).toInt(),
-            iconColor = "ff000000".toLong(16).toInt(),
-            textColor = "ff000000".toLong(16).toInt()
-        ),
-        Task(
-            title = "Health",
-            content = TaskRes.TaskContent("Holistic well-being for body and mind."),
-            icon = Icons.Default.HealthAndSafety,
-            cardColor = "fff5c66d".toLong(16).toInt(),
-            iconColor = "ffffffff".toLong(16).toInt(),
-            textColor = "ffffffff".toLong(16).toInt()
+    companion object {
+        private const val UNKNOWN = "Unknown"
+        private const val JSON_FILE = "task_categories.json"
+        val defaultTask = TaskCategory(
+            title = UNKNOWN,
+            content = TaskContent(UNKNOWN),
+            icon = TaskIcon(UNKNOWN, UNKNOWN),
+            cardColor = -1,
+            iconColor = -1,
+            textColor = -1
         )
-    )
-
-    val defaultTask = Task(
-        title = "Unknown",
-        content = TaskRes.TaskContent("Unknown"),
-        icon = Icons.Default.Error,
-        cardColor = -1,
-        iconColor = -1,
-        textColor = -1
-    )
+    }
 }
 
-data class Task(
-    val title: String = "",
-    var content: TaskRes,
-    var icon: ImageVector,
-    var taskType: TaskType = TaskType.LOCAL_TASKS,
-    var cardColor: Int,
-    var iconColor: Int,
-    var textColor: Int = -1
+data class TaskCategory(
+    val title: String,
+    val content: TaskContent,
+    val icon: TaskIcon,
+    val cardColor: Long,
+    val iconColor: Long,
+    val textColor: Long
+)
+
+data class TaskContent(
+    val text: String
+)
+
+data class TaskIcon(
+    val type: String,
+    val name: String
 )

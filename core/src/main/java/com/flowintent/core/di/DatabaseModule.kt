@@ -5,8 +5,6 @@ import androidx.room.Room
 import com.flowintent.core.db.room.ToDoDatabase
 import com.flowintent.core.db.room.converters.TaskTypeConverters
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.Strictness
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,13 +31,6 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideToDoDao(toDoDatabase: ToDoDatabase) = toDoDatabase.toDoDao()
-
-    @Singleton
-    @Provides
-    fun provideGson(): Gson = GsonBuilder()
-        .serializeNulls()
-        .setStrictness(Strictness.STRICT)
-        .create()
 
     @Singleton
     @Provides
