@@ -86,6 +86,7 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation(project(":core"))
+    implementation(libs.androidx.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -145,6 +146,14 @@ dependencies {
 
     // Add the Firebase SDK for Authentication
     implementation(libs.firebase.auth)
+
+    // Serialization/deserialization json - GSON
+    implementation(libs.gson)
+
+
+    // Kotlin reflection library
+    implementation(libs.kotlin.reflect)
+
 }
 
 tasks.named("build") {

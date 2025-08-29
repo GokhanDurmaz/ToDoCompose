@@ -1,0 +1,54 @@
+[
+  {
+    "title": "Gym",
+    "content": {
+      "text": "Ideal space for strength, endurance, and fitness."
+    },
+    "icon": {
+      "type": "vector",
+      "name": "SportsGymnastics"
+    },
+    "cardColor": 4286663334,
+    "iconColor": -1,
+    "textColor": -1
+  },
+  {
+    "title": "Art",
+    "content": {
+      "text": "Unique world where creativity meets vibrant colors."
+    },
+    "icon": {
+      "type": "vector",
+      "name": "ArtTrack"
+    },
+    "cardColor": -886198,
+    "iconColor": -1,
+    "textColor": -1
+  },
+  {
+    "title": "Sent",
+    "content": {
+      "text": "Tasks delivered swiftly, connecting ideas effortlessly."
+    },
+    "icon": {
+      "type": "vector",
+      "name": "Send"
+    },
+    "cardColor": -1,
+    "iconColor": -16777216,
+    "textColor": -16777216
+  },
+  {
+    "title": "Health",
+    "content": {
+      "text": "Holistic well-being for body and mind."
+    },
+    "icon": {
+      "type": "vector",
+      "name": "HealthAndSafety"
+    },
+    "cardColor": 4293881453,
+    "iconColor": -1,
+    "textColor": -1
+  }
+]

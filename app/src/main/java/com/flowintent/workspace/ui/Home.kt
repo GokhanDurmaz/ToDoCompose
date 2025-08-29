@@ -27,23 +27,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.flowintent.workspace.R
-import com.flowintent.workspace.data.local.LocalTaskDataProvider
-import com.flowintent.workspace.data.local.Task
+import com.flowintent.workspace.data.local.TaskCategory
 import com.flowintent.workspace.nav.ToDoNavTopBar
-import com.flowintent.workspace.util.asString
+import com.flowintent.workspace.ui.vm.TaskCategoryViewModel
+import com.flowintent.workspace.util.IconManager
 
 @Preview(showBackground = true)
 @Composable
 fun ToDoHomeScreen() {
     ToDoNavTopBar { paddingValues ->
-        ToDoAppContent(paddingValues)
+        ToDoAppContent(paddingValues = paddingValues)
     }
 }
 
-
 @Composable
-private fun ToDoAppContent(paddingValues: PaddingValues) {
+private fun ToDoAppContent(
+    taskCategoryViewModel: TaskCategoryViewModel = hiltViewModel(),
+    paddingValues: PaddingValues
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -81,7 +84,7 @@ private fun ToDoAppContent(paddingValues: PaddingValues) {
                         columns = GridCells.Fixed(2),
                         contentPadding = PaddingValues(8.dp)
                     ) {
-                        items(LocalTaskDataProvider.allTasks) { task ->
+                        items(taskCategoryViewModel.getAllCategories()) { task ->
                             ToDoCard(task)
                         }
                     }
@@ -92,7 +95,7 @@ private fun ToDoAppContent(paddingValues: PaddingValues) {
 }
 
 @Composable
-private fun ToDoCard(task: Task) {
+private fun ToDoCard(task: TaskCategory) {
     Row {
         Column {
             Card(
@@ -108,7 +111,7 @@ private fun ToDoCard(task: Task) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             modifier = Modifier.padding(start = 16.dp, top = 16.dp),
-                            imageVector = task.icon,
+                            imageVector = IconManager.getIcon(task.icon.name),
                             contentDescription = task.title,
                             tint = Color(task.iconColor)
                         )
@@ -122,7 +125,7 @@ private fun ToDoCard(task: Task) {
                 }
                 Text(
                     modifier = Modifier.padding(16.dp),
-                    text = task.content.asString(),
+                    text = task.content.text,
                     color = Color(task.textColor)
                 )
             }
@@ -136,7 +139,7 @@ private fun ToDoCard(task: Task) {
                         .padding(start = 16.dp, top = 16.dp)
                 )
                 Text(
-                    text = task.content.asString(),
+                    text = task.content.text,
                     fontSize = 12.sp,
                     modifier = Modifier
                         .fillMaxWidth()
