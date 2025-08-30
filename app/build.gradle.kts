@@ -186,3 +186,23 @@ tasks.register<Exec>("deployApk") {
         }
     }
 }
+
+// build.gradle.kts (Kotlin DSL)
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        freeCompilerArgs.addAll(
+            listOf(
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                        project.layout.buildDirectory.get().asFile + "/compose_metrics"
+            )
+        )
+        freeCompilerArgs.addAll(
+            listOf(
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                        project.layout.buildDirectory.get().asFile + "/compose_metrics"
+            )
+        )
+    }
+}
