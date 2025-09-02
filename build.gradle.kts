@@ -1,3 +1,5 @@
+import java.util.Locale
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -23,10 +25,23 @@ tasks.register("runAllTests") {
     dependsOn(":test:testDebugUnitTest")
 }
 
-tasks.register("buildApp") {
+tasks.register("buildAppDebug") {
     group = "build"
     description = "Builds both app and core modules"
     dependsOn(tasks.named("runAllTests"))
-    dependsOn(":app:assemble", ":core:assemble", ":data:assemble", ":test:test")
+
+    dependsOn(":app:assembleDebug")
+    dependsOn(":core:assembleDebug")
+    dependsOn(":data:assembleDebug")
+}
+
+tasks.register("buildAppRelease") {
+    group = "build"
+    description = "Builds both app and core modules"
+    dependsOn(tasks.named("runAllTests"))
+
+    dependsOn(":app:assembleRelease")
+    dependsOn(":core:assembleRelease")
+    dependsOn(":data:assembleRelease")
 }
 
