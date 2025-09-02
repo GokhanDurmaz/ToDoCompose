@@ -44,8 +44,6 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     applicationVariants.all {
@@ -86,21 +84,13 @@ dependencies {
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation(project(":core"))
-    implementation(libs.androidx.espresso.core)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.espresso.core)
 
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
     // Views/Fragments integration
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
-    // Testing Navigation
-    androidTestImplementation(libs.androidx.navigation.testing)
+
     // JSON serialization library, works with the Kotlin serialization plugin
     implementation(libs.kotlinx.serialization.json)
 
@@ -110,8 +100,6 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
 
-    // Test rules and transitive dependencies:
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
     debugImplementation(libs.androidx.ui.test.manifest)
     // debugImplementation because LeakCanary should only run in debug builds.
@@ -130,7 +118,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Optional - Integration with LiveData
     implementation(libs.androidx.runtime.livedata)
-    testImplementation(kotlin("test"))
 
     implementation(libs.accompanist.systemuicontroller)
 

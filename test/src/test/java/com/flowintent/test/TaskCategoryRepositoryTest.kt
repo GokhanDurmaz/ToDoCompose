@@ -1,4 +1,4 @@
-package com.flowintent.workspace
+package com.flowintent.test
 
 import com.flowintent.workspace.data.local.LocalTaskDataProvider
 import com.flowintent.workspace.data.local.TaskCategory
@@ -77,5 +77,12 @@ class TaskCategoryRepositoryTest {
 
         // Assert: Verify the result is an empty list
         assertEquals(expectedCategories, result)
+    }
+
+    @Test
+    fun example_test() {
+        val expectedResult = 8
+        val result = 4.plus(4)
+        assertEquals(expectedResult, result)
     }
 }
