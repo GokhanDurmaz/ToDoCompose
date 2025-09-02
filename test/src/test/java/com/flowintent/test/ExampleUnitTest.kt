@@ -1,4 +1,4 @@
-package com.flowintent.workspace
+package com.flowintent.test
 
 import org.junit.Test
 

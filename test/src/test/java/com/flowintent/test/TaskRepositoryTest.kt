@@ -1,4 +1,4 @@
-package com.flowintent.workspace
+package com.flowintent.test
 
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes

@@ -17,9 +17,16 @@ tasks.register("clean") {
 
 defaultTasks("buildApp")
 
+tasks.register("runAllTests") {
+    group = "verification"
+    description = "Runs all unit tests for the specified modules."
+    dependsOn(":test:testDebugUnitTest")
+}
+
 tasks.register("buildApp") {
     group = "build"
     description = "Builds both app and core modules"
-    dependsOn(":app:assemble", ":core:assemble")
+    dependsOn(tasks.named("runAllTests"))
+    dependsOn(":app:assemble", ":core:assemble", ":test:test")
 }
 
