@@ -1,4 +1,4 @@
-package com.flowintent.workspace.data.parser
+package com.flowintent.data.db.parser
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

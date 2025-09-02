@@ -4,7 +4,7 @@ import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.TaskType
 import com.flowintent.core.db.room.dao.ToDoDao
-import com.flowintent.workspace.data.local.repository.TaskRepository
+import com.flowintent.data.db.repository.TaskRepositoryImpl
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -21,14 +21,14 @@ class TaskRepositoryTest {
     @Mock
     private lateinit var toDoDao: ToDoDao
 
-    private lateinit var taskRepository: TaskRepository
+    private lateinit var taskRepository: TaskRepositoryImpl
 
     @Before
     fun setUp() {
         // Initialize Mockito annotations
         MockitoAnnotations.openMocks(this)
-        // Initialize the repository with the mocked DAO
-        taskRepository = TaskRepository(toDoDao)
+        // Initialize task repository impl.
+        taskRepository = TaskRepositoryImpl(toDoDao)
     }
 
     @Test

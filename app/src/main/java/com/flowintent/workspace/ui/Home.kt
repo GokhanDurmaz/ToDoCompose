@@ -28,8 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.flowintent.core.db.TaskCategory
 import com.flowintent.workspace.R
-import com.flowintent.workspace.data.local.TaskCategory
 import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.ui.vm.TaskCategoryViewModel
 import com.flowintent.workspace.util.IconManager

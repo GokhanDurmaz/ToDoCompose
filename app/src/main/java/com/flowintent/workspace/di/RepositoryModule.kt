@@ -1,7 +1,9 @@
 package com.flowintent.workspace.di
 
-import com.flowintent.workspace.data.local.repository.TaskCategoryRepository
-import com.flowintent.workspace.data.local.repository.TaskRepository
+import com.flowintent.core.db.source.ITaskCategoryRepository
+import com.flowintent.core.db.source.ITaskRepository
+import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
+import com.flowintent.data.db.repository.TaskRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,9 +16,11 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindTaskRepository(taskRepository: TaskRepository): TaskRepository
+    abstract fun bindTaskRepository(taskRepository: TaskRepositoryImpl): ITaskRepository
 
     @Singleton
     @Binds
-    abstract fun bindTaskCategoryRepository(taskCategoryRepository: TaskCategoryRepository): TaskCategoryRepository
+    abstract fun bindTaskCategoryRepository(
+        taskCategoryRepository: TaskCategoryRepositoryImpl
+    ): ITaskCategoryRepository
 }

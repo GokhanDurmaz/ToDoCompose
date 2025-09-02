@@ -1,10 +1,10 @@
 package com.flowintent.test
 
-import com.flowintent.workspace.data.local.LocalTaskDataProvider
-import com.flowintent.workspace.data.local.TaskCategory
-import com.flowintent.workspace.data.local.TaskContent
-import com.flowintent.workspace.data.local.TaskIcon
-import com.flowintent.workspace.data.local.repository.TaskCategoryRepository
+import com.flowintent.core.db.TaskCategory
+import com.flowintent.core.db.TaskContent
+import com.flowintent.core.db.TaskIcon
+import com.flowintent.core.db.source.ILocalTaskDataProvider
+import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -16,16 +16,16 @@ import org.mockito.MockitoAnnotations
 class TaskCategoryRepositoryTest {
 
     @Mock
-    private lateinit var localTaskDataProvider: LocalTaskDataProvider
+    private lateinit var localTaskDataProvider: ILocalTaskDataProvider
 
-    private lateinit var taskCategoryRepository: TaskCategoryRepository
+    private lateinit var taskCategoryRepository: TaskCategoryRepositoryImpl
 
     @Before
     fun setUp() {
         // Initialize Mockito annotations
         MockitoAnnotations.openMocks(this)
-        // Initialize the repository with the mocked data provider
-        taskCategoryRepository = TaskCategoryRepository(localTaskDataProvider)
+        // Initialize task category repository impl.
+        taskCategoryRepository = TaskCategoryRepositoryImpl(localTaskDataProvider)
     }
 
     @Test

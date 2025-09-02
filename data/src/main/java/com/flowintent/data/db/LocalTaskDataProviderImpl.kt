@@ -1,14 +1,18 @@
-package com.flowintent.workspace.data.local
+package com.flowintent.data.db
 
-import com.flowintent.core.db.source.AssetDataSource
-import com.flowintent.workspace.data.parser.JsonParser
+import com.flowintent.core.db.TaskCategory
+import com.flowintent.core.db.TaskContent
+import com.flowintent.core.db.TaskIcon
+import com.flowintent.core.db.source.IAssetDataSource
+import com.flowintent.core.db.source.ILocalTaskDataProvider
+import com.flowintent.data.db.parser.JsonParser
 import javax.inject.Inject
 
-class LocalTaskDataProvider @Inject constructor(
-    private val jsonDataSource: AssetDataSource,
+class LocalTaskDataProviderImpl @Inject constructor(
+    private val jsonDataSource: IAssetDataSource,
     private val jsonParser: JsonParser
-) {
-    suspend fun getAllCategories(): List<TaskCategory> {
+): ILocalTaskDataProvider {
+    override suspend fun getAllCategories(): List<TaskCategory> {
         val jsonString = jsonDataSource.readJsonString(JSON_FILE)
         return jsonParser.fromJsonList(jsonString, TaskCategory::class.java)
     }
@@ -26,21 +30,3 @@ class LocalTaskDataProvider @Inject constructor(
         )
     }
 }
-
-data class TaskCategory(
-    val title: String,
-    val content: TaskContent,
-    val icon: TaskIcon,
-    val cardColor: Long,
-    val iconColor: Long,
-    val textColor: Long
-)
-
-data class TaskContent(
-    val text: String
-)
-
-data class TaskIcon(
-    val type: String,
-    val name: String
-)

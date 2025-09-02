@@ -1,7 +1,7 @@
-package com.flowintent.workspace.di
+package com.flowintent.data.di
 
-import com.flowintent.workspace.data.parser.GsonJsonParser
-import com.flowintent.workspace.data.parser.JsonParser
+import com.flowintent.data.db.parser.GsonJsonParser
+import com.flowintent.data.db.parser.JsonParser
 import com.google.gson.Gson
 import dagger.Binds
 import dagger.Module

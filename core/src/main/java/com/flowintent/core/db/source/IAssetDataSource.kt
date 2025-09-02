@@ -1,5 +1,5 @@
 package com.flowintent.core.db.source
 
-interface AssetDataSource {
+interface IAssetDataSource {
     suspend fun readJsonString(fileName: String): String
 }
