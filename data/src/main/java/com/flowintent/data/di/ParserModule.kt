@@ -3,6 +3,7 @@ package com.flowintent.data.di
 import com.flowintent.data.db.parser.GsonJsonParser
 import com.flowintent.data.db.parser.JsonParser
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,7 +23,8 @@ abstract class ParserModule {
         @Provides
         @Singleton
         fun provideGson(): Gson {
-            return Gson()
+            return GsonBuilder()
+                .create()
         }
     }
 }

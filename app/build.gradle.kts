@@ -1,6 +1,5 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -68,6 +67,16 @@ android {
         versionName = "1.0"
     }
 
+    signingConfigs {
+        val properties = loadProperties()
+        create("release") {
+            keyAlias = "todo_app_key"
+            keyPassword = properties.getProperty("KEY_PASSWORD")
+            storeFile = file("release-keystore.jks")
+            storePassword = properties.getProperty("STORE_PASSWORD")
+        }
+    }
+
     applicationVariants.configureEach {
         val variantName = this.name
         outputs.configureEach {
@@ -86,6 +95,7 @@ android {
         }
         release {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -184,11 +194,20 @@ project(":").tasks.named("buildAppRelease") {
     finalizedBy(":app:deployApk")
 }
 
+fun getRequestedVariant(): String {
+    val tasks = gradle.startParameter.taskNames
+    return when {
+        tasks.any { it.contains("Release", ignoreCase = true) } -> "release"
+        else -> "debug"
+    }
+}
+
 tasks.register<Exec>("deployApk") {
-    val requestedVariant = project.findProperty("variant")?.toString() ?: "debug"
+    val requestedVariant = getRequestedVariant()
     val variant = android.applicationVariants
         .first { it.name.equals(requestedVariant, ignoreCase = true) }
     val apkName = variant.outputs.first().outputFile.name
+    println("Variant: $requestedVariant")
     println("APK file name: $apkName")
     println("VersionName: ${loadProperties().getProperty("versionName")}")
     println("VersionCode: ${loadProperties().getProperty("versionCode")}")
@@ -201,7 +220,7 @@ tasks.register<Exec>("deployApk") {
     }
 
     workingDir = rootProject.rootDir
-    commandLine("sh", rootProject.file("deploy.sh").absolutePath)
+    commandLine("sh", rootProject.file("deploy.sh").absolutePath, requestedVariant)
 
     doLast {
         if (executionResult.get().exitValue != 0) {

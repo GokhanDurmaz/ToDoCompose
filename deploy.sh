@@ -8,7 +8,9 @@ echo "PATH=$PATH"
 PACKAGE_NAME="com.flowintent.workspace"
 MAIN_ACTIVITY=".ui.activity.MainActivity"
 
-APK_FILE=$(ls -t app/build/outputs/apk/debug/*.apk | head -n1)
+VARIANT=${1:-debug}
+APK_FILE=$(ls -t app/build/outputs/apk/$VARIANT/*.apk | head -n1)
+
 
 if [ ! -f "$APK_FILE" ]; then
   echo "Failed to obtain APK file!"
