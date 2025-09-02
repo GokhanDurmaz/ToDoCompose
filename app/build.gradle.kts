@@ -1,7 +1,6 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.util.Properties
 
 plugins {
@@ -25,13 +24,36 @@ fun loadProperties(): Properties {
     return properties
 }
 
-fun generateAppName(): String {
+fun getGitHash(): String {
+    return try {
+        // Run the git command using ProcessBuilder
+        val process = ProcessBuilder("git", "rev-parse", "--short", "HEAD")
+            .directory(File(rootProject.rootDir.path))
+            .start()
+
+        val output = process.inputStream.bufferedReader().readText().trim()
+
+        // Wait for the process to finish
+        val exitCode = process.waitFor()
+
+        if (exitCode == 0) {
+            output
+        } else {
+            println("Git command failed with exit code $exitCode")
+            "unknown"
+        }
+    } catch (e: Exception) {
+        println("Could not run git command: ${e.message}")
+        "unknown"
+    }
+}
+
+fun generateAppName(gitHash: String, variantName: String): String {
     val properties = loadProperties()
     val versionNameFromProps = properties.getProperty("versionName")
     val versionCodeFromProps = properties.getProperty("versionCode").toIntOrNull() ?: 100
-    val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"))
     val sanitizedVersionName = versionNameFromProps.replace(".", "_")
-    return "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${timestamp}.apk"
+    return "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${gitHash}_${variantName}.apk"
 }
 
 android {
@@ -46,9 +68,11 @@ android {
         versionName = "1.0"
     }
 
-    applicationVariants.all {
-        outputs.all {
-            (this as BaseVariantOutputImpl).outputFileName = generateAppName()
+    applicationVariants.configureEach {
+        val variantName = this.name
+        outputs.configureEach {
+            (this as BaseVariantOutputImpl).outputFileName =
+                generateAppName(getGitHash(), variantName)
         }
     }
 
@@ -148,15 +172,16 @@ dependencies {
     // Serialization/deserialization json - GSON
     implementation(libs.gson)
 
-
     // Kotlin reflection library
     implementation(libs.kotlin.reflect)
-
 }
 
-tasks.named("build") {
-    dependsOn(":buildApp")
-    finalizedBy("deployApk")
+project(":").tasks.named("buildAppDebug") {
+    finalizedBy(":app:deployApk")
+}
+
+project(":").tasks.named("buildAppRelease") {
+    finalizedBy(":app:deployApk")
 }
 
 tasks.register<Exec>("deployApk") {
