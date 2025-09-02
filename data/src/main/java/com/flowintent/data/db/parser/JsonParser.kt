@@ -1,4 +1,4 @@
-package com.flowintent.workspace.data.parser
+package com.flowintent.data.db.parser
 
 interface JsonParser {
     fun <T> fromJson(json: String, classOfT: Class<T>): T

@@ -1,0 +1,14 @@
+package com.flowintent.core.db.source
+
+import com.flowintent.core.db.Task
+import kotlinx.coroutines.flow.Flow
+
+interface ITaskRepository {
+    fun  getAllTasks(): Flow<List<Task>>
+
+    suspend fun insertTask(task: Task)
+
+    suspend fun findByTaskName(taskName: String): Task
+
+    suspend fun deleteTask(task: Task): Int
+}

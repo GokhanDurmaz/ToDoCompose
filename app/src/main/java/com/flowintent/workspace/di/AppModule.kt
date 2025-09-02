@@ -1,7 +1,9 @@
 package com.flowintent.workspace.di
 
-import com.flowintent.core.db.source.AssetDataSource
-import com.flowintent.workspace.data.local.AssetDataSourceImpl
+import com.flowintent.core.db.source.IAssetDataSource
+import com.flowintent.core.db.source.ILocalTaskDataProvider
+import com.flowintent.data.db.AssetDataSourceImpl
+import com.flowintent.data.db.LocalTaskDataProviderImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,5 +16,11 @@ abstract class AppModule {
 
     @Binds
     @Singleton
-    abstract fun bindAssetDataSource(assetDataSourceImpl: AssetDataSourceImpl): AssetDataSource
+    abstract fun bindAssetDataSource(assetDataSourceImpl: AssetDataSourceImpl): IAssetDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindLocalTaskDataProvider(
+        localTaskDataProviderImpl: LocalTaskDataProviderImpl
+    ): ILocalTaskDataProvider
 }

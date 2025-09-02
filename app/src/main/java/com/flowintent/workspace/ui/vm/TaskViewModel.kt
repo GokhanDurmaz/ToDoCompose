@@ -3,7 +3,7 @@ package com.flowintent.workspace.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.Task
-import com.flowintent.workspace.data.local.repository.TaskRepository
+import com.flowintent.data.db.repository.TaskRepositoryImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val repository: TaskRepository
+    private val repository: TaskRepositoryImpl
 ) : ViewModel() {
 
     val tasks: StateFlow<List<Task>> = repository.getAllTasks()

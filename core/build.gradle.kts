@@ -44,7 +44,6 @@ android {
     lint {
         baseline = file("lint-baseline.xml")
     }
-    
     kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11
@@ -66,9 +65,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // Retrofit
-    implementation(libs.retrofit)
-
     // Room
     implementation(libs.androidx.room.runtime)
 
@@ -82,6 +78,9 @@ dependencies {
 
     // optional - Test helpers
     testImplementation(libs.androidx.room.testing)
+
+    // Retrofit
+    implementation(libs.retrofit)
 
     // Serialization/deserialization json - GSON
     implementation(libs.gson)

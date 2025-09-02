@@ -4,16 +4,16 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
-    namespace = "com.flowintent.test"
+    namespace = "com.flowintent.data"
     compileSdk = 36
 
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -33,6 +33,7 @@ android {
     kotlin {
         compilerOptions {
             jvmTarget = JvmTarget.JVM_11
+            freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
         }
     }
 }
@@ -40,17 +41,13 @@ android {
 dependencies {
 
     implementation(project(":core"))
-    implementation(project(":data"))
-    implementation(libs.androidx.espresso.core)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.mockito.kotlin)
-    testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.androidx.espresso.core)
-    // Testing Navigation
-    androidTestImplementation(libs.androidx.navigation.testing)
-    // Test rules and transitive dependencies:
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    testImplementation(kotlin("test"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+
+    // DI tool
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+
+    // Serialization/deserialization json - GSON
+    implementation(libs.gson)
 }

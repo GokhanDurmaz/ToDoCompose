@@ -27,6 +27,6 @@ tasks.register("buildApp") {
     group = "build"
     description = "Builds both app and core modules"
     dependsOn(tasks.named("runAllTests"))
-    dependsOn(":app:assemble", ":core:assemble", ":test:test")
+    dependsOn(":app:assemble", ":core:assemble", ":data:assemble", ":test:test")
 }
 
