@@ -179,9 +179,6 @@ dependencies {
     // Add the Firebase SDK for Authentication
     implementation(libs.firebase.auth)
 
-    // Serialization/deserialization json - GSON
-    implementation(libs.gson)
-
     // Kotlin reflection library
     implementation(libs.kotlin.reflect)
 }
