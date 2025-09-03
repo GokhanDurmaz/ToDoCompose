@@ -1,5 +1,8 @@
 package com.flowintent.core.db
 
+import androidx.annotation.Keep
+
+@Keep
 data class TaskCategory(
     val title: String,
     val content: TaskContent,
@@ -9,10 +12,12 @@ data class TaskCategory(
     val textColor: Long
 )
 
+@Keep
 data class TaskContent(
     val text: String
 )
 
+@Keep
 data class TaskIcon(
     val type: String,
     val name: String
