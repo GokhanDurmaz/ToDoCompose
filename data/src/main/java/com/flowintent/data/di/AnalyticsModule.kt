@@ -1,4 +1,4 @@
-package com.flowintent.workspace.di
+package com.flowintent.data.di
 
 import com.flowintent.core.network.services.AnalyticsService
 import com.flowintent.data.db.remote.AnalyticsServiceImpl

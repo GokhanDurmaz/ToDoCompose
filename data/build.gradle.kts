@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.google.protobuf)
 }
 
 android {
@@ -50,4 +51,27 @@ dependencies {
 
     // Serialization/deserialization json - GSON
     implementation(libs.gson)
+
+    // Secure keystore tools
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore)
+    implementation(libs.tink.android)
+
+    // protobuf lite version
+    implementation(libs.protobuf.javalite)
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                create("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.flowintent.workspace.di
+package com.flowintent.data.di
 
 import com.flowintent.core.db.source.IAssetDataSource
 import com.flowintent.core.db.source.ILocalTaskDataProvider
@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class AppModule {
+abstract class DataStoreModule {
 
     @Binds
     @Singleton

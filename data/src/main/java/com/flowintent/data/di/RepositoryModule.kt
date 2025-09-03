@@ -1,17 +1,20 @@
-package com.flowintent.workspace.di
+package com.flowintent.data.di
 
+import com.flowintent.core.db.security.ISecurePrefsRepository
 import com.flowintent.core.db.source.ITaskCategoryRepository
 import com.flowintent.core.db.source.ITaskRepository
 import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
 import com.flowintent.data.db.repository.TaskRepositoryImpl
+import com.flowintent.data.secure.SecurePrefsRepositoryImpl
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
     @Singleton
@@ -23,4 +26,10 @@ abstract class RepositoryModule {
     abstract fun bindTaskCategoryRepository(
         taskCategoryRepository: TaskCategoryRepositoryImpl
     ): ITaskCategoryRepository
+
+    @Singleton
+    @Binds
+    abstract fun provideSecurePrefsRepo(
+        securePrefsRepositoryImpl: SecurePrefsRepositoryImpl
+    ): ISecurePrefsRepository
 }
