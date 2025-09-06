@@ -62,6 +62,12 @@ if [ ! -f "$APK_FILE" ]; then
   exit 1
 fi
 
+# --- Uninstall, Install, and Launch ---
+echo "Uninstalling existing application: $PACKAGE_NAME"
+# The '-k' flag attempts to uninstall while keeping data, which is not ideal for resolving debug-release signature conflicts.
+# We omit the '-k' flag to ensure a clean uninstallation.
+adb uninstall "$PACKAGE_NAME"
+
 # --- Installation and Launch ---
 echo "Installing APK: $APK_FILE"
 adb install -r -t "$APK_FILE"
