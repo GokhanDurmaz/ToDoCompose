@@ -66,12 +66,16 @@ fi
 echo "Installing APK: $APK_FILE"
 adb install -r -t "$APK_FILE"
 
-# Check if the 'adb install' command was successful.
-# '$?' holds the exit code of the previous command. 0 means success.
-if [ $? -ne 0 ]; then
-  echo "APK installation failed."
-  exit 1
-fi
+finish() {
+  # Check if the 'adb install' command was successful.
+  # '$?' holds the exit code of the previous command. 0 means success.
+	if [ $? -ne 0 ]; then
+    echo "APK installation failed."
+    exit 1
+  fi
+}
+
+trap finish EXIT
 
 echo "Launching the application..."
 adb shell am start -n "$PACKAGE_NAME/$MAIN_ACTIVITY" || echo "Failed to launch the app, but the installation was successful."
