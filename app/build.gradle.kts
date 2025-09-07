@@ -14,10 +14,20 @@ plugins {
 
 fun loadProperties(): Properties {
     val properties = Properties()
+    System.getenv("VERSION_NAME")?.let { properties.setProperty("VERSION_NAME", it) }
+    System.getenv("VERSION_CODE")?.let { properties.setProperty("VERSION_CODE", it) }
+    System.getenv("STORE_PASSWORD")?.let { properties.setProperty("STORE_PASSWORD", it) }
+    System.getenv("KEY_PASSWORD")?.let { properties.setProperty("KEY_PASSWORD", it) }
+
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
         localPropertiesFile.inputStream().use { inputStream ->
-            properties.load(inputStream)
+            val localProps = Properties().apply { load(inputStream) }
+            localProps.forEach { (key, value) ->
+                if (!properties.containsKey(key)) {
+                    properties[key] = value
+                }
+            }
         }
     }
     return properties
@@ -49,8 +59,8 @@ fun getGitHash(): String {
 
 fun generateAppName(gitHash: String, variantName: String): String {
     val properties = loadProperties()
-    val versionNameFromProps = properties.getProperty("versionName")
-    val versionCodeFromProps = properties.getProperty("versionCode").toIntOrNull() ?: 100
+    val versionNameFromProps = properties.getProperty("VERSION_NAME")
+    val versionCodeFromProps = properties.getProperty("VERSION_CODE").toIntOrNull() ?: 100
     val sanitizedVersionName = versionNameFromProps.replace(".", "_")
     return "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${gitHash}_${variantName}.apk"
 }
@@ -70,7 +80,7 @@ android {
     signingConfigs {
         val properties = loadProperties()
         create("release") {
-            keyAlias = "todo_app_key"
+            keyAlias = properties.getProperty("KEY_ALIAS")
             keyPassword = properties.getProperty("KEY_PASSWORD")
             storeFile = file("release-keystore.jks")
             storePassword = properties.getProperty("STORE_PASSWORD")
@@ -206,8 +216,8 @@ tasks.register<Exec>("deployApk") {
     val apkName = variant.outputs.first().outputFile.name
     println("Variant: $requestedVariant")
     println("APK file name: $apkName")
-    println("VersionName: ${loadProperties().getProperty("versionName")}")
-    println("VersionCode: ${loadProperties().getProperty("versionCode")}")
+    println("VersionName: ${loadProperties().getProperty("VERSION_NAME")}")
+    println("VersionCode: ${loadProperties().getProperty("VERSION_CODE")}")
 
     val deployScript = rootProject.file("deploy.sh")
     if (deployScript.exists()) {

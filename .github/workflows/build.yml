@@ -1,31 +1,114 @@
-# This is a basic workflow to help you get started with Actions
+name: Android CI/CD Pipeline
 
-name: CI
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on pull request events but only for the "main" branch
   pull_request:
     branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  build_and_test:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - uses: actions/checkout@v4
       - name: Set up JDK 17
-        uses: actions/setup-java@v5.0.0
+        uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permissions
+        run: |
+          chmod +x ./gradlew
+          chmod +x ./deploy.sh
+
+      - name: Run Unit Tests and Lint
+        run: |
+          ./gradlew testDebugUnitTest
+          ./gradlew lintDebug
+
+  deploy_and_run_on_emulator:
+    needs: build_and_test
+    runs-on: macos-latest
+
+    # Set environment variables for the Gradle script to read
+    env:
+      VERSION_NAME: ${{ secrets.VERSION_NAME }}
+      VERSION_CODE: ${{ secrets.VERSION_CODE }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Grant execute permissions
+        run: |
+          chmod +x ./gradlew
+          chmod +x ./deploy.sh
+
+      # We ONLY start the emulator. We do not run a command.
+      - name: Start Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          # We DELETE the script from here. Gradle will handle it itself.
+          # script: ./deploy.sh debug  <-- THIS LINE WAS DELETED
+
+      # Run the Gradle task. This will automatically trigger deployApk.
+      - name: Build and Deploy APK via Gradle Task
+        run: ./gradlew assembleDebug
+
+      # Upload the dynamically named APK as an artifact
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+
+  build_release:
+    needs: build_and_test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    
+    # Set environment variables for the release build as well
+    env:
+      VERSION_NAME: ${{ secrets.VERSION_NAME }}
+      VERSION_CODE: ${{ secrets.VERSION_CODE }}
+      STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Decode Keystore
+        run: echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 --decode > release-keystore.jks
+
+      - name: Build Release App Bundle
+        run: ./gradlew bundleRelease
+
+      # Upload the dynamically named AAB as an artifact
+      - name: Upload Release AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-aab
+          path: app/build/outputs/bundle/release/*.aab
