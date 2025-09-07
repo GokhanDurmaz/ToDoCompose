@@ -59,8 +59,8 @@ fun getGitHash(): String {
 
 fun generateAppName(gitHash: String, variantName: String): String {
     val properties = loadProperties()
-    val versionNameFromProps = properties.getProperty("VERSION_NAME")
-    val versionCodeFromProps = properties.getProperty("VERSION_CODE").toIntOrNull() ?: 100
+    val versionNameFromProps = properties.getProperty("VERSION_NAME") ?: "V1.0.0"
+    val versionCodeFromProps = properties.getProperty("VERSION_CODE")?.toIntOrNull() ?: 100
     val sanitizedVersionName = versionNameFromProps.replace(".", "_")
     return "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${gitHash}_${variantName}.apk"
 }
