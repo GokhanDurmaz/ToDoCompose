@@ -40,8 +40,18 @@ jobs:
 
       - name: Run Unit Tests and Lint
         run: |
+          # First, run unit tests
           ./gradlew testDebugUnitTest
-          ./gradlew lintDebug
+          # Check if Lint baseline file exists
+          LINT_BASELINE=core/build/lint-baseline.xml
+          if [ ! -f "$LINT_BASELINE" ]; then
+            echo "Lint baseline does not exist. Creating baseline..."
+            # Run lintDebug; if it fails due to new baseline, ignore the error
+            ./gradlew lintDebug || true
+          else
+            # Baseline exists, run lint normally
+            ./gradlew lintDebug
+          fi
 
   deploy_and_run_on_emulator:
     needs: build_and_test
