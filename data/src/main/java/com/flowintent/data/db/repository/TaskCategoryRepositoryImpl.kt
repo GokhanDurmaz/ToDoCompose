@@ -10,8 +10,4 @@ class TaskCategoryRepositoryImpl @Inject constructor(
     val localTaskDataProvider: ILocalTaskDataProvider
 ): ITaskCategoryRepository {
     override fun getAllLocalCategories(): List<TaskCategory> = runBlocking { localTaskDataProvider.getAllCategories() }
-
-    fun example() {
-
-    }
 }
