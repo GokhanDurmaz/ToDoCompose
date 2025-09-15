@@ -74,6 +74,8 @@ jobs:
     env:
       STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+      GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
 
     steps:
       - name: Checkout repository
