@@ -69,6 +69,7 @@ jobs:
           fi
 
   build_release:
+    needs: build_and_test
     runs-on: ubuntu-latest
     env:
       STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
@@ -77,6 +78,16 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Create local.properties
+        run: |
+          echo "VERSION_NAME=${{ secrets.VERSION_NAME }}" >> local.properties
+          echo "VERSION_CODE=${{ secrets.VERSION_CODE }}" >> local.properties
+          echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
+          echo "BASE_URL=${{ secrets.BASE_URL }}" >> local.properties
+          echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> local.properties
+          echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> local.properties
+          echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> local.properties
 
       - name: Extract version from tag
         id: version
