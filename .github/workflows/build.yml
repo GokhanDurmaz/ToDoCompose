@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: google-services.json
-          path: google-services.json
+          path: app/google-services.json
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
