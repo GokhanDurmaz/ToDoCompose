@@ -1,6 +1,7 @@
 package com.flowintent.data.db.repository
 
 import com.flowintent.core.db.Task
+import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.room.dao.ToDoDao
 import com.flowintent.core.db.source.ITaskRepository
 import kotlinx.coroutines.flow.Flow
@@ -21,5 +22,9 @@ class TaskRepositoryImpl @Inject constructor(
 
     override suspend fun deleteTask(task: Task): Int {
         return toDoDao.delete(task)
+    }
+
+    override suspend fun updateTask(id: Int, title: String, content: TaskRes) {
+        toDoDao.updateTask(id, title, content)
     }
 }

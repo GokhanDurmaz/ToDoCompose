@@ -3,6 +3,7 @@ package com.flowintent.workspace.ui.vm
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.Task
+import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.source.ITaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,12 +26,21 @@ class TaskViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    private val _updateTaskId = MutableStateFlow<Int?>(null)
+    val updateTaskId: StateFlow<Int?> = _updateTaskId.asStateFlow()
+
     private val _deleteResult = MutableStateFlow<Boolean?>(null)
     val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
             repository.insertTask(task)
+        }
+    }
+
+    fun updateTask(id: Int, title: String, content: TaskRes) {
+        viewModelScope.launch {
+            repository.updateTask(id, title, content)
         }
     }
 
@@ -45,5 +55,9 @@ class TaskViewModel @Inject constructor(
             val isDeleted = repository.deleteTask(task) > 0
             _deleteResult.value = isDeleted
         }
+    }
+
+    fun setUpdateTaskId(id: Int?) {
+        _updateTaskId.value = id
     }
 }
