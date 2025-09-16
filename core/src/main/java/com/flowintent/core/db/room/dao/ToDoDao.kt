@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.flowintent.core.db.Task
+import com.flowintent.core.db.TaskRes
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,4 +21,7 @@ interface ToDoDao {
 
     @Delete
     suspend fun delete(task: Task): Int
+
+    @Query("UPDATE Task SET title = :title, content = :content WHERE uid = :id")
+    suspend fun updateTask(id: Int, title: String, content: TaskRes)
 }
