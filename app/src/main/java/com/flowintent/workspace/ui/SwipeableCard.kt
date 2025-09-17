@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
@@ -44,14 +46,34 @@ fun SwipeableCard(
     content: @Composable () -> Unit
 ) {
     var isShowing: Boolean by remember { mutableStateOf(false) }
-    val deleteResult by viewModel.deleteResult.collectAsStateWithLifecycle()
     val maxSwipe = with(LocalDensity.current) { 200.dp.toPx() }
     var offsetX by remember { mutableFloatStateOf(0f) }
+
+
+    val isOpened = offsetX < 0f
+
+    val backShape = RoundedCornerShape(
+        topStart = 0.dp,
+        bottomStart = 0.dp,
+        topEnd = 12.dp,
+        bottomEnd = 12.dp
+    )
+
+    val frontShape = if (isOpened) {
+        RoundedCornerShape(
+            topStart = 12.dp,
+            bottomStart = 12.dp,
+            topEnd = 0.dp,
+            bottomEnd = 0.dp
+        )
+    } else {
+        RoundedCornerShape(12.dp)
+    }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(start = 12.dp, top = 12.dp, end = 12.dp)
             .height(80.dp)
             .background(Color.Transparent)
     ) {
@@ -60,13 +82,14 @@ fun SwipeableCard(
                 .align(Alignment.CenterEnd)
                 .fillMaxHeight()
                 .width(200.dp)
+                .clip(backShape)
                 .background(Color.Red),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextButton(onClick = {
                 viewModel.deleteTask(task)
-                deleteResult
+                offsetX = 0f
             }) {
                 Text("Delete", color = Color.White)
             }
@@ -84,6 +107,7 @@ fun SwipeableCard(
                 isUpdate = true,
                 onDismiss = {
                     isShowing = !isShowing
+                    offsetX = 0f
                 }
             )
         }
@@ -102,7 +126,8 @@ fun SwipeableCard(
                     }
                 )
                 .fillMaxSize(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+            shape = frontShape
         ) {
             Box(
                 modifier = Modifier.fillMaxSize(),
