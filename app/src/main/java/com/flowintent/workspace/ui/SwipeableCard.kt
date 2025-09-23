@@ -4,7 +4,10 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,7 +29,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,9 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -54,12 +55,21 @@ fun SwipeableCard(
     modifier: Modifier = Modifier,
     task: Task,
     viewModel: TaskViewModel,
+    onDelete: () -> Unit,
+    onEdit: () -> Unit,
     content: @Composable () -> Unit
 ) {
+    val isExpanded = viewModel.expandedMap[task.uid] ?: false
     var isShowing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val offsetX = remember { Animatable(0f) }
     val maxSwipe = with(LocalDensity.current) { 200.dp.toPx() }
+
+    val cardHeight by animateDpAsState(
+        targetValue = if (isExpanded) 100.dp else 50.dp,
+        animationSpec = tween(300),
+        label = "cardHeight"
+    )
 
     fun interpolateDp(offset: Float, maxSwipe: Float, start: Dp, end: Dp): Dp {
         val fraction = (-offset / maxSwipe).coerceIn(0f, 1f)
@@ -85,11 +95,17 @@ fun SwipeableCard(
         bottomEnd = 12.dp
     )
 
+    val draggableState = rememberDraggableState { delta ->
+        scope.launch {
+            offsetX.snapTo((offsetX.value + delta).coerceIn(-maxSwipe, 0f))
+        }
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .padding(start = 12.dp, top = 12.dp, end = 12.dp)
-            .height(80.dp)
+            .height(cardHeight)
             .background(Color.Transparent)
     ) {
         Row(
@@ -104,7 +120,7 @@ fun SwipeableCard(
         ) {
             Button(
                 onClick = {
-                    viewModel.deleteTask(task)
+                    onDelete()
                     scope.launch {
                         offsetX.animateTo(0f, animationSpec = tween(300))
                     }
@@ -124,7 +140,7 @@ fun SwipeableCard(
             }
             Button(
                 onClick = {
-                    viewModel.setUpdateTaskId(task.uid)
+                    onEdit()
                     isShowing = true
                 },
                 shape = RoundedCornerShape(50),
@@ -158,35 +174,51 @@ fun SwipeableCard(
         Card(
             modifier = Modifier
                 .offset { IntOffset(offsetX.value.roundToInt(), 0) }
-                .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDrag = { change, dragAmount ->
-                            change.consume()
-                            val newValue = offsetX.value + dragAmount.x
-                            scope.launch {
-                                offsetX.snapTo(newValue.coerceIn(-maxSwipe, 0f))
-                            }
-                        },
-                        onDragEnd = {
-                            scope.launch {
-                                if (offsetX.value < -maxSwipe / 2) {
-                                    offsetX.animateTo(-maxSwipe, animationSpec = tween(300))
-                                } else {
-                                    offsetX.animateTo(0f, animationSpec = tween(300))
-                                }
-                            }
+                .clickable { viewModel.toggleExpanded(task.uid) }
+                .draggable(
+                    state = draggableState,
+                    orientation = Orientation.Horizontal,
+                    onDragStopped = { velocity ->
+                        scope.launch {
+                            val target = if (offsetX.value < -maxSwipe / 2) -maxSwipe else 0f
+                            offsetX.animateTo(target, animationSpec = tween(300))
                         }
-                    )
-                }
+                    }
+                )
                 .fillMaxSize(),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
             shape = frontShape
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                content()
+            Box(modifier = Modifier.fillMaxSize()) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(50.dp)
+                        .align(Alignment.CenterStart),
+                    shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(task.cardColor)),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = task.uid.toString(),
+                            color = Color.White,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 48.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    content()
+                }
             }
         }
     }
