@@ -1,5 +1,6 @@
 package com.flowintent.workspace.ui.vm
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.Task
@@ -31,6 +32,13 @@ class TaskViewModel @Inject constructor(
 
     private val _deleteResult = MutableStateFlow<Boolean?>(null)
     val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
+
+    private val _expandedMap = mutableStateMapOf<Int, Boolean>()
+    val expandedMap: Map<Int, Boolean> get() = _expandedMap
+
+    fun toggleExpanded(id: Int) {
+        _expandedMap[id] = !(_expandedMap[id] ?: false)
+    }
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
