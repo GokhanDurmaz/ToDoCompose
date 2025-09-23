@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.flowintent.core.db.Task
 import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.asString
@@ -108,38 +107,32 @@ private fun ListCardContent(viewModel: TaskViewModel = hiltViewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(taskList) { task ->
-            ToDoListCard(task, viewModel)
-        }
-    }
-}
-
-@Composable
-private fun ToDoListCard(
-    task: Task,
-    viewModel: TaskViewModel
-) {
-    SwipeableCard(
-        task = task,
-        viewModel = viewModel
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-        ) {
-            Text(
-                text = task.title,
-                fontSize = 16.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = task.content.asString(),
-                modifier = Modifier.padding(top = 12.dp),
-                fontSize = 16.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Bold
-            )
+            SwipeableCard(
+                task = task,
+                onDelete = { viewModel.deleteTask(task) },
+                onEdit = { viewModel.setUpdateTaskId(task.uid) },
+                viewModel = viewModel
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = task.title,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Text(
+                        text = task.content.asString(),
+                        modifier = Modifier.padding(top = 12.dp),
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
         }
     }
 }

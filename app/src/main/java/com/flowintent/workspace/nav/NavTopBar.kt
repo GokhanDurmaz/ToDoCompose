@@ -27,10 +27,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -121,6 +124,25 @@ fun OpenTaskDialog(
     val toDoLabel = remember { mutableStateOf("") }
     val toDoContent = remember { mutableStateOf("") }
     val updateTaskId by viewModel.updateTaskId.collectAsStateWithLifecycle()
+    val colors = listOf(
+        Color(0xFF2B17DA),
+        Color(0xFFE91E63),
+        Color(0xFF4CAF50),
+        Color(0xFFFF9800),
+        Color(0xFF009688)
+    )
+
+    val shuffledColors = remember { colors.shuffled().toMutableList() }
+    var colorIndex by remember { mutableIntStateOf(0) }
+
+    fun getNextColor(): Color {
+        if (colorIndex >= shuffledColors.size) {
+            shuffledColors.shuffle()
+            colorIndex = 0
+        }
+        return shuffledColors[colorIndex++]
+    }
+
 
     Dialog(onDismissRequest = onDismiss) {
         Card {
@@ -167,7 +189,7 @@ fun OpenTaskDialog(
                                         title = toDoLabel.value,
                                         content = TaskRes.TaskContent(toDoContent.value),
                                         taskType = TaskType.LOCAL_TASKS,
-                                        cardColor = 0xFF6200EE.toInt(),
+                                        cardColor = getNextColor().toArgb(),
                                         iconColor = 0xFFFFFFFF.toInt(),
                                         textColor = 0xFF000000.toInt()
                                     )
