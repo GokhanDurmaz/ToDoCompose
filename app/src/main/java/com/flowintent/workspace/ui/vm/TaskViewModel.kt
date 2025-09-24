@@ -30,9 +30,6 @@ class TaskViewModel @Inject constructor(
     private val _updateTaskId = MutableStateFlow<Int?>(null)
     val updateTaskId: StateFlow<Int?> = _updateTaskId.asStateFlow()
 
-    private val _deleteResult = MutableStateFlow<Boolean?>(null)
-    val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
-
     private val _expandedMap = mutableStateMapOf<Int, Boolean>()
     val expandedMap: Map<Int, Boolean> get() = _expandedMap
 
@@ -60,8 +57,7 @@ class TaskViewModel @Inject constructor(
 
     fun deleteTask(task: Task) {
         viewModelScope.launch {
-            val isDeleted = repository.deleteTask(task) > 0
-            _deleteResult.value = isDeleted
+            repository.deleteTask(task)
         }
     }
 
