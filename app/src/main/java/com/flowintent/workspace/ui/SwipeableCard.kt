@@ -30,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.flowintent.core.db.Task
 import com.flowintent.workspace.nav.OpenTaskDialog
 import com.flowintent.workspace.ui.vm.TaskViewModel
@@ -54,9 +56,10 @@ import kotlin.math.roundToInt
 fun SwipeableCard(
     modifier: Modifier = Modifier,
     task: Task,
-    viewModel: TaskViewModel,
+    viewModel: TaskViewModel = hiltViewModel(),
     onDelete: () -> Unit,
     onEdit: () -> Unit,
+    onHeightChange: (Dp) -> Unit,
     content: @Composable () -> Unit
 ) {
     val isExpanded = viewModel.expandedMap[task.uid] ?: false
@@ -70,6 +73,10 @@ fun SwipeableCard(
         animationSpec = tween(300),
         label = "cardHeight"
     )
+
+    LaunchedEffect(cardHeight) {
+        onHeightChange(cardHeight)
+    }
 
     fun interpolateDp(offset: Float, maxSwipe: Float, start: Dp, end: Dp): Dp {
         val fraction = (-offset / maxSwipe).coerceIn(0f, 1f)
@@ -104,7 +111,6 @@ fun SwipeableCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 12.dp, top = 12.dp, end = 12.dp)
             .height(cardHeight)
             .background(Color.Transparent)
     ) {
