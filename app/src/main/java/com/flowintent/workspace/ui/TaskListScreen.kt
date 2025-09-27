@@ -33,11 +33,10 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.DragInfo
 import com.flowintent.core.db.Task
@@ -47,7 +46,6 @@ import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.asString
 
-@Preview(showBackground = true)
 @Composable
 fun ToDoListScreen() {
     ToDoNavTopBar { paddingValues ->
