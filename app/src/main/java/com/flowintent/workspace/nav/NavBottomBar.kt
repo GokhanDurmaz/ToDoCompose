@@ -24,7 +24,6 @@ fun BottomNavigationBar(currentDestination: NavDestination?, navController: NavH
                         launchSingleTop = true
                         restoreState = true
                     }
-                    //selectedDestination = index
                 },
                 icon = {
                     Icon(
