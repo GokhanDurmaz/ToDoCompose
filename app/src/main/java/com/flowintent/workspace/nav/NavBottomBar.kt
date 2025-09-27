@@ -5,26 +5,25 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 
 @Composable
-fun BottomNavigationBar(startDestination: Navigation, navController: NavHostController) {
-    var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
+fun BottomNavigationBar(currentDestination: NavDestination?, navController: NavHostController) {
+    val tabs = Navigation.entries
 
     NavigationBar {
-        Navigation.entries.forEachIndexed { index, navigation ->
+        tabs.forEachIndexed { index, navigation ->
+            val isSelected = currentDestination?.hierarchy?.any { it.route == navigation.route } == true
             NavigationBarItem(
-                selected = selectedDestination == index,
+                selected = isSelected,
                 onClick = {
                     navController.navigate(route = navigation.route) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
+                        restoreState = true
                     }
-                    selectedDestination = index
                 },
                 icon = {
                     Icon(
