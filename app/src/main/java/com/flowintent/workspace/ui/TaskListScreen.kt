@@ -45,6 +45,7 @@ import com.flowintent.core.db.Task
 import com.flowintent.core.db.calculateNewIndex
 import com.flowintent.core.db.swap
 import com.flowintent.workspace.nav.ToDoNavTopBar
+import com.flowintent.workspace.ui.swipe.SwipeableCard
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.asString
 
