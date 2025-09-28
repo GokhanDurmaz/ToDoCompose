@@ -45,9 +45,14 @@ import com.flowintent.workspace.ui.vm.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ToDoNavTopBar(scope: @Composable (PaddingValues) -> Unit) {
+fun ToDoNavTopBar(
+    viewModel: TaskViewModel = hiltViewModel(),
+    scope: @Composable (PaddingValues) -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
     var isShowing: Boolean by remember { mutableStateOf(false) }
+    val isSelectionMode by viewModel.isSelectionMode.collectAsStateWithLifecycle()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -88,10 +93,30 @@ fun ToDoNavTopBar(scope: @Composable (PaddingValues) -> Unit) {
                                     }
                                 )
                                 DropdownMenuItem(
-                                    text = { Text("Select Task") },
+                                    text = {
+                                        if (isSelectionMode) {
+                                            Text("Unselect All")
+                                        } else {
+                                            Text("Select All")
+                                        }
+                                    },
                                     onClick = {
+                                        if (isSelectionMode) {
+                                            viewModel.unselectAll()
+                                            viewModel.setSelectionMode(false)
+                                        } else {
+                                            viewModel.setSelectionMode(true)
+                                            viewModel.selectAll()
+                                        }
                                         expanded = false
-                                        // TODO: Select task action
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Delete Selected") },
+                                    onClick = {
+                                        viewModel.deleteSelectedTasks()
+                                        viewModel.setSelectionMode(false)
+                                        expanded = false
                                     }
                                 )
                             }
