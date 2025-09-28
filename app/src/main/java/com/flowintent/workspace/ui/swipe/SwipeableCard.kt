@@ -82,7 +82,6 @@ fun SwipeableCard(
             offsetX = offsetX,
             maxSwipe = maxSwipe
         )
-
         TaskDialogHandler(
             isShowing = isShowing,
             isUpdate = true,
@@ -92,7 +91,6 @@ fun SwipeableCard(
                 scope.launch { offsetX.animateTo(0f, tween(300)) }
             }
         )
-
         Card(
             modifier = Modifier
                 .offset { IntOffset(offsetX.value.roundToInt(), 0) }
