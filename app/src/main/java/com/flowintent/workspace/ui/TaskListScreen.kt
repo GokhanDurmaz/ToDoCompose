@@ -17,10 +17,12 @@ import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.DashboardCustomize
 import androidx.compose.material.icons.filled.Doorbell
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -115,6 +117,7 @@ private fun ListCardContent(viewModel: TaskViewModel = hiltViewModel()) {
     val list = remember(taskList) { taskList.toMutableStateList() }
     var draggingItem by remember { mutableStateOf<DragInfo?>(null) }
     var itemHeight by remember { mutableStateOf(50.dp) }
+    val isSelectionMode = viewModel.isSelectionMode.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -122,7 +125,7 @@ private fun ListCardContent(viewModel: TaskViewModel = hiltViewModel()) {
     ) {
         itemsIndexed(list, key = { index: Int, task: Task -> task.uid }) { index, task ->
             val isDragging = draggingItem?.index == index
-
+            val isSelected = viewModel.selectedTasks[task.uid] ?: false
             Box(
                 modifier = Modifier
                     .graphicsLayer {
@@ -172,31 +175,42 @@ private fun ListCardContent(viewModel: TaskViewModel = hiltViewModel()) {
                         )
                     }
             ) {
-                SwipeableCard(
-                    task = task,
-                    onDelete = { viewModel.deleteTask(task) },
-                    onEdit = { viewModel.setUpdateTaskId(task.uid) },
-                    onHeightChange = { itemHeight = it },
-                    modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp)
+                Row(
+                    modifier = Modifier.padding(start = 12.dp, top = 12.dp, end = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(12.dp)
+                    if (isSelectionMode.value) {
+                        Checkbox(
+                            checked = isSelected,
+                            onCheckedChange = { viewModel.toggleSelection(task.uid) },
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                    SwipeableCard(
+                        task = task,
+                        onDelete = { viewModel.deleteTask(task) },
+                        onEdit = { viewModel.setUpdateTaskId(task.uid) },
+                        onHeightChange = { itemHeight = it },
                     ) {
-                        Text(
-                            text = task.title,
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = task.content.asString(),
-                            modifier = Modifier.padding(top = 12.dp),
-                            fontSize = 16.sp,
-                            fontFamily = FontFamily.SansSerif,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = task.title,
+                                fontSize = 16.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = task.content.asString(),
+                                modifier = Modifier.padding(top = 12.dp),
+                                fontSize = 16.sp,
+                                fontFamily = FontFamily.SansSerif,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
             }
