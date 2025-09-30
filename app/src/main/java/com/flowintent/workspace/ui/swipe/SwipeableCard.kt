@@ -54,7 +54,7 @@ fun SwipeableCard(
     val maxSwipe = with(LocalDensity.current) { 200.dp.toPx() }
 
     val cardHeight by animateDpAsState(
-        targetValue = if (isExpanded) 100.dp else 50.dp,
+        targetValue = if (isExpanded) 80.dp else 50.dp,
         animationSpec = tween(300),
         label = "cardHeight"
     )
