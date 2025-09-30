@@ -64,7 +64,8 @@ fun OpenTaskDialog(
                                     taskType = TaskType.LOCAL_TASKS,
                                     cardColor = colorPicker.next().toArgbCompat(),
                                     iconColor = 0xFFFFFFFF.toInt(),
-                                    textColor = 0xFF000000.toInt()
+                                    textColor = 0xFF000000.toInt(),
+                                    dueDate = System.currentTimeMillis()
                                 )
                             )
                         } else {

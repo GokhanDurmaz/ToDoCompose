@@ -115,6 +115,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+
+        isCoreLibraryDesugaringEnabled = true
     }
     buildFeatures {
         compose = true
@@ -191,6 +193,8 @@ dependencies {
 
     // Kotlin reflection library
     implementation(libs.kotlin.reflect)
+
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
 }
 
 project(":").tasks.named("buildAppDebug") {
