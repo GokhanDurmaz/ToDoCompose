@@ -42,7 +42,8 @@ class TaskRepositoryTest {
                 taskType = TaskType.LOCAL_TASKS,
                 cardColor = 0xFF6200EE.toInt(),
                 iconColor = 0xFFFFFFFF.toInt(),
-                textColor = 0xFF000000.toInt()
+                textColor = 0xFF000000.toInt(),
+                dueDate = System.currentTimeMillis()
             ),
             Task(
                 uid = 2,
@@ -51,7 +52,8 @@ class TaskRepositoryTest {
                 taskType = TaskType.LOCAL_TASKS,
                 cardColor = 0xFF03DAC5.toInt(),
                 iconColor = 0xFFFFFFFF.toInt(),
-                textColor = 0xFF000000.toInt()
+                textColor = 0xFF000000.toInt(),
+                dueDate = System.currentTimeMillis()
             )
         )
         `when`(toDoDao.getAllTasks()).thenReturn(flowOf(expectedTasks))
@@ -73,7 +75,8 @@ class TaskRepositoryTest {
             taskType = TaskType.LOCAL_TASKS,
             cardColor = 0xFF6200EE.toInt(),
             iconColor = 0xFFFFFFFF.toInt(),
-            textColor = 0xFF000000.toInt()
+            textColor = 0xFF000000.toInt(),
+            dueDate = System.currentTimeMillis()
         )
 
         // Act: Call the repository method
@@ -94,7 +97,8 @@ class TaskRepositoryTest {
             taskType = TaskType.LOCAL_TASKS,
             cardColor = 0xFF6200EE.toInt(),
             iconColor = 0xFFFFFFFF.toInt(),
-            textColor = 0xFF000000.toInt()
+            textColor = 0xFF000000.toInt(),
+            dueDate = System.currentTimeMillis()
         )
         `when`(toDoDao.findByTaskName(taskName)).thenReturn(expectedTask)
 
@@ -115,7 +119,8 @@ class TaskRepositoryTest {
             taskType = TaskType.LOCAL_TASKS,
             cardColor = 0xFF6200EE.toInt(),
             iconColor = 0xFFFFFFFF.toInt(),
-            textColor = 0xFF000000.toInt()
+            textColor = 0xFF000000.toInt(),
+            dueDate = System.currentTimeMillis()
         )
         val expectedRowsAffected = 1
         `when`(toDoDao.delete(task)).thenReturn(expectedRowsAffected)
