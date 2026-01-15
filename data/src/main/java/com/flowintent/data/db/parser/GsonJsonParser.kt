@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class GsonJsonParser @Inject constructor(
+internal class GsonJsonParser @Inject constructor(
     private val gson: Gson
 ): JsonParser {
     override fun <T> fromJson(json: String, classOfT: Class<T>): T {

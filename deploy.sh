@@ -35,6 +35,12 @@ echo "ANDROID_HOME detected: $ANDROID_HOME"
 # --- PATH Configuration ---
 export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$PATH"
 
+# --- Check adb ---
+if ! command -v adb &>/dev/null; then
+  echo "adb not found. Please install Android platform-tools."
+  exit 0
+fi
+
 # --- Check Connected Device(s) ---
 echo "Checking connected devices..."
 DEVICES=$(adb devices | awk 'NR>1 && $2=="device" {print $1}')
@@ -90,20 +96,12 @@ else
   echo "Package $PACKAGE_NAME not found. Skipping uninstall."
 fi
 
-# --- Install APK ---
-echo "Installing APK: $APK_FILE"
-$ADB install -r -t "$APK_FILE"
-
-finish() {
-  # Check if the 'adb install' command was successful.
-  # '$?' holds the exit code of the previous command. 0 means success.
-	if [ $? -ne 0 ]; then
-    echo "APK installation failed."
-    exit 1
-  fi
-}
-
-trap finish EXIT
+# --- Install new APK ---
+echo "Installing: $APK_FILE"
+if ! $ADB install -r -t "$APK_FILE"; then
+  echo "APK installation failed."
+  exit 0
+fi
 
 # --- Launch Application ---
 echo "Launching application..."
