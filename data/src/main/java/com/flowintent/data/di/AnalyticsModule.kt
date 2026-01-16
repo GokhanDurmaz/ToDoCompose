@@ -9,7 +9,7 @@ import dagger.hilt.android.components.ActivityComponent
 
 @Module
 @InstallIn(ActivityComponent::class)
-abstract class AnalyticsModule {
+internal abstract class AnalyticsModule {
     @Binds
     internal abstract fun bindAnalyticService(analyticsServiceImpl: AnalyticsServiceImpl): AnalyticsService
 }

@@ -7,7 +7,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -45,7 +45,7 @@ fun AdvancedSettingsScreen(
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
-        // 🔹 Header - Profil
+        // Header - Profil
         Card(
             shape = RoundedCornerShape(20.dp),
             modifier = Modifier.fillMaxWidth(),
@@ -87,7 +87,7 @@ fun AdvancedSettingsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 🔹 Theme Selection
+        // Theme Selection
         SettingsSection(title = "Theme") {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -120,7 +120,7 @@ fun AdvancedSettingsScreen(
         }
 
 
-        // 🔹 Notifications
+        // Notifications
         SettingsSection(title = "Do Not Disturb") {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -141,7 +141,7 @@ fun AdvancedSettingsScreen(
             )
         }
 
-        // 🔹 About
+        // About
         SettingsSection(title = "About") {
             Text("Version 1.0.0", color = Color.Gray)
             Spacer(Modifier.height(8.dp))
@@ -153,7 +153,7 @@ fun AdvancedSettingsScreen(
 
         Spacer(Modifier.height(40.dp))
 
-        // 🔹 Logout Button
+        // Logout Button
         Button(
             onClick = onLogout,
             modifier = Modifier.fillMaxWidth(),
@@ -162,7 +162,7 @@ fun AdvancedSettingsScreen(
             ),
             shape = RoundedCornerShape(12.dp)
         ) {
-            Icon(Icons.Default.Logout, contentDescription = "Logout", tint = Color.White)
+            Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout", tint = Color.White)
             Spacer(Modifier.width(8.dp))
             Text("Logout", color = Color.White)
         }

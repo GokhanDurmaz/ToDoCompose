@@ -33,15 +33,14 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
-            freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 }
 
 dependencies {
 
-    implementation(project(":core"))
+    api(project(":core"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 

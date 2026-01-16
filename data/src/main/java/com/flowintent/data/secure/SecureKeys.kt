@@ -10,9 +10,9 @@ import com.google.crypto.tink.Aead
 import kotlinx.coroutines.flow.first
 
 // DataStore tanımı
-val Context.securePrefs by preferencesDataStore(name = "secure_prefs")
+internal val Context.securePrefs by preferencesDataStore(name = "secure_prefs")
 
-object SecureKeys {
+internal object SecureKeys {
     val TOKEN = stringPreferencesKey("token")
     val REFRESH = stringPreferencesKey("refresh")
 }
