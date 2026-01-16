@@ -71,6 +71,8 @@ jobs:
   build_release:
     needs: build_and_test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -121,21 +123,14 @@ jobs:
       - name: Build Release App Bundle
         run: ./gradlew bundleRelease
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Create Release and Upload Asset
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION_NAME }}
-          release_name: Release ${{ env.VERSION_NAME }}
+          name: Release ${{ env.VERSION_NAME }}
+          files: app/build/outputs/bundle/release/app-release.aab
+          generate_release_notes: true
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload AAB to GitHub Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/bundle/release/app-release.aab
-          asset_name: app-${{ env.VERSION_NAME }}.aab
-          asset_content_type: application/octet-stream

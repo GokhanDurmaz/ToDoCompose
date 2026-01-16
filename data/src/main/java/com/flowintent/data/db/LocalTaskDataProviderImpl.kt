@@ -3,15 +3,15 @@ package com.flowintent.data.db
 import com.flowintent.core.db.TaskCategory
 import com.flowintent.core.db.TaskContent
 import com.flowintent.core.db.TaskIcon
-import com.flowintent.core.db.source.IAssetDataSource
-import com.flowintent.core.db.source.ILocalTaskDataProvider
+import com.flowintent.core.db.source.AssetDataSource
+import com.flowintent.core.db.source.LocalTaskDataProvider
 import com.flowintent.data.db.parser.JsonParser
 import javax.inject.Inject
 
-class LocalTaskDataProviderImpl @Inject constructor(
-    private val jsonDataSource: IAssetDataSource,
+internal class LocalTaskDataProviderImpl @Inject constructor(
+    private val jsonDataSource: AssetDataSource,
     private val jsonParser: JsonParser
-): ILocalTaskDataProvider {
+): LocalTaskDataProvider {
     override suspend fun getAllCategories(): List<TaskCategory> {
         val jsonString = jsonDataSource.readJsonString(JSON_FILE)
         return jsonParser.fromJsonList(jsonString, TaskCategory::class.java)

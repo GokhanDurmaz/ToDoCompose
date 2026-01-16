@@ -1,13 +1,13 @@
 package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
-import com.flowintent.core.db.source.ISettingsRepository
+import com.flowintent.core.db.source.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class AboutSettingsViewModel @Inject constructor(
-    private val repository: ISettingsRepository
+    private val repository: SettingsRepository
 ) : ViewModel() {
 
     val appVersion = repository.getAppVersion()
