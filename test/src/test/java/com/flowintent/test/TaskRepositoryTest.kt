@@ -3,133 +3,84 @@ package com.flowintent.test
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.TaskType
-import com.flowintent.core.db.room.dao.ToDoDao
-import com.flowintent.data.db.repository.TaskRepositoryImpl
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations
 
 class TaskRepositoryTest {
 
-    @Mock
-    private lateinit var toDoDao: ToDoDao
-
-    private lateinit var taskRepository: TaskRepositoryImpl
+    private lateinit var taskRepository: FakeTaskRepositoryImpl
 
     @Before
     fun setUp() {
-        // Initialize Mockito annotations
-        MockitoAnnotations.openMocks(this)
-        // Initialize task repository impl.
-        taskRepository = TaskRepositoryImpl(toDoDao)
+        taskRepository = FakeTaskRepositoryImpl()
     }
 
     @Test
-    fun `getAllTasks should return Flow of tasks from toDoDao`() = runTest {
-        // Arrange: Define the expected tasks and mock the DAO behavior
-        val expectedTasks = listOf(
-            Task(
-                uid = 1,
-                title = "Task 1",
-                content = TaskRes.TaskContent("Do work"),
-                taskType = TaskType.LOCAL_TASKS,
-                cardColor = 0xFF6200EE.toInt(),
-                iconColor = 0xFFFFFFFF.toInt(),
-                textColor = 0xFF000000.toInt(),
-                dueDate = System.currentTimeMillis()
-            ),
-            Task(
-                uid = 2,
-                title = "Task 2",
-                content = TaskRes.TaskContent("Buy groceries"),
-                taskType = TaskType.LOCAL_TASKS,
-                cardColor = 0xFF03DAC5.toInt(),
-                iconColor = 0xFFFFFFFF.toInt(),
-                textColor = 0xFF000000.toInt(),
-                dueDate = System.currentTimeMillis()
-            )
-        )
-        `when`(toDoDao.getAllTasks()).thenReturn(flowOf(expectedTasks))
-
-        // Act: Call the repository method and collect the first emission
-        val result = taskRepository.getAllTasks().first()
-
-        // Assert: Verify the result matches the expected tasks
-        assertEquals(expectedTasks, result)
-    }
-
-    @Test
-    fun `insertTask should call toDoDao insertTask with the provided task`() = runTest {
-        // Arrange: Create a sample task
-        val task = Task(
-            uid = 0, // Auto-generated
-            title = "New Task",
-            content = TaskRes.TaskContent("Complete project"),
-            taskType = TaskType.LOCAL_TASKS,
-            cardColor = 0xFF6200EE.toInt(),
-            iconColor = 0xFFFFFFFF.toInt(),
-            textColor = 0xFF000000.toInt(),
-            dueDate = System.currentTimeMillis()
-        )
-
-        // Act: Call the repository method
+    fun `getAllTasks should return tasks added to fake repository`() = runTest {
+        // Arrange
+        val task = createTask(uid = 1, title = "Task 1")
         taskRepository.insertTask(task)
 
-        // Assert: Verify the DAO's insertTask was called with the correct task
-        verify(toDoDao).insertTask(task)
+        // Act
+        val result = taskRepository.getAllTasks().first()
+
+        // Assert
+        assertEquals(1, result.size)
+        assertEquals("Task 1", result[0].title)
     }
 
     @Test
-    fun `findByTaskName should call toDoDao findByTaskName with the provided taskName`() = runTest {
-        // Arrange: Define the task name and mock the DAO behavior
-        val taskName = "Task 1"
-        val expectedTask = Task(
-            uid = 1,
-            title = taskName,
-            content = TaskRes.TaskContent("Do work"),
-            taskType = TaskType.LOCAL_TASKS,
-            cardColor = 0xFF6200EE.toInt(),
-            iconColor = 0xFFFFFFFF.toInt(),
-            textColor = 0xFF000000.toInt(),
-            dueDate = System.currentTimeMillis()
-        )
-        `when`(toDoDao.findByTaskName(taskName)).thenReturn(expectedTask)
+    fun `insertTask should persist task in fake memory`() = runTest {
+        // Arrange
+        val task = createTask(uid = 99, title = "New Task")
 
-        // Act: Call the repository method
-        taskRepository.findByTaskName(taskName)
+        // Act
+        taskRepository.insertTask(task)
 
-        // Assert: Verify the DAO's findByTaskName was called with the correct taskName
-        verify(toDoDao).findByTaskName(taskName)
+        // Assert
+        val result = taskRepository.findByTaskName("New Task")
+        assertEquals(99, result.uid)
     }
 
     @Test
-    fun `deleteTask should call toDoDao delete and return the number of rows affected`() = runTest {
-        // Arrange: Create a sample task and mock the DAO behavior
-        val task = Task(
-            uid = 1,
-            title = "Task to delete",
-            content = TaskRes.TaskContent("Delete this"),
-            taskType = TaskType.LOCAL_TASKS,
-            cardColor = 0xFF6200EE.toInt(),
-            iconColor = 0xFFFFFFFF.toInt(),
-            textColor = 0xFF000000.toInt(),
-            dueDate = System.currentTimeMillis()
-        )
-        val expectedRowsAffected = 1
-        `when`(toDoDao.delete(task)).thenReturn(expectedRowsAffected)
+    fun `findByTaskName should return correct task from fake storage`() = runTest {
+        // Arrange
+        val taskName = "Target Task"
+        taskRepository.insertTask(createTask(uid = 1, title = taskName))
 
-        // Act: Call the repository method
+        // Act
+        val result = taskRepository.findByTaskName(taskName)
+
+        // Assert
+        assertEquals(taskName, result.title)
+    }
+
+    @Test
+    fun `deleteTask should remove task from fake storage and return 1`() = runTest {
+        // Arrange
+        val task = createTask(uid = 10, title = "Delete Me")
+        taskRepository.insertTask(task)
+
+        // Act
         val result = taskRepository.deleteTask(task)
+        val remainingTasks = taskRepository.getAllTasks().first()
 
-        // Assert: Verify the DAO's delete was called and the result matches
-        verify(toDoDao).delete(task)
-        assertEquals(expectedRowsAffected, result)
+        // Assert
+        assertEquals(1, result)
+        assertEquals(0, remainingTasks.size)
     }
+
+    private fun createTask(uid: Int, title: String) = Task(
+        uid = uid,
+        title = title,
+        content = TaskRes.TaskContent("Description"),
+        taskType = TaskType.LOCAL_TASKS,
+        cardColor = 0,
+        iconColor = 0,
+        textColor = 0,
+        dueDate = 0L
+    )
 }

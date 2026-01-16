@@ -5,7 +5,7 @@ import androidx.datastore.core.Serializer
 import java.io.InputStream
 import java.io.OutputStream
 
-class EncryptedSecurePrefsSerializer(
+internal class EncryptedSecurePrefsSerializer(
     private val context: Context
 ) : Serializer<SecurePrefs> {
 

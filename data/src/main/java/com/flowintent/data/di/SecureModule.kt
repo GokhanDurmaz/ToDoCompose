@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SecureModule {
+internal object SecureModule {
 
     @Provides
     @Singleton

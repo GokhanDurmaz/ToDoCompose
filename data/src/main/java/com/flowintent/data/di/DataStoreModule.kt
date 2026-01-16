@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataStoreModule {
+internal abstract class DataStoreModule {
 
     @Binds
     @Singleton

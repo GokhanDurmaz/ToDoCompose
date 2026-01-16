@@ -13,7 +13,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class ParserModule {
+internal abstract class ParserModule {
 
     @Binds
     @Singleton

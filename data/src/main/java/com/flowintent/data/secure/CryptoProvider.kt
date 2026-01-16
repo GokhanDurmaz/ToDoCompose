@@ -6,7 +6,7 @@ import com.google.crypto.tink.KeyTemplates
 import com.google.crypto.tink.RegistryConfiguration
 import com.google.crypto.tink.integration.android.AndroidKeysetManager
 
-object CryptoProvider {
+internal object CryptoProvider {
     private const val MASTER_KEY_URI = "android-keystore://tink_master_key"
     private const val KEYSET_NAME = "tink_keyset"
     private const val PREF_FILE = "tink_prefs"
