@@ -11,10 +11,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.flowintent.workspace.ui.AdvancedSettingsScreen
 import com.flowintent.workspace.ui.ToDoListScreen
 import com.flowintent.workspace.ui.MainScreen
 import com.flowintent.workspace.ui.ReminderScreen
-import com.flowintent.workspace.ui.SettingsScreen
 
 @Composable
 fun ToDoNavigationBar(windowSize: WindowWidthSizeClass) {
@@ -54,7 +54,7 @@ private fun AppNavHost(
                     Navigation.HOME -> { MainScreen(windowSize) }
                     Navigation.LIST_TODO -> ToDoListScreen()
                     Navigation.REMINDER -> ReminderScreen()
-                    Navigation.SETTINGS -> SettingsScreen()
+                    Navigation.SETTINGS -> AdvancedSettingsScreen()
                 }
             }
         }

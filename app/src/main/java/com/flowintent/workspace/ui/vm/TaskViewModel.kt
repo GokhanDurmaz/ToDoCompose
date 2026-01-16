@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.source.ITaskRepository
+import com.flowintent.core.db.source.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val repository: ITaskRepository
+    private val repository: TaskRepository
 ) : ViewModel() {
 
     val tasks: StateFlow<List<Task>> = repository.getAllTasks()
@@ -34,7 +34,7 @@ class TaskViewModel @Inject constructor(
     val expandedMap: Map<Int, Boolean> get() = _expandedMap
 
 
-    private var _isSelectionMode = MutableStateFlow<Boolean>(false)
+    private var _isSelectionMode = MutableStateFlow(false)
     val isSelectionMode: StateFlow<Boolean> = _isSelectionMode.asStateFlow()
 
     val selectedTasks = mutableStateMapOf<Int, Boolean>()

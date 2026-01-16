@@ -29,7 +29,7 @@ private fun decryptFromBase64(aead: Aead, b64: String, ad: ByteArray? = null): B
 }
 
 // Repository
-class SecurePrefsRepositoryImpl(private val context: Context): ISecurePrefsRepository {
+internal class SecurePrefsRepositoryImpl(private val context: Context): ISecurePrefsRepository {
 
     private val aead by lazy { CryptoProvider.aead(context) }
     private val AD_TOKEN = "token_v1".toByteArray()

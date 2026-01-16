@@ -11,5 +11,5 @@ import dagger.hilt.android.components.ActivityComponent
 @InstallIn(ActivityComponent::class)
 abstract class AnalyticsModule {
     @Binds
-    abstract fun bindAnalyticService(analyticsServiceImpl: AnalyticsServiceImpl): AnalyticsService
+    internal abstract fun bindAnalyticService(analyticsServiceImpl: AnalyticsServiceImpl): AnalyticsService
 }

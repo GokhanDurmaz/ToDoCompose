@@ -4,14 +4,14 @@ import com.flowintent.core.db.AppTheme
 import com.flowintent.core.db.SettingsPreferences
 import com.flowintent.core.db.User
 import com.flowintent.core.db.room.dao.SettingsDao
-import com.flowintent.core.db.source.ISettingsRepository
+import com.flowintent.core.db.source.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
 
-class SettingsRepositoryImpl @Inject constructor(
+internal class SettingsRepositoryImpl @Inject constructor(
     private val settingsDao: SettingsDao
-): ISettingsRepository {
+): SettingsRepository {
     override suspend fun saveUserPreferences(settingsPreferences: SettingsPreferences) {
         settingsDao.saveUserPreferences(settingsPreferences)
     }
