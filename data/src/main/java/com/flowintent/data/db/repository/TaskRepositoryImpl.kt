@@ -2,8 +2,8 @@ package com.flowintent.data.db.repository
 
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.room.dao.ToDoDao
-import com.flowintent.core.db.source.TaskRepository
+import com.flowintent.data.db.room.dao.ToDoDao
+import com.flowintent.core.db.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

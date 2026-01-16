@@ -1,4 +1,4 @@
-package com.flowintent.core.db.source
+package com.flowintent.core.db.repository
 
 import com.flowintent.core.db.AppTheme
 import com.flowintent.core.db.SettingsPreferences

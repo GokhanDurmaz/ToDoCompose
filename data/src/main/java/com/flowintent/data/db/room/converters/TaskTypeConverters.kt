@@ -1,4 +1,4 @@
-package com.flowintent.core.db.room.converters
+package com.flowintent.data.db.room.converters
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter

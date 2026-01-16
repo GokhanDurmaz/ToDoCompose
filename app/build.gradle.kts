@@ -1,6 +1,6 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     alias(libs.plugins.android.application)
@@ -12,58 +12,18 @@ plugins {
     alias(libs.plugins.google.services) // The Google Services plugin
 }
 
-fun loadProperties(): Properties {
-    val properties = Properties()
-    System.getenv("VERSION_NAME")?.let { properties.setProperty("VERSION_NAME", it) }
-    System.getenv("VERSION_CODE")?.let { properties.setProperty("VERSION_CODE", it) }
-    System.getenv("STORE_PASSWORD")?.let { properties.setProperty("STORE_PASSWORD", it) }
-    System.getenv("KEY_PASSWORD")?.let { properties.setProperty("KEY_PASSWORD", it) }
+val gitHashProvider = providers.exec {
+    commandLine("git", "rev-parse", "--short", "HEAD")
+    isIgnoreExitValue = true
+}.standardOutput.asText.map { it.trim() }.orElse("unknown")
 
-    val localPropertiesFile = rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        localPropertiesFile.inputStream().use { inputStream ->
-            val localProps = Properties().apply { load(inputStream) }
-            localProps.forEach { (key, value) ->
-                if (!properties.containsKey(key)) {
-                    properties[key] = value
-                }
-            }
-        }
-    }
-    return properties
-}
+val versionNameProvider = providers.environmentVariable("VERSION_NAME")
+    .orElse(providers.gradleProperty("VERSION_NAME"))
+    .orElse("V1.0.0")
 
-fun getGitHash(): String {
-    return try {
-        // Run the git command using ProcessBuilder
-        val process = ProcessBuilder("git", "rev-parse", "--short", "HEAD")
-            .directory(File(rootProject.rootDir.path))
-            .start()
-
-        val output = process.inputStream.bufferedReader().readText().trim()
-
-        // Wait for the process to finish
-        val exitCode = process.waitFor()
-
-        if (exitCode == 0) {
-            output
-        } else {
-            println("Git command failed with exit code $exitCode")
-            "unknown"
-        }
-    } catch (e: Exception) {
-        println("Could not run git command: ${e.message}")
-        "unknown"
-    }
-}
-
-fun generateAppName(gitHash: String, variantName: String): String {
-    val properties = loadProperties()
-    val versionNameFromProps = properties.getProperty("VERSION_NAME") ?: "V1.0.0"
-    val versionCodeFromProps = properties.getProperty("VERSION_CODE")?.toIntOrNull() ?: 100
-    val sanitizedVersionName = versionNameFromProps.replace(".", "_")
-    return "todo_app_${sanitizedVersionName}_${versionCodeFromProps}_${gitHash}_${variantName}.apk"
-}
+val versionCodeProvider = providers.environmentVariable("VERSION_CODE")
+    .map { it.toInt() }
+    .orElse(100)
 
 android {
     namespace = "com.flowintent.workspace"
@@ -78,20 +38,34 @@ android {
     }
 
     signingConfigs {
-        val properties = loadProperties()
+        val keyAliasVal = providers.environmentVariable("KEY_ALIAS")
+            .orElse(providers.gradleProperty("KEY_ALIAS"))
+            .getOrElse("default_alias")
+
+        val keyPasswordVal = providers.environmentVariable("KEY_PASSWORD")
+            .orElse(providers.gradleProperty("KEY_PASSWORD"))
+            .getOrElse("")
+
+        val storePasswordVal = providers.environmentVariable("STORE_PASSWORD")
+            .orElse(providers.gradleProperty("STORE_PASSWORD"))
+            .getOrElse("")
         create("release") {
-            keyAlias = properties.getProperty("KEY_ALIAS")
-            keyPassword = properties.getProperty("KEY_PASSWORD")
+            keyAlias = keyAliasVal
+            keyPassword = keyPasswordVal
             storeFile = file("release-keystore.jks")
-            storePassword = properties.getProperty("STORE_PASSWORD")
+            storePassword = storePasswordVal
         }
     }
 
     applicationVariants.configureEach {
-        val variantName = this.name
+        val variantName = name
         outputs.configureEach {
-            (this as BaseVariantOutputImpl).outputFileName =
-                generateAppName(getGitHash(), variantName)
+            val output = this as BaseVariantOutputImpl
+            val gitHash = gitHashProvider.get()
+            val verName = versionNameProvider.get().replace(".", "_")
+            val verCode = versionCodeProvider.get()
+
+            output.outputFileName = "todo_app_${verName}_${verCode}_${gitHash}_${variantName}.apk"
         }
     }
 
@@ -123,8 +97,8 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
-            freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+            jvmTarget.set(JvmTarget.JVM_11)
+            freeCompilerArgs.add("-Xannotation-default-target=param-property")
         }
     }
 }
@@ -212,35 +186,49 @@ fun getRequestedVariant(): String {
     }
 }
 
-tasks.register<Exec>("deployApk") {
-    val requestedVariant = getRequestedVariant()
-    val variant = android.applicationVariants
-        .first { it.name.equals(requestedVariant, ignoreCase = true) }
-    val apkName = variant.outputs.first().outputFile.name
-    println("Variant: $requestedVariant")
-    println("APK file name: $apkName")
-    println("VersionName: ${loadProperties().getProperty("VERSION_NAME")}")
-    println("VersionCode: ${loadProperties().getProperty("VERSION_CODE")}")
+val rootDirFile = rootProject.rootDir
+val deployScriptPath: String = rootProject.file("deploy.sh").absolutePath
+val vName = versionNameProvider
+val vCode = versionCodeProvider
 
-    val deployScript = rootProject.file("deploy.sh")
-    if (deployScript.exists()) {
-        println("Running deploy.sh with $apkName ...")
-    } else {
-        println("missing: deploy.sh")
+tasks.register<Exec>("deployApk") {
+    val requestedVariant = project.findProperty("variant")?.toString() ?: "debug"
+    val scriptPath = deployScriptPath
+    val verNameValue = vName.get()
+    val verCodeValue = vCode.get()
+    val workingDirectory = rootDirFile
+
+    workingDir = workingDirectory
+    commandLine("sh", scriptPath, requestedVariant)
+
+    doFirst {
+        println("--- Deployment Info ---")
+        println("Variant: $requestedVariant")
+        println("VersionName: $verNameValue")
+        println("VersionCode: $verCodeValue")
+
+        val scriptFile = File(scriptPath)
+        if (scriptFile.exists()) {
+            println("Running deploy.sh from: ${scriptFile.absolutePath}")
+        } else {
+            throw GradleException("Missing: deploy.sh at $scriptPath")
+        }
     }
 
-    workingDir = rootProject.rootDir
-    commandLine("sh", rootProject.file("deploy.sh").absolutePath, requestedVariant)
+    isIgnoreExitValue = true
 
     doLast {
-        if (executionResult.get().exitValue != 0) {
-            println("deploy.sh failed but continuing build")
+        val result = executionResult.get()
+        if (result.exitValue != 0) {
+            println("WARNING: deploy.sh failed with exit code ${result.exitValue}")
+        } else {
+            println("SUCCESS: Deployment completed.")
         }
     }
 }
 
 // build.gradle.kts (Kotlin DSL)
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(
             listOf(

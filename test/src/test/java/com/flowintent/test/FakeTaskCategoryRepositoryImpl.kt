@@ -2,7 +2,7 @@ package com.flowintent.test
 
 import com.flowintent.core.db.TaskCategory
 import com.flowintent.core.db.source.LocalTaskDataProvider
-import com.flowintent.core.db.source.TaskCategoryRepository
+import com.flowintent.core.db.repository.TaskCategoryRepository
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 

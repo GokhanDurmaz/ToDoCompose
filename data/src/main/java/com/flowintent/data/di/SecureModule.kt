@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.flowintent.core.db.security.ISecurePrefsRepository
 import com.flowintent.data.secure.CryptoProvider
 import com.flowintent.data.secure.EncryptedSecurePrefsSerializer
 import com.flowintent.data.secure.SecurePrefs

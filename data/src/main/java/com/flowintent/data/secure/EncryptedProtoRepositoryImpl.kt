@@ -2,7 +2,7 @@ package com.flowintent.data.secure
 
 import kotlinx.coroutines.flow.Flow
 import androidx.datastore.core.DataStore
-import com.flowintent.core.db.source.EncryptedProtoRepository
+import com.flowintent.core.db.repository.EncryptedProtoRepository
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
