@@ -1,10 +1,10 @@
 package com.flowintent.data.di
 
-import com.flowintent.core.db.security.ISecurePrefsRepository
-import com.flowintent.core.db.source.EncryptedProtoRepository
-import com.flowintent.core.db.source.SettingsRepository
-import com.flowintent.core.db.source.TaskCategoryRepository
-import com.flowintent.core.db.source.TaskRepository
+import com.flowintent.core.db.security.SecurePrefsRepository
+import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.db.repository.SettingsRepository
+import com.flowintent.core.db.repository.TaskCategoryRepository
+import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.data.db.repository.SettingsRepositoryImpl
 import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
 import com.flowintent.data.db.repository.TaskRepositoryImpl
@@ -34,7 +34,7 @@ internal abstract class RepositoryModule {
     @Binds
     internal abstract fun bindSecurePrefsRepo(
         securePrefsRepositoryImpl: SecurePrefsRepositoryImpl
-    ): ISecurePrefsRepository
+    ): SecurePrefsRepository
 
     @Singleton
     @Binds

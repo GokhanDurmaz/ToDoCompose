@@ -41,15 +41,10 @@ android {
 dependencies {
 
     api(project(":core"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
 
     // DI tool
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
-    // Serialization/deserialization json - GSON
-    implementation(libs.gson)
 
     // Secure keystore tools
     implementation(libs.androidx.datastore.preferences)
@@ -58,6 +53,10 @@ dependencies {
 
     // protobuf lite version
     implementation(libs.protobuf.javalite)
+
+    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
+    // See Add the KSP plugin to your project
+    ksp(libs.androidx.room.compiler)
 }
 
 protobuf {

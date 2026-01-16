@@ -10,7 +10,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 internal class AssetDataSourceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context
 ): AssetDataSource {
 
     override suspend fun readJsonString(fileName: String): String {
