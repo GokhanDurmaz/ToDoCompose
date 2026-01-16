@@ -1,4 +1,4 @@
-package com.flowintent.core.db.source
+package com.flowintent.core.db.repository
 
 import kotlinx.coroutines.flow.Flow
 

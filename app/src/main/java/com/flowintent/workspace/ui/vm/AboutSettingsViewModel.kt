@@ -1,7 +1,7 @@
 package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
-import com.flowintent.core.db.source.SettingsRepository
+import com.flowintent.core.db.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

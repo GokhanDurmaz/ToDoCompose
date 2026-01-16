@@ -1,10 +1,10 @@
-package com.flowintent.core.di
+package com.flowintent.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.flowintent.core.db.room.ToDoDatabase
-import com.flowintent.core.db.room.converters.SettingsPreferencesConverter
-import com.flowintent.core.db.room.converters.TaskTypeConverters
+import com.flowintent.data.db.room.ToDoDatabase
+import com.flowintent.data.db.room.converters.SettingsPreferencesConverter
+import com.flowintent.data.db.room.converters.TaskTypeConverters
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides

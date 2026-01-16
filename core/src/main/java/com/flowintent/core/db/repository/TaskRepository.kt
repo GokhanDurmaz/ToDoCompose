@@ -1,4 +1,4 @@
-package com.flowintent.core.db.source
+package com.flowintent.core.db.repository
 
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes

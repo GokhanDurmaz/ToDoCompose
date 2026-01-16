@@ -1,5 +1,5 @@
 package com.flowintent.core.db.security
 
-interface ISecurePrefsRepository {
+interface SecurePrefsRepository {
     suspend fun saveToken(token: String)
 }

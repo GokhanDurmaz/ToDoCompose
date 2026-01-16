@@ -1,4 +1,4 @@
-package com.flowintent.core.db.room.dao
+package com.flowintent.data.db.room.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
