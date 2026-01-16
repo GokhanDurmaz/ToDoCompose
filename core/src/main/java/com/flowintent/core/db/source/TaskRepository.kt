@@ -4,7 +4,7 @@ import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
 import kotlinx.coroutines.flow.Flow
 
-interface ITaskRepository {
+interface TaskRepository {
     fun  getAllTasks(): Flow<List<Task>>
 
     suspend fun insertTask(task: Task)

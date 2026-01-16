@@ -17,7 +17,7 @@ abstract class ParserModule {
 
     @Binds
     @Singleton
-    abstract fun bindJsonParser(gsonJsonParser: GsonJsonParser): JsonParser
+    internal abstract fun bindJsonParser(gsonJsonParser: GsonJsonParser): JsonParser
 
     companion object {
         @Provides

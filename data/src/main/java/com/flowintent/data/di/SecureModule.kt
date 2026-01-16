@@ -31,7 +31,7 @@ object SecureModule {
 
     @Provides
     @Singleton
-    fun provideSecurePrefsRepo(@ApplicationContext context: Context): SecurePrefsRepositoryImpl =
+    internal fun provideSecurePrefsRepo(@ApplicationContext context: Context): SecurePrefsRepositoryImpl =
         SecurePrefsRepositoryImpl(context)
 
     @Provides

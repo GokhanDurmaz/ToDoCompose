@@ -5,7 +5,7 @@ import com.flowintent.core.db.SettingsPreferences
 import com.flowintent.core.db.User
 import kotlinx.coroutines.flow.Flow
 
-interface ISettingsRepository {
+interface SettingsRepository {
     suspend fun saveUserPreferences(settingsPreferences: SettingsPreferences)
 
     suspend fun updateUserPreferences(uid: Int, appTheme: AppTheme)

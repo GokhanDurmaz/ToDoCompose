@@ -1,12 +1,14 @@
 package com.flowintent.data.di
 
 import com.flowintent.core.db.security.ISecurePrefsRepository
-import com.flowintent.core.db.source.ISettingsRepository
-import com.flowintent.core.db.source.ITaskCategoryRepository
-import com.flowintent.core.db.source.ITaskRepository
+import com.flowintent.core.db.source.EncryptedProtoRepository
+import com.flowintent.core.db.source.SettingsRepository
+import com.flowintent.core.db.source.TaskCategoryRepository
+import com.flowintent.core.db.source.TaskRepository
 import com.flowintent.data.db.repository.SettingsRepositoryImpl
 import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
 import com.flowintent.data.db.repository.TaskRepositoryImpl
+import com.flowintent.data.secure.EncryptedProtoRepositoryImpl
 import com.flowintent.data.secure.SecurePrefsRepositoryImpl
 import dagger.Binds
 import dagger.Module
@@ -20,23 +22,29 @@ abstract class RepositoryModule {
 
     @Singleton
     @Binds
-    abstract fun bindTaskRepository(taskRepository: TaskRepositoryImpl): ITaskRepository
+    internal abstract fun bindTaskRepository(taskRepository: TaskRepositoryImpl): TaskRepository
 
     @Singleton
     @Binds
-    abstract fun bindTaskCategoryRepository(
+    internal abstract fun bindTaskCategoryRepository(
         taskCategoryRepository: TaskCategoryRepositoryImpl
-    ): ITaskCategoryRepository
+    ): TaskCategoryRepository
 
     @Singleton
     @Binds
-    abstract fun bindSecurePrefsRepo(
+    internal abstract fun bindSecurePrefsRepo(
         securePrefsRepositoryImpl: SecurePrefsRepositoryImpl
     ): ISecurePrefsRepository
 
     @Singleton
     @Binds
-    abstract fun bindSettingsRepository(
+    internal abstract fun bindSettingsRepository(
         settingsRepositoryImpl: SettingsRepositoryImpl
-    ): ISettingsRepository
+    ): SettingsRepository
+
+    @Singleton
+    @Binds
+    internal abstract fun bindEncryptedProtoRepository(
+        encryptedProtoRepositoryImpl: EncryptedProtoRepositoryImpl
+    ): EncryptedProtoRepository
 }

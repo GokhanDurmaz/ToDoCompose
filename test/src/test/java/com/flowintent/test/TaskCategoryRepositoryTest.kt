@@ -3,7 +3,7 @@ package com.flowintent.test
 import com.flowintent.core.db.TaskCategory
 import com.flowintent.core.db.TaskContent
 import com.flowintent.core.db.TaskIcon
-import com.flowintent.core.db.source.ILocalTaskDataProvider
+import com.flowintent.core.db.source.LocalTaskDataProvider
 import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -16,7 +16,7 @@ import org.mockito.MockitoAnnotations
 class TaskCategoryRepositoryTest {
 
     @Mock
-    private lateinit var localTaskDataProvider: ILocalTaskDataProvider
+    private lateinit var localTaskDataProvider: LocalTaskDataProvider
 
     private lateinit var taskCategoryRepository: TaskCategoryRepositoryImpl
 
