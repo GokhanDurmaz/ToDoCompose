@@ -136,8 +136,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.material3.window.size.class1.android)
-    implementation(project(":core"))
-    runtimeOnly(project(":data"))
+    implementation(project(":data"))
 
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)

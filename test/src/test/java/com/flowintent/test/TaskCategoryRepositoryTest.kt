@@ -4,7 +4,6 @@ import com.flowintent.core.db.TaskCategory
 import com.flowintent.core.db.TaskContent
 import com.flowintent.core.db.TaskIcon
 import com.flowintent.core.db.source.LocalTaskDataProvider
-import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -18,14 +17,14 @@ class TaskCategoryRepositoryTest {
     @Mock
     private lateinit var localTaskDataProvider: LocalTaskDataProvider
 
-    private lateinit var taskCategoryRepository: TaskCategoryRepositoryImpl
+    private lateinit var taskCategoryRepository: FakeTaskCategoryRepositoryImpl
 
     @Before
     fun setUp() {
         // Initialize Mockito annotations
         MockitoAnnotations.openMocks(this)
         // Initialize task category repository impl.
-        taskCategoryRepository = TaskCategoryRepositoryImpl(localTaskDataProvider)
+        taskCategoryRepository = FakeTaskCategoryRepositoryImpl(localTaskDataProvider)
     }
 
     @Test
