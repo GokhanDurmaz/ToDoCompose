@@ -5,7 +5,7 @@ import com.flowintent.core.network.services.AnalyticsService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class AnalyticsServiceImpl: AnalyticsService {
+internal class AnalyticsServiceImpl: AnalyticsService {
     override fun getAnalyticStatistics(analyticsType: AnalyticsType): Flow<List<String>> {
         return flowOf()
     }
