@@ -1,22 +1,22 @@
 package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
-import com.flowintent.core.db.repository.SettingsRepository
+import com.flowintent.core.db.settings.GetAppVersionUseCase
+import com.flowintent.core.db.settings.OpenPrivacyPolicyUseCase
+import com.flowintent.core.db.settings.OpenTermsOfServiceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class AboutSettingsViewModel @Inject constructor(
-    private val repository: SettingsRepository
+    private val getAppVersionUseCase: GetAppVersionUseCase,
+    private val openPrivacyPolicyUseCase: OpenPrivacyPolicyUseCase,
+    private val openTermsOfServiceUseCase: OpenTermsOfServiceUseCase
+
 ) : ViewModel() {
+    suspend fun getAppVersion() = getAppVersionUseCase()
 
-    val appVersion = repository.getAppVersion()
+    suspend fun openPrivacyPolicy() = openPrivacyPolicyUseCase()
 
-    fun openPrivacyPolicy() {
-        repository.openPrivacyPolicy()
-    }
-
-    fun openTermsOfService() {
-        repository.openTermsOfService()
-    }
+    suspend fun openTermsOfService() = openTermsOfServiceUseCase()
 }
