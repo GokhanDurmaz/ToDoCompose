@@ -1,8 +1,8 @@
 package com.flowintent.core.db.repository
 
 import com.flowintent.core.db.AppTheme
-import com.flowintent.core.db.SettingsPreferences
 import com.flowintent.core.db.User
+import com.flowintent.core.db.settings.SettingsPreferences
 import kotlinx.coroutines.flow.Flow
 
 interface SettingsRepository {
