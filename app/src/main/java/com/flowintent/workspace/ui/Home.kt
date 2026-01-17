@@ -94,10 +94,8 @@ private fun ToDoAppContent(
                         }
                     }
                     is Resource.Success -> {
-                        state.data.let { categories ->
-                            items(categories) { task ->
-                                ToDoCard(task)
-                            }
+                        items(state.data) { task ->
+                            ToDoCard(task)
                         }
                     }
                 }
