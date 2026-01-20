@@ -34,7 +34,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -53,6 +52,7 @@ import com.flowintent.core.db.calculateNewIndex
 import com.flowintent.core.db.swap
 import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.ui.search.SearchBar
+import com.flowintent.workspace.ui.swipe.SwipeActionCallbacks
 import com.flowintent.workspace.ui.swipe.SwipeableCard
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.VAL_0_0
@@ -86,10 +86,7 @@ fun ToDoListScreen() {
                     paddingTopOffset = paddingValues,
                     onSearchIconClick = { isSearchBarVisible = !isSearchBarVisible}
                 )
-                ListCardContent(
-                    isSearchBarVisible = isSearchBarVisible,
-                    focusManager = focusManager
-                )
+                ListCardContent(isSearchBarVisible = isSearchBarVisible)
             }
         }
     }
@@ -152,8 +149,7 @@ private fun RowScope.ActionBarIcons(onSearchIconClick: () -> Unit) {
 @Composable
 private fun ListCardContent(
     viewModel: TaskViewModel = hiltViewModel(),
-    isSearchBarVisible: Boolean = false,
-    focusManager: FocusManager
+    isSearchBarVisible: Boolean = false
 ) {
     val taskList by viewModel.tasks.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf("") }
@@ -171,8 +167,7 @@ private fun ListCardContent(
 
         TaskLazyList(
             filteredList = filteredList,
-            viewModel = viewModel,
-            focusManager = focusManager
+            viewModel = viewModel
         )
     }
 }
@@ -192,8 +187,7 @@ private fun TaskSearchBar(query: String, onQueryChange: (String) -> Unit) {
 @Composable
 private fun TaskLazyList(
     filteredList: SnapshotStateList<Task>,
-    viewModel: TaskViewModel,
-    focusManager: FocusManager
+    viewModel: TaskViewModel
 ) {
     var draggingItem by remember { mutableStateOf<DragInfo?>(null) }
     var itemHeight by remember { mutableStateOf(VAL_50.dp) }
@@ -203,60 +197,73 @@ private fun TaskLazyList(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         itemsIndexed(filteredList, key = { _, task -> task.uid }) { index, task ->
-            TaskItemContainer(
+            val dragStateParams = TaskDragState(
                 index = index,
-                task = task,
                 draggingItem = draggingItem,
                 itemHeight = itemHeight,
                 filteredList = filteredList,
                 onDragUpdate = { draggingItem = it },
-                onHeightChange = { itemHeight = it },
-                viewModel = viewModel,
-                focusManager = focusManager
+                onHeightChange = { itemHeight = it }
+            )
+
+            TaskItemContainer(
+                task = task,
+                dragStateParams = dragStateParams,
+                viewModel = viewModel
             )
         }
     }
 }
 
+// 1. Group State and Callbacks together
+data class TaskDragState(
+    val index: Int,
+    val draggingItem: DragInfo?,
+    val itemHeight: Dp,
+    val filteredList: SnapshotStateList<Task>,
+    val onDragUpdate: (DragInfo?) -> Unit, // Moved callback here
+    val onHeightChange: (Dp) -> Unit      // Moved callback here
+)
+
 @Composable
 private fun TaskItemContainer(
-    index: Int,
     task: Task,
-    draggingItem: DragInfo?,
-    itemHeight: Dp,
-    filteredList: SnapshotStateList<Task>,
-    onDragUpdate: (DragInfo?) -> Unit,
-    onHeightChange: (Dp) -> Unit,
+    dragStateParams: TaskDragState,
     viewModel: TaskViewModel,
-    focusManager: FocusManager
 ) {
-    val isDragging = draggingItem?.index == index
+    val focusManager = LocalFocusManager.current
 
+    // Drag state hesaplaması
+    val isDragging = dragStateParams.draggingItem == task
     val dragState = DragState(
-        index = index,
+        index = dragStateParams.index,
         isDragging = isDragging,
-        draggingItem = draggingItem,
-        itemHeight = itemHeight,
-        filteredList = filteredList
+        draggingItem = dragStateParams.draggingItem,
+        itemHeight = dragStateParams.itemHeight,
+        filteredList = dragStateParams.filteredList
     )
 
     Box(
         modifier = Modifier
-            .taskDragModifier(dragState, onDragUpdate = onDragUpdate)
+            .taskDragModifier(dragState, onDragUpdate = dragStateParams.onDragUpdate)
             .clickable { focusManager.clearFocus() }
     ) {
         Row(
-            modifier = Modifier.padding(start = 12.dp, bottom = 12.dp, end = 12.dp),
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             SwipeableCard(
                 task = task,
-                onDelete = { viewModel.deleteTask(task) },
-                onEdit = { viewModel.setUpdateTaskId(task.uid) },
-                onHeightChange = onHeightChange,
-            ) {
-                TaskCardTextContent(task, viewModel)
-            }
+                viewModel = viewModel,
+                actions = SwipeActionCallbacks(
+                    onDelete = { viewModel.deleteTask(task) },
+                    onEdit = { viewModel.setUpdateTaskId(task.uid) },
+                    onHeightChange = dragStateParams.onHeightChange
+                ),
+                content = {
+                    TaskCardTextContent(task, viewModel)
+                }
+            )
         }
     }
 }

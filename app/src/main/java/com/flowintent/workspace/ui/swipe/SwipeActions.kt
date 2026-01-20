@@ -1,6 +1,5 @@
 package com.flowintent.workspace.ui.swipe
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.flowintent.workspace.util.COLOR_0XFF42A5F5
 import com.flowintent.workspace.util.COLOR_0XFFEF5350
@@ -34,37 +34,34 @@ import com.flowintent.workspace.util.VAL_300
 import com.flowintent.workspace.util.VAL_4
 import com.flowintent.workspace.util.VAL_50
 import com.flowintent.workspace.util.VAL_8
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun SwipeActions(
     modifier: Modifier = Modifier,
+    stateHolder: SwipeStateHolder,
     onDelete: () -> Unit,
-    onEdit: () -> Unit,
-    scope: CoroutineScope,
-    offsetX: Animatable<Float, *>,
-    maxSwipe: Float
+    onEdit: () -> Unit
 ) {
-    val fraction = (-offsetX.value / maxSwipe).coerceIn(VAL_0_0, VAL_1_0)
+    val fraction = (-stateHolder.offsetX.value / stateHolder.maxSwipe)
+        .coerceIn(VAL_0_0, VAL_1_0)
 
     Row(
         modifier = modifier
-            .then(
-                Modifier
-                    .fillMaxHeight()
-                    .width(VAL_200.dp)
-                    .clip(RoundedCornerShape(topEnd = VAL_12.dp, bottomEnd = VAL_12.dp))
-                    .background(Color.Transparent)
-                    .padding(end = VAL_8.dp)
-            ),
+            .fillMaxHeight()
+            .width(VAL_200.dp)
+            .clip(RoundedCornerShape(topEnd = VAL_12.dp, bottomEnd = VAL_12.dp))
+            .background(Color.Transparent)
+            .padding(end = VAL_8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
             onClick = {
                 onDelete()
-                scope.launch { offsetX.animateTo(VAL_0_0, tween(VAL_300)) }
+                stateHolder.scope.launch {
+                    stateHolder.offsetX.animateTo(VAL_0_0, tween(VAL_300))
+                }
             },
             shape = RoundedCornerShape(VAL_50),
             colors = ButtonDefaults.buttonColors(
@@ -92,3 +89,9 @@ fun SwipeActions(
         }
     }
 }
+
+data class SwipeActionCallbacks(
+    val onDelete: () -> Unit,
+    val onEdit: () -> Unit,
+    val onHeightChange: (Dp) -> Unit
+)

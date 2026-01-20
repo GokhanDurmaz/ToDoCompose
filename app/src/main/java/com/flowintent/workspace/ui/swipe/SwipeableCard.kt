@@ -1,6 +1,7 @@
 package com.flowintent.workspace.ui.swipe
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -27,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -43,17 +43,15 @@ import com.flowintent.workspace.util.VAL_300
 import com.flowintent.workspace.util.VAL_4
 import com.flowintent.workspace.util.VAL_50
 import com.flowintent.workspace.util.VAL_80
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-
 @Composable
 fun SwipeableCard(
-    modifier: Modifier = Modifier,
     task: Task,
+    actions: SwipeActionCallbacks,
+    modifier: Modifier = Modifier,
     viewModel: TaskViewModel = hiltViewModel(),
-    onDelete: () -> Unit,
-    onEdit: () -> Unit,
-    onHeightChange: (Dp) -> Unit,
     content: @Composable () -> Unit
 ) {
     val isExpanded = viewModel.expandedMap[task.uid] ?: false
@@ -62,35 +60,26 @@ fun SwipeableCard(
     val offsetX = remember { Animatable(VAL_0_0) }
     val maxSwipe = with(LocalDensity.current) { VAL_200.dp.toPx() }
 
-    val cardHeight by animateDpAsState(
-        targetValue = if (isExpanded) VAL_80.dp else VAL_50.dp,
-        animationSpec = tween(VAL_300),
-        label = "cardHeight"
-    )
-
-    LaunchedEffect(cardHeight) { onHeightChange(cardHeight) }
-
-    val draggableState = rememberDraggableState { delta ->
-        scope.launch { offsetX.snapTo((offsetX.value + delta).coerceIn(-maxSwipe, 0f)) }
+    val stateHolder = remember(offsetX, maxSwipe, scope) {
+        SwipeStateHolder(offsetX, maxSwipe, scope)
     }
 
+    val cardHeight by animateDpAsState(
+        targetValue = if (isExpanded) VAL_80.dp else VAL_50.dp,
+        animationSpec = tween(VAL_300), label = "cardHeight"
+    )
+    LaunchedEffect(cardHeight) { actions.onHeightChange(cardHeight) }
+
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(cardHeight)
-            .background(Color.Transparent)
+        modifier = modifier.fillMaxWidth().height(cardHeight).background(Color.Transparent)
     ) {
         SwipeActions(
             modifier = Modifier.align(Alignment.CenterEnd),
-            onDelete = onDelete,
-            onEdit = {
-                onEdit()
-                isShowing = true
-            },
-            scope = scope,
-            offsetX = offsetX,
-            maxSwipe = maxSwipe
+            stateHolder = stateHolder,
+            onDelete = actions.onDelete,
+            onEdit = { actions.onEdit(); isShowing = true }
         )
+
         TaskDialogHandler(
             isShowing = isShowing,
             isUpdate = true,
@@ -100,25 +89,59 @@ fun SwipeableCard(
                 scope.launch { offsetX.animateTo(VAL_0_0, tween(VAL_300)) }
             }
         )
-        Card(
-            modifier = Modifier
-                .offset { IntOffset(offsetX.value.roundToInt(), VAL_0) }
-                .clickable { viewModel.toggleExpanded(task.uid) }
-                .draggable(
-                    state = draggableState,
-                    orientation = Orientation.Horizontal,
-                    onDragStopped = { velocity ->
-                        scope.launch {
-                            val target = if (offsetX.value < -maxSwipe / VAL_2) -maxSwipe else VAL_0_0
-                            offsetX.animateTo(target, tween(VAL_300))
-                        }
-                    }
-                )
-                .fillMaxSize(),
-            elevation = CardDefaults.cardElevation(defaultElevation = VAL_4.dp),
-            shape = RoundedCornerShape(VAL_12.dp)
-        ) {
-            SwipeableCardContent(task = task, content = content)
+
+        val swipeState = rememberSwipeState(offsetX, maxSwipe, scope)
+
+        MainCardContent(task, viewModel, swipeState, content)
+    }
+}
+
+@Composable
+private fun rememberSwipeState(
+    offsetX: Animatable<Float, AnimationVector1D>,
+    maxSwipe: Float,
+    scope: CoroutineScope
+): SwipeState = remember(offsetX.value) {
+    SwipeState(
+        offsetX = offsetX.value,
+        onDrag = { delta ->
+            scope.launch { offsetX.snapTo((offsetX.value + delta).coerceIn(-maxSwipe, VAL_0_0)) }
+        },
+        onDragStopped = {
+            scope.launch {
+                val target = if (offsetX.value < -maxSwipe / VAL_2) -maxSwipe else VAL_0_0
+                offsetX.animateTo(target, tween(VAL_300))
+            }
         }
+    )
+}
+
+data class SwipeState(
+    val offsetX: Float,
+    val onDrag: (Float) -> Unit,
+    val onDragStopped: () -> Unit
+)
+
+@Composable
+private fun MainCardContent(
+    task: Task,
+    viewModel: TaskViewModel,
+    swipeState: SwipeState,
+    content: @Composable () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .offset { IntOffset(swipeState.offsetX.roundToInt(), VAL_0) }
+            .clickable { viewModel.toggleExpanded(task.uid) }
+            .draggable(
+                state = rememberDraggableState { delta -> swipeState.onDrag(delta) },
+                orientation = Orientation.Horizontal,
+                onDragStopped = { swipeState.onDragStopped() }
+            )
+            .fillMaxSize(),
+        elevation = CardDefaults.cardElevation(defaultElevation = VAL_4.dp),
+        shape = RoundedCornerShape(VAL_12.dp)
+    ) {
+        SwipeableCardContent(task = task, content = content)
     }
 }

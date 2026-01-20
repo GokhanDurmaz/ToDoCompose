@@ -7,19 +7,17 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun TaskTextField(
-    valueState: String,
+    value: String,
     onValueChange: (String) -> Unit,
-    label: String,
-    placeholder: String,
-    modifier: Modifier = Modifier,
-    maxLines: Int = 1
+    config: TaskTextFieldConfig,
+    modifier: Modifier = Modifier
 ) {
     OutlinedTextField(
-        value = valueState,
+        value = value,
         onValueChange = onValueChange,
-        label = { Text(label) },
-        placeholder = { Text(placeholder) },
-        modifier = modifier, // Artık tüm görsel ayarlar dışarıdan modifier ile gelecek
-        maxLines = maxLines
+        label = { Text(config.label) },
+        placeholder = { Text(config.placeholder) },
+        modifier = modifier,
+        maxLines = config.maxLines
     )
 }

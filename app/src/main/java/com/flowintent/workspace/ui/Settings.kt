@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,115 +54,68 @@ fun SettingsScreen() {
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
-        Row(
-            modifier = Modifier.padding(bottom = VAL_30.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = "Settings Icon",
-                tint = iconColor,
-                modifier = Modifier.size(VAL_54.dp)
-            )
-            Spacer(modifier = Modifier.width(VAL_8.dp))
-            Text(
-                text = "Settings",
-                fontSize = VAL_40.sp
-            )
-        }
-        Row(
-            modifier = Modifier.padding(vertical = VAL_20.dp, horizontal = VAL_10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
-                contentDescription = "Account Icon",
-                tint = iconColor,
-                modifier = Modifier.size(VAL_36.dp)
-            )
-            Spacer(modifier = Modifier.width(VAL_8.dp))
-            Text(
-                text = "Account",
-                fontSize = VAL_26.sp
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = VAL_20.dp, horizontal = VAL_10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.CircleNotifications,
-                contentDescription = "Notification Icon",
-                tint = iconColor,
-                modifier = Modifier.size(VAL_36.dp)
-            )
-            Spacer(modifier = Modifier.width(VAL_8.dp))
-            Text(
-                text = "Notifications",
-                fontSize = VAL_26.sp,
-                modifier = Modifier.weight(VAL_0_8)
-            )
-            Spacer(modifier = Modifier.width(VAL_24.dp))
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = "Notification Icon",
-                modifier = Modifier
-                    .size(VAL_36.dp)
-                    .weight(VAL_0_2)
-            )
+        SettingsHeader(iconColor)
+        SettingsItem(Icons.Default.AccountCircle, "Account", iconColor, showChevron = false)
+        SettingsItem(Icons.Default.CircleNotifications, "Notifications", iconColor)
+        SettingsItem(Icons.Default.LightMode, "Theme", iconColor)
+        SettingsItem(Icons.Default.Info, "About", iconColor)
+    }
+}
 
-        }
-        Row(
-            modifier = Modifier.padding(vertical = VAL_20.dp, horizontal = VAL_10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.LightMode,
-                contentDescription = "Theme Icon",
-                tint = iconColor,
-                modifier = Modifier.size(VAL_36.dp)
-            )
-            Spacer(modifier = Modifier.width(VAL_8.dp))
-            Text(
-                text = "Theme",
-                fontSize = VAL_26.sp,
-                modifier = Modifier.weight(VAL_0_8)
-            )
+@Composable
+fun SettingsHeader(iconColor: Color) {
+    Row(
+        modifier = Modifier.padding(bottom = VAL_30.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Settings,
+            contentDescription = "Settings Icon",
+            tint = iconColor,
+            modifier = Modifier.size(VAL_54.dp)
+        )
+        Spacer(modifier = Modifier.width(VAL_8.dp))
+        Text(text = "Settings", fontSize = VAL_40.sp)
+    }
+}
+
+@Composable
+fun SettingsItem(
+    icon: ImageVector,
+    title: String,
+    iconColor: Color,
+    showChevron: Boolean = true
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = VAL_20.dp, horizontal = VAL_10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = title,
+            tint = iconColor,
+            modifier = Modifier.size(VAL_36.dp)
+        )
+        Spacer(modifier = Modifier.width(VAL_8.dp))
+        Text(
+            text = title,
+            fontSize = VAL_26.sp,
+            modifier = Modifier.weight(VAL_0_8)
+        )
+        if (showChevron) {
             Spacer(modifier = Modifier.width(VAL_24.dp))
             Icon(
                 imageVector = Icons.Default.ChevronRight,
-                contentDescription = "Notification Icon",
+                contentDescription = null,
                 modifier = Modifier
                     .size(VAL_36.dp)
                     .weight(VAL_0_2)
             )
-        }
-        Row(
-            modifier = Modifier.padding(vertical = VAL_20.dp, horizontal = VAL_10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = "About Icon",
-                tint = iconColor,
-                modifier = Modifier.size(VAL_36.dp)
-            )
-            Spacer(modifier = Modifier.width(VAL_8.dp))
-            Text(
-                text = "About",
-                fontSize = VAL_26.sp,
-                modifier = Modifier.weight(VAL_0_8)
-            )
-            Spacer(modifier = Modifier.width(VAL_24.dp))
-            Icon(
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = "Notification Icon",
-                modifier = Modifier
-                    .size(VAL_36.dp)
-                    .weight(VAL_0_2)
-            )
+        } else {
+            // Maintains alignment with items that have chevrons
+            Spacer(modifier = Modifier.weight(VAL_0_2))
         }
     }
 }

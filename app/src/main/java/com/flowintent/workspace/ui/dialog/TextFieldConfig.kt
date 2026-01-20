@@ -60,21 +60,24 @@ fun OpenTaskDialog(
 
 @Composable
 private fun TaskTextFields(toDoLabel: MutableState<String>, toDoContent: MutableState<String>) {
-    TaskTextField(
-        valueState = toDoLabel.value,
-        onValueChange = { toDoLabel.value = it },
-        label = "Label",
-        placeholder = "Enter task label",
-        modifier = Modifier.fillMaxWidth().padding(start = 12.dp, top = 12.dp, end = 12.dp)
-    )
-    TaskTextField(
-        valueState = toDoContent.value,
-        onValueChange = { toDoContent.value = it },
-        label = "Description",
-        placeholder = "Describe todo content here",
-        maxLines = 4,
-        modifier = Modifier.fillMaxWidth().height(100.dp).padding(start = 12.dp, top = 12.dp, end = 12.dp)
-    )
+    val commonModifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp)
+    val labelConfig = TaskTextFieldConfig("Label", "Enter task label")
+    val contentConfig = TaskTextFieldConfig("Description", "Describe todo content here", maxLines = 4)
+
+    Column {
+        TaskTextField(
+            value = toDoLabel.value,
+            onValueChange = { toDoLabel.value = it },
+            config = labelConfig,
+            modifier = commonModifier
+        )
+        TaskTextField(
+            value = toDoContent.value,
+            onValueChange = { toDoContent.value = it },
+            config = contentConfig,
+            modifier = commonModifier.height(100.dp)
+        )
+    }
 }
 
 private fun TaskViewModel.handleTaskConfirm(
