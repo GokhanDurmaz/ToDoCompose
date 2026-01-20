@@ -1,0 +1,45 @@
+package com.flowintent.workspace.util
+
+const val VAL_0_5 = 0.5f
+const val VAL_0_7 = 0.7f
+const val VAL_0_8 = 0.8f
+const val VAL_0_2 = 0.2f
+const val VAL_300 = 300
+const val VAL_0_0 = 0f
+const val VAL_1_0 = 1f
+const val VAL_2_0 = 2f
+const val VAL_0_4 = 0.4f
+const val VAL_0 = 0
+const val VAL_1 = 1
+const val VAL_2 = 2
+const val VAL_8 = 8
+const val VAL_255: Int = 255
+const val VAL_24: Int = 24
+const val VAL_26: Int = 26
+const val VAL_16: Int = 16
+const val VAL_10: Int = 10
+const val VAL_12: Int = 12
+const val VAL_20: Int = 20
+const val VAL_30: Int = 30
+const val VAL_32: Int = 32
+const val VAL_36: Int = 36
+const val VAL_54: Int = 54
+const val VAL_4: Int = 4
+const val VAL_40: Int = 40
+const val VAL_50: Int = 50
+const val VAL_60: Int = 60
+const val VAL_80: Int = 80
+const val VAL_200: Int = 200
+const val VAL_1_0_2 = 1.02f
+
+const val COLOR_0XFF90CAF9 = 0xFF90CAF9
+const val COLOR_0XFF1976D2 = 0xFF1976D2
+const val COLOR_0XFFEF5350 = 0xFFEF5350
+const val COLOR_0XFF0F0F1C = 0xFF0F0F1C
+const val COLOR_0XFF42A5F5 = 0xFF42A5F5
+const val COLOR_0XFF1A1A2E = 0xFF1A1A2E
+const val COLOR_0XFF7B2FF7 = 0xFF7B2FF7
+const val COLOR_0XFF9D4EDD = 0xFF9D4EDD
+const val COLOR_0XFF2A2A3D = 0xFF2A2A3D
+const val COLOR_0XFFE63946 = 0xFFe63946
+const val COLOR_0XFF1E1E2F = 0xFF1E1E2F

@@ -34,6 +34,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.flowintent.core.db.Task
 import com.flowintent.workspace.ui.dialog.TaskDialogHandler
 import com.flowintent.workspace.ui.vm.TaskViewModel
+import com.flowintent.workspace.util.VAL_0
+import com.flowintent.workspace.util.VAL_0_0
+import com.flowintent.workspace.util.VAL_12
+import com.flowintent.workspace.util.VAL_2
+import com.flowintent.workspace.util.VAL_200
+import com.flowintent.workspace.util.VAL_300
+import com.flowintent.workspace.util.VAL_4
+import com.flowintent.workspace.util.VAL_50
+import com.flowintent.workspace.util.VAL_80
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -50,12 +59,12 @@ fun SwipeableCard(
     val isExpanded = viewModel.expandedMap[task.uid] ?: false
     var isShowing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
-    val offsetX = remember { Animatable(0f) }
-    val maxSwipe = with(LocalDensity.current) { 200.dp.toPx() }
+    val offsetX = remember { Animatable(VAL_0_0) }
+    val maxSwipe = with(LocalDensity.current) { VAL_200.dp.toPx() }
 
     val cardHeight by animateDpAsState(
-        targetValue = if (isExpanded) 80.dp else 50.dp,
-        animationSpec = tween(300),
+        targetValue = if (isExpanded) VAL_80.dp else VAL_50.dp,
+        animationSpec = tween(VAL_300),
         label = "cardHeight"
     )
 
@@ -88,26 +97,26 @@ fun SwipeableCard(
             viewModel = viewModel,
             onDismiss = {
                 isShowing = false
-                scope.launch { offsetX.animateTo(0f, tween(300)) }
+                scope.launch { offsetX.animateTo(VAL_0_0, tween(VAL_300)) }
             }
         )
         Card(
             modifier = Modifier
-                .offset { IntOffset(offsetX.value.roundToInt(), 0) }
+                .offset { IntOffset(offsetX.value.roundToInt(), VAL_0) }
                 .clickable { viewModel.toggleExpanded(task.uid) }
                 .draggable(
                     state = draggableState,
                     orientation = Orientation.Horizontal,
                     onDragStopped = { velocity ->
                         scope.launch {
-                            val target = if (offsetX.value < -maxSwipe / 2) -maxSwipe else 0f
-                            offsetX.animateTo(target, tween(300))
+                            val target = if (offsetX.value < -maxSwipe / VAL_2) -maxSwipe else VAL_0_0
+                            offsetX.animateTo(target, tween(VAL_300))
                         }
                     }
                 )
                 .fillMaxSize(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-            shape = RoundedCornerShape(12.dp)
+            elevation = CardDefaults.cardElevation(defaultElevation = VAL_4.dp),
+            shape = RoundedCornerShape(VAL_12.dp)
         ) {
             SwipeableCardContent(task = task, content = content)
         }

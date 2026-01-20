@@ -2,7 +2,14 @@ package com.flowintent.workspace.util
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArtTrack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DeviceUnknown
+import androidx.compose.material.icons.filled.HealthAndSafety
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SportsGymnastics
 import androidx.compose.ui.graphics.vector.ImageVector
 
 object IconManager {

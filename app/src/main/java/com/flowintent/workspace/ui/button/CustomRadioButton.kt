@@ -16,6 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.flowintent.workspace.util.COLOR_0XFF42A5F5
+import com.flowintent.workspace.util.VAL_0_4
+import com.flowintent.workspace.util.VAL_12
+import com.flowintent.workspace.util.VAL_2
+import com.flowintent.workspace.util.VAL_20
 
 @Composable
 fun CustomRadioButton(
@@ -23,19 +28,19 @@ fun CustomRadioButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val selectedColor = Color(0xFF42A5F5)
+    val selectedColor = Color(COLOR_0XFF42A5F5)
 
     Box(
         modifier = modifier
-            .size(20.dp)
+            .size(VAL_20.dp)
             .clip(CircleShape)
             .background(
                 if (selected) selectedColor else Color.Transparent
             )
             .border(
-                width = 2.dp,
+                width = VAL_2.dp,
                 color = if (selected) selectedColor
-                else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = VAL_0_4),
                 shape = CircleShape
             )
             .clickable { onClick() },
@@ -46,7 +51,7 @@ fun CustomRadioButton(
                 imageVector = Icons.Default.Check,
                 contentDescription = "Selected",
                 tint = Color.White,
-                modifier = Modifier.size(12.dp)
+                modifier = Modifier.size(VAL_12.dp)
             )
         }
     }

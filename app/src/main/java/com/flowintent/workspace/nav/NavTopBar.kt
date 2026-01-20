@@ -1,6 +1,7 @@
 package com.flowintent.workspace.nav
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,79 +35,20 @@ fun ToDoNavTopBar(
     viewModel: TaskViewModel = hiltViewModel(),
     scope: @Composable (PaddingValues) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var isShowing: Boolean by remember { mutableStateOf(false) }
-    val isSelectionMode by viewModel.isSelectionMode.collectAsStateWithLifecycle()
+    var isShowing by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 modifier = Modifier.fillMaxWidth(),
-                title = {
-                    Text(text = "To-Do List")
-                },
-                windowInsets = WindowInsets(0,0,0,0),
-                navigationIcon = {
-                    IconButton(onClick = {  }) {
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "Profile"
-                        )
-                    }
-                },
+                title = { Text(text = "To-Do List") },
+                windowInsets = WindowInsets(0, 0, 0, 0),
+                navigationIcon = { ProfileIcon() },
                 actions = {
-                    IconButton(onClick = {
-
-                    }) {
-                        Box {
-                            IconButton(onClick = { expanded = true }) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = "Add New Task"
-                                )
-                            }
-
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false }
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text("Add Task") },
-                                    onClick = {
-                                        expanded = false
-                                        isShowing = !isShowing
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = {
-                                        if (isSelectionMode) {
-                                            Text("Unselect All")
-                                        } else {
-                                            Text("Select All")
-                                        }
-                                    },
-                                    onClick = {
-                                        if (isSelectionMode) {
-                                            viewModel.unselectAll()
-                                            viewModel.setSelectionMode(false)
-                                        } else {
-                                            viewModel.setSelectionMode(true)
-                                            viewModel.selectAll()
-                                        }
-                                        expanded = false
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text("Delete Selected") },
-                                    onClick = {
-                                        viewModel.deleteSelectedTasks()
-                                        viewModel.setSelectionMode(false)
-                                        expanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
+                    NavActions(
+                        viewModel = viewModel,
+                        onAddTaskClick = { isShowing = true }
+                    )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -114,15 +56,74 @@ fun ToDoNavTopBar(
             )
         }
     ) { paddingValues ->
-        scope.invoke(paddingValues)
+        scope(paddingValues)
     }
 
     TaskDialogHandler(
         isShowing = isShowing,
         isUpdate = false,
         viewModel = viewModel,
-        onDismiss = {
-            isShowing = !isShowing
+        onDismiss = { isShowing = false }
+    )
+}
+
+@Composable
+private fun ProfileIcon() {
+    IconButton(onClick = { }) {
+        Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Profile")
+    }
+}
+
+@Composable
+private fun NavActions(
+    viewModel: TaskViewModel,
+    onAddTaskClick: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val isSelectionMode by viewModel.isSelectionMode.collectAsStateWithLifecycle()
+
+    Box {
+        IconButton(onClick = { expanded = true }) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Add New Task")
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            DropdownMenuItem(
+                text = { Text("Add Task") },
+                onClick = {
+                    expanded = false
+                    onAddTaskClick()
+                }
+            )
+            SelectionMenuItems(viewModel, isSelectionMode) { expanded = false }
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.SelectionMenuItems(
+    viewModel: TaskViewModel,
+    isSelectionMode: Boolean,
+    onFinish: () -> Unit
+) {
+    DropdownMenuItem(
+        text = { Text(if (isSelectionMode) "Unselect All" else "Select All") },
+        onClick = {
+            if (isSelectionMode) {
+                viewModel.unselectAll()
+                viewModel.setSelectionMode(false)
+            } else {
+                viewModel.setSelectionMode(true)
+                viewModel.selectAll()
+            }
+            onFinish()
+        }
+    )
+    DropdownMenuItem(
+        text = { Text("Delete Selected") },
+        onClick = {
+            viewModel.deleteSelectedTasks()
+            viewModel.setSelectionMode(false)
+            onFinish()
         }
     )
 }
