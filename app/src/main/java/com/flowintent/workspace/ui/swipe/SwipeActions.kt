@@ -1,6 +1,5 @@
 package com.flowintent.workspace.ui.swipe
 
-import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,62 +22,76 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.CoroutineScope
+import com.flowintent.workspace.util.COLOR_0XFF42A5F5
+import com.flowintent.workspace.util.COLOR_0XFFEF5350
+import com.flowintent.workspace.util.VAL_0_0
+import com.flowintent.workspace.util.VAL_12
+import com.flowintent.workspace.util.VAL_1_0
+import com.flowintent.workspace.util.VAL_200
+import com.flowintent.workspace.util.VAL_300
+import com.flowintent.workspace.util.VAL_4
+import com.flowintent.workspace.util.VAL_50
+import com.flowintent.workspace.util.VAL_8
 import kotlinx.coroutines.launch
 
 @Composable
 fun SwipeActions(
     modifier: Modifier = Modifier,
+    stateHolder: SwipeStateHolder,
     onDelete: () -> Unit,
-    onEdit: () -> Unit,
-    scope: CoroutineScope,
-    offsetX: Animatable<Float, *>,
-    maxSwipe: Float
+    onEdit: () -> Unit
 ) {
-    val fraction = (-offsetX.value / maxSwipe).coerceIn(0f, 1f)
+    val fraction = (-stateHolder.offsetX.value / stateHolder.maxSwipe)
+        .coerceIn(VAL_0_0, VAL_1_0)
 
     Row(
         modifier = modifier
-            .then(
-                Modifier
-                    .fillMaxHeight()
-                    .width(200.dp)
-                    .clip(RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp))
-                    .background(Color.Transparent)
-                    .padding(end = 8.dp)
-            ),
+            .fillMaxHeight()
+            .width(VAL_200.dp)
+            .clip(RoundedCornerShape(topEnd = VAL_12.dp, bottomEnd = VAL_12.dp))
+            .background(Color.Transparent)
+            .padding(end = VAL_8.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Button(
             onClick = {
                 onDelete()
-                scope.launch { offsetX.animateTo(0f, tween(300)) }
+                stateHolder.scope.launch {
+                    stateHolder.offsetX.animateTo(VAL_0_0, tween(VAL_300))
+                }
             },
-            shape = RoundedCornerShape(50),
+            shape = RoundedCornerShape(VAL_50),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFEF5350),
+                containerColor = Color(COLOR_0XFFEF5350),
                 contentColor = Color.White
             ),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+            contentPadding = PaddingValues(horizontal = VAL_12.dp, vertical = VAL_8.dp),
             modifier = Modifier.alpha(fraction)
         ) {
             Icon(Icons.Default.Delete, contentDescription = "Delete")
-            Text("Delete", Modifier.padding(start = 4.dp))
+            Text("Delete", Modifier.padding(start = VAL_4.dp))
         }
 
         Button(
             onClick = { onEdit() },
-            shape = RoundedCornerShape(50),
+            shape = RoundedCornerShape(VAL_50),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF42A5F5),
+                containerColor = Color(COLOR_0XFF42A5F5),
                 contentColor = Color.White
             ),
-            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+            contentPadding = PaddingValues(horizontal = VAL_12.dp, vertical = VAL_8.dp)
         ) {
             Icon(Icons.Default.Edit, contentDescription = "Edit")
-            Text("Edit", Modifier.padding(start = 4.dp))
+            Text("Edit", Modifier.padding(start = VAL_4.dp))
         }
     }
 }
+
+data class SwipeActionCallbacks(
+    val onDelete: () -> Unit,
+    val onEdit: () -> Unit,
+    val onHeightChange: (Dp) -> Unit
+)

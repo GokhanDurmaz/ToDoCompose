@@ -15,8 +15,8 @@ object ColorProvider {
 }
 
 fun Color.toArgbCompat(): Int {
-    return ((alpha * 255).toInt() shl 24) or
-            ((red * 255).toInt() shl 16) or
-            ((green * 255).toInt() shl 8) or
-            (blue * 255).toInt()
+    return ((alpha * VAL_255).toInt() shl VAL_24) or
+            ((red * VAL_255).toInt() shl VAL_16) or
+            ((green * VAL_255).toInt() shl VAL_8) or
+            (blue * VAL_255).toInt()
 }

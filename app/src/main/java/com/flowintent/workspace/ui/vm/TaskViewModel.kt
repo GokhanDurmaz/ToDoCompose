@@ -51,12 +51,6 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun findByTaskName(taskName: String) {
-        viewModelScope.launch {
-            repository.findByTaskName(taskName)
-        }
-    }
-
     fun deleteTask(task: Task) {
         viewModelScope.launch {
             repository.deleteTask(task)
