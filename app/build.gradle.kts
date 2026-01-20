@@ -1,6 +1,7 @@
 import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -10,6 +11,7 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services) // The Google Services plugin
+    id("flowintent.detekt")
 }
 
 val gitHashProvider = providers.exec {
@@ -27,28 +29,37 @@ val versionCodeProvider = providers.environmentVariable("VERSION_CODE")
 
 android {
     namespace = "com.flowintent.workspace"
-    compileSdk = 36
+    buildToolsVersion = "35.0.0"
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.flowintent.workspace"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
 
     signingConfigs {
+        val localProperties = Properties().apply {
+            val file = rootProject.file("local.properties")
+            if (file.exists()) {
+                file.inputStream().use { load(it) }
+            }
+        }
+
         val keyAliasVal = providers.environmentVariable("KEY_ALIAS")
             .orElse(providers.gradleProperty("KEY_ALIAS"))
-            .getOrElse("default_alias")
+            .getOrElse(localProperties.getProperty("KEY_ALIAS") ?: "default_alias")
 
         val keyPasswordVal = providers.environmentVariable("KEY_PASSWORD")
             .orElse(providers.gradleProperty("KEY_PASSWORD"))
-            .getOrElse("")
+            .getOrElse(localProperties.getProperty("KEY_PASSWORD") ?: "")
 
         val storePasswordVal = providers.environmentVariable("STORE_PASSWORD")
             .orElse(providers.gradleProperty("STORE_PASSWORD"))
-            .getOrElse("")
+            .getOrElse(localProperties.getProperty("STORE_PASSWORD") ?: "")
+
         create("release") {
             keyAlias = keyAliasVal
             keyPassword = keyPasswordVal
@@ -87,8 +98,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
 
         isCoreLibraryDesugaringEnabled = true
     }
@@ -97,7 +108,7 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_17)
             freeCompilerArgs.add("-Xannotation-default-target=param-property")
         }
     }
