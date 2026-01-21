@@ -29,3 +29,13 @@
 -keep class * {
   @com.google.gson.annotations.SerializedName <fields>;
 }
+
+-dontwarn com.google.rpc.Status
+-dontwarn com.google.type.LatLng
+-dontwarn com.google.type.LatLng$Builder
+
+-keep class com.google.rpc.Status { *; }
+-keep class com.google.type.LatLng { *; }
+-keep class com.google.type.LatLng$Builder { *; }
+
+-dontwarn kotlinx.serialization.internal.**

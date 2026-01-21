@@ -13,9 +13,10 @@ plugins {
     id("flowintent.detekt") apply false
 }
 tasks.register("clean") {
-    delete {
-        getLayout().buildDirectory
-    }
+    delete(rootProject.layout.buildDirectory)
+
+    delete("build-logic/build")
+    delete("build-logic/src/main/generated")
 }
 
 defaultTasks("buildApp")
