@@ -57,6 +57,18 @@ dependencies {
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
     // See Add the KSP plugin to your project
     ksp(libs.androidx.room.compiler)
+
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation(libs.firebase.analytics)
+
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore) {
+        exclude(group = "com.google.firebase", module = "protolite-well-known-types")
+        exclude(group = "com.google.protobuf", module = "protobuf-javalite")
+    }
 }
 
 protobuf {

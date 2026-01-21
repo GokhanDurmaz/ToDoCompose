@@ -166,15 +166,6 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
 
-    // Import the Firebase BoM
-    implementation(platform(libs.firebase.bom))
-
-    // Add the dependency for the Firebase SDK for Google Analytics
-    implementation(libs.firebase.analytics)
-
-    // Add the Firebase SDK for Authentication
-    implementation(libs.firebase.auth)
-
     // Kotlin reflection library
     implementation(libs.kotlin.reflect)
 
