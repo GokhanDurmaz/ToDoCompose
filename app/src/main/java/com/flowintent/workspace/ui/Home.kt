@@ -52,8 +52,7 @@ private fun ToDoAppContent(
     taskCategoryViewModel: TaskCategoryViewModel = hiltViewModel(),
     paddingValues: PaddingValues
 ) {
-    val allCategoriesState by taskCategoryViewModel.getAllCategories()
-        .collectAsStateWithLifecycle(initialValue = Resource.Loading)
+    val allCategoriesState by taskCategoryViewModel.allCategories.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier

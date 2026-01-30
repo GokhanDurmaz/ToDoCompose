@@ -10,8 +10,6 @@ internal class EncryptedProtoRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<SecurePrefs>
 ): EncryptedProtoRepository {
 
-    val secureFlow: Flow<SecurePrefs> = dataStore.data
-
     override suspend fun updateToken(token: String) {
         dataStore.updateData { it.toBuilder().setToken(token).build() }
     }
@@ -22,4 +20,20 @@ internal class EncryptedProtoRepositoryImpl @Inject constructor(
 
     override fun tokenFlow(): Flow<String?> =
         dataStore.data.map { it.token.takeIf { t -> t.isNotEmpty() } }
+
+    override suspend fun saveUserInfo(name: String, email: String) {
+        dataStore.updateData { currentPrefs ->
+            currentPrefs.toBuilder()
+                .setName(name)
+                .setEmail(email)
+                .build()
+        }
+    }
+
+    override fun nameFlow(): Flow<String?> =
+        dataStore.data.map { store -> store.name.takeIf { it.isNotEmpty() } }
+
+    override fun emailFlow(): Flow<String?> =
+        dataStore.data.map { store -> store.email.takeIf { it.isNotEmpty() } }
+
 }
