@@ -2,6 +2,7 @@ name: Android CI/CD Pipeline
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
     branches: [ "main" ]
   workflow_dispatch:
   push:
