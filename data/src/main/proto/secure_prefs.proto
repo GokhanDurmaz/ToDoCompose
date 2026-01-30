@@ -5,9 +5,10 @@ option java_multiple_files = true;
 
 message SecurePrefs {
   string email = 1;
-  string userId = 2;
-  string token = 3;
-  string refresh = 4;
+  string name = 2;
+  string userId = 3;
+  string token = 4;
+  string refresh = 5;
 }
 
 
