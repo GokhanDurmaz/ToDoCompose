@@ -30,4 +30,40 @@ internal class AuthRepositoryImpl @Inject constructor(
                 emit(Resource.Error(e.message.toString()))
             }
         }
+
+    override fun getUserProfile(): Flow<Resource<UserProfile>> = flow {
+        emit(Resource.Loading)
+        try {
+            val userId = auth.currentUser?.uid ?: throw Exception("Failed to login credential")
+
+            val document = db.collection("users").document(userId).get().await()
+
+            val userProfile = document.toObject(UserProfile::class.java)
+            if (userProfile != null) {
+                emit(Resource.Success(userProfile))
+            } else {
+                emit(Resource.Error("Failed to get user info"))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "An error occurred"))
+        }
+    }
+
+    override fun loginUser(
+        email: String,
+        password: String
+    ): Flow<Resource<String>> = flow {
+        emit(Resource.Loading)
+        try {
+            val authResult = auth.signInWithEmailAndPassword(email, password).await()
+            val user = authResult.user ?: throw Exception("Could not found user")
+
+            val tokenResult = user.getIdToken(false).await()
+            val token = tokenResult.token ?: throw Exception("Could not get token")
+
+            emit(Resource.Success(token))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message.toString()))
+        }
+    }
 }

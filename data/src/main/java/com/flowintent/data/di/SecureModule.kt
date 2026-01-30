@@ -9,6 +9,7 @@ import com.flowintent.data.secure.EncryptedSecurePrefsSerializer
 import com.flowintent.data.secure.SecurePrefs
 import com.flowintent.data.secure.SecurePrefsRepositoryImpl
 import com.google.crypto.tink.Aead
+import com.google.crypto.tink.aead.AeadConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,8 +26,10 @@ internal object SecureModule {
 
     @Provides
     @Singleton
-    fun provideAead(@ApplicationContext context: Context): Aead =
-        CryptoProvider.aead(context)
+    fun provideAead(@ApplicationContext context: Context): Aead {
+        AeadConfig.register()
+        return CryptoProvider.aead(context)
+    }
 
     @Provides
     @Singleton
@@ -36,10 +39,11 @@ internal object SecureModule {
     @Provides
     @Singleton
     fun provideSecurePrefsDataStore(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        aead: Aead
     ): DataStore<SecurePrefs> {
         return DataStoreFactory.create(
-            serializer = EncryptedSecurePrefsSerializer(context),
+            serializer = EncryptedSecurePrefsSerializer(aead),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { context.dataStoreFile("secure_prefs.pb") }
         )

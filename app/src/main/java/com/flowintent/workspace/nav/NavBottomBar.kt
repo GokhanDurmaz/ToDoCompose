@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun BottomNavigationBar(currentDestination: NavDestination?, navController: NavHostController) {
-    val tabs = Navigation.entries
+    val tabs = MainNavigation.entries
 
     NavigationBar {
         tabs.forEachIndexed { index, navigation ->

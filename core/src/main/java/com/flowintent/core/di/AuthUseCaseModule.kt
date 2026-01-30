@@ -1,6 +1,8 @@
 package com.flowintent.core.di
 
-import com.flowintent.core.db.auth.AuthUseCase
+import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.SignInUseCase
+import com.flowintent.core.db.auth.SignUpUseCase
 import com.flowintent.core.db.repository.AuthRepository
 import dagger.Module
 import dagger.Provides
@@ -13,5 +15,14 @@ import javax.inject.Singleton
 object AuthUseCaseModule {
     @Singleton
     @Provides
-    fun providesAuthUseCase(authRepository: AuthRepository) = AuthUseCase(authRepository)
+    fun providesSignUpUseCase(authRepository: AuthRepository) = SignUpUseCase(authRepository)
+
+    @Singleton
+    @Provides
+    fun providesSignInUseCase(authRepository: AuthRepository) = SignInUseCase(authRepository)
+
+    @Singleton
+    @Provides
+    fun providesGetUserProfileUseCase(authRepository: AuthRepository) =
+        GetUserProfileUseCase(authRepository)
 }
