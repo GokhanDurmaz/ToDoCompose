@@ -33,6 +33,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +47,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.workspace.ui.vm.AuthViewModel
 import com.flowintent.workspace.util.COLOR_0XFF0F0F1C
 import com.flowintent.workspace.util.COLOR_0XFF1A1A2E
 import com.flowintent.workspace.util.COLOR_0XFF1E1E2F
@@ -69,14 +73,16 @@ fun SettingsScreen2() {
 }
 
 @Composable
-fun AdvancedSettingsScreen(
-    username: String = "Luther Castel",
-    email: String = "luther@email.com",
-    onLogout: () -> Unit = {}
-) {
+fun AdvancedSettingsScreen(viewModel: AuthViewModel = hiltViewModel()) {
+    val username by viewModel.userName.collectAsStateWithLifecycle()
+    val email by viewModel.userEmail.collectAsStateWithLifecycle()
     var theme by remember { mutableStateOf("Dark") }
     var doNotDisturb by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(VAL_0_5) }
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchAndSaveUserProfileIfEmpty()
+    }
 
     Column(
         modifier = Modifier
@@ -85,7 +91,7 @@ fun AdvancedSettingsScreen(
             .verticalScroll(rememberScrollState())
             .padding(VAL_16.dp)
     ) {
-        ProfileHeader(username, email)
+        ProfileHeader(username ?: "", email ?: "")
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -102,7 +108,7 @@ fun AdvancedSettingsScreen(
 
         Spacer(Modifier.height(VAL_40.dp))
 
-        LogoutButton(onLogout)
+        LogoutButton(onLogout = { viewModel.clearAll() })
     }
 }
 

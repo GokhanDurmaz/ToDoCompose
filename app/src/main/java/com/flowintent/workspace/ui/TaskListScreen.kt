@@ -116,7 +116,6 @@ fun ListActionBar(
                 text = "To-Do List",
                 fontWeight = FontWeight.Bold
             )
-            // İkon grubunu dışarı aldık
             ActionBarIcons(onSearchIconClick = onSearchIconClick)
         }
     }
@@ -154,7 +153,6 @@ private fun ListCardContent(
     val taskList by viewModel.tasks.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf("") }
 
-    // Arama mantığını ayırdık
     val filteredList = remember(taskList, searchText) {
         if (searchText.isBlank()) taskList.toMutableStateList()
         else taskList.filter { it.title.contains(searchText, ignoreCase = true) }.toMutableStateList()
@@ -215,14 +213,13 @@ private fun TaskLazyList(
     }
 }
 
-// 1. Group State and Callbacks together
 data class TaskDragState(
     val index: Int,
     val draggingItem: DragInfo?,
     val itemHeight: Dp,
     val filteredList: SnapshotStateList<Task>,
-    val onDragUpdate: (DragInfo?) -> Unit, // Moved callback here
-    val onHeightChange: (Dp) -> Unit      // Moved callback here
+    val onDragUpdate: (DragInfo?) -> Unit,
+    val onHeightChange: (Dp) -> Unit
 )
 
 @Composable
@@ -233,7 +230,6 @@ private fun TaskItemContainer(
 ) {
     val focusManager = LocalFocusManager.current
 
-    // Drag state hesaplaması
     val isDragging = dragStateParams.draggingItem == task
     val dragState = DragState(
         index = dragStateParams.index,
