@@ -1,0 +1,56 @@
+name: Migrate Old Releases to Private Storage
+
+on:
+  workflow_dispatch: # Manuel olarak "Run workflow" butonuyla tetiklenir
+
+jobs:
+  migrate_assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Public Repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Git Config
+        run: |
+          git config --global user.name "Migration Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Clone Private Storage Repo
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.RELEASE_PAT }}
+        run: |
+          git clone https://x-access-token:${{ env.API_TOKEN_GITHUB }}@github.com/${{ github.repository_owner }}/todo-app-binary-storage.git private_storage
+
+      - name: Download and Move Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          API_TOKEN_GITHUB: ${{ secrets.RELEASE_PAT }}
+        run: |
+          # Tüm tag'leri listele (v* ile başlayanlar)
+          TAGS=$(git tag -l "v*")
+          
+          for TAG in $TAGS; do
+            echo "Processing tag: $TAG"
+            
+            # GitHub CLI kullanarak ilgili tag'deki .aab dosyasını indir
+            # Eğer tag'de .aab yoksa hata vermemesi için || true kullandık
+            gh release download $TAG --pattern "*.aab" --dir ./temp_assets || echo "No .aab found for $TAG"
+            
+            # Eğer dosya indiyse private storage'a taşı ve isimlendir
+            if [ -d "./temp_assets" ] && [ "$(ls -A ./temp_assets)" ]; then
+              cp ./temp_assets/*.aab ./private_storage/app-release-$TAG.aab
+              rm -rf ./temp_assets/*
+              
+              # Private repo'ya tek tek push et (çakışma olmaması için her dosya sonrası push)
+              cd private_storage
+              git add .
+              git commit -m "Migrated asset from $TAG" || echo "Nothing to commit"
+              git push origin main
+              cd ..
+            fi
+          done
+
+      - name: Cleanup
+        run: rm -rf private_storage temp_assets
