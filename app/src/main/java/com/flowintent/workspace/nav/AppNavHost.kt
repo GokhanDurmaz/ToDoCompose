@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.flowintent.workspace.ui.AdvancedSettingsScreen
+import com.flowintent.workspace.ui.ForgotPasswordScreen
 import com.flowintent.workspace.ui.ToDoListScreen
 import com.flowintent.workspace.ui.MainScreen
 import com.flowintent.workspace.ui.ReminderScreen
@@ -81,6 +82,18 @@ private fun AppNavHost(
                     navController.navigate(MainNavigation.HOME.route) {
                         popUpTo(AuthNavigation.SIGN_IN.route) { inclusive = true }
                     }
+                },
+                onNavigateToForgotPassword = {
+                    navController.navigate(AuthNavigation.FORGOT_PASSWORD.route)
+                }
+            )
+        }
+
+        composable(AuthNavigation.FORGOT_PASSWORD.route) {
+            ForgotPasswordScreen(
+                viewModel = authViewModel,
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }

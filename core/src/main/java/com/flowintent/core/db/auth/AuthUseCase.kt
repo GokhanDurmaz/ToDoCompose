@@ -18,3 +18,7 @@ class SignInUseCase(private val authRepository: AuthRepository) {
 class GetUserProfileUseCase(private val authRepository: AuthRepository) {
     operator fun invoke(): Flow<Resource<UserProfile>> = authRepository.getUserProfile()
 }
+
+class ForgetPasswordUseCase(private val authRepository: AuthRepository) {
+    operator fun invoke(email: String): Flow<Resource<Unit>> = authRepository.forgetPassword(email)
+}

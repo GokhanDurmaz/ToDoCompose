@@ -65,9 +65,7 @@ jobs:
           path: build/reports/detekt/
 
       - name: Run Unit Tests and Lint
-        run: |
-          ./gradlew testDebugUnitTest
-          ./gradlew lintDebug -PabortOnError=false
+        run: ./gradlew testDebugUnitTest lintDebug -Dlint.baselines.continue=true
 
   build_release:
     needs: build_and_test
