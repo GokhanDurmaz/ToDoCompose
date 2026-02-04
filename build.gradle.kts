@@ -46,7 +46,6 @@ tasks.register("buildAppRelease") {
     val detektTask = tasks.getByPath(":app:detekt")
     dependsOn(detektTask)
 
-    // Detekt bittikten SONRA assemble işlemleri başlasın
     val assembleTasks = listOf(":app:assembleRelease", ":core:assembleRelease", ":data:assembleRelease")
     assembleTasks.forEach { taskPath ->
         dependsOn(taskPath)

@@ -66,4 +66,15 @@ internal class AuthRepositoryImpl @Inject constructor(
             emit(Resource.Error(e.message.toString()))
         }
     }
+
+    override fun forgetPassword(email: String): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading)
+        try {
+            auth.sendPasswordResetEmail(email).await()
+
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Could not send email to reset password."))
+        }
+    }
 }

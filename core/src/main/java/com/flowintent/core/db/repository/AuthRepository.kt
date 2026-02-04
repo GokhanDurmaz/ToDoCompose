@@ -10,4 +10,6 @@ interface AuthRepository {
     fun loginUser(email: String, password: String): Flow<Resource<String>>
 
     fun getUserProfile(): Flow<Resource<UserProfile>>
+
+    fun forgetPassword(email: String): Flow<Resource<Unit>>
 }

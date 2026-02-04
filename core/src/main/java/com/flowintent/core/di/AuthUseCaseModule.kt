@@ -1,5 +1,6 @@
 package com.flowintent.core.di
 
+import com.flowintent.core.db.auth.ForgetPasswordUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
@@ -25,4 +26,8 @@ object AuthUseCaseModule {
     @Provides
     fun providesGetUserProfileUseCase(authRepository: AuthRepository) =
         GetUserProfileUseCase(authRepository)
+
+    @Singleton
+    @Provides
+    fun providesForgetPassword(authRepository: AuthRepository) = ForgetPasswordUseCase(authRepository)
 }

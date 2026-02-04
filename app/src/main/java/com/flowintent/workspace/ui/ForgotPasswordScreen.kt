@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -52,18 +53,15 @@ import com.flowintent.workspace.util.VAL_60
 import com.flowintent.workspace.util.isValidEmail
 import kotlinx.coroutines.launch
 
+@Preview(showBackground = true)
 @Composable
-fun SignInScreen(
+fun ForgotPasswordScreen(
     viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToSignUp: () -> Unit = {},
-    onSuccessLogin: () -> Unit = {},
-    onNavigateToForgotPassword: () -> Unit = {}
+    onNavigateBack: () -> Unit = {}
 ) {
     val email by viewModel.emailInput.collectAsStateWithLifecycle()
-    val password by viewModel.passwordInput.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
-    val isSubmitEnabled by viewModel.isSubmitEnabled.collectAsStateWithLifecycle()
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var statusMessage by remember { mutableStateOf<Pair<String, Boolean>?>(null) }
     val scope = rememberCoroutineScope()
 
     Column(
@@ -74,155 +72,119 @@ fun SignInScreen(
             .padding(VAL_32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SignInHeader()
+        HeaderSection(onNavigateBack)
 
-        SignInForm(
+        PasswordResetForm(
             email = email,
-            password = password,
-            onEmailChange = viewModel::onEmailChange,
-            onPasswordChange = viewModel::onPasswordChange,
-            onForgotClick = onNavigateToForgotPassword
+            onEmailChange = viewModel::onEmailChange
         )
 
-        ErrorMessage(errorMessage)
+        StatusIndicator(statusMessage)
 
         Spacer(modifier = Modifier.height(VAL_32.dp))
 
-        SignInButton(
+        ResetButton(
             isLoading = isLoading,
-            isEnabled = isSubmitEnabled,
+            isEnabled = email.isNotEmpty(),
             onClick = {
                 if (!email.isValidEmail()) {
-                    errorMessage = "Please enter a valid email address"
+                    statusMessage = "Please enter a valid email address" to true
                 } else {
                     scope.launch {
-                        handleLogin(viewModel, onSuccessLogin) { errorMessage = it }
+                        handlePasswordReset(viewModel, email) { statusMessage = it }
                     }
                 }
             }
         )
-
-        SignUpFooter(onNavigateToSignUp)
     }
 }
 
 @Composable
-private fun SignInHeader() {
-    Spacer(modifier = Modifier.height(VAL_60.dp))
-    Text(
-        "Welcome Back",
-        style = MaterialTheme.typography.headlineMedium,
-        fontWeight = FontWeight.Bold,
-        color = Color.White
-    )
-    Text(
-        "Please sign in to continue",
-        style = MaterialTheme.typography.bodyMedium,
-        color = Color.Gray
-    )
-    Spacer(modifier = Modifier.height(VAL_40.dp))
-}
-
-@Composable
-private fun SignInForm(
-    email: String,
-    password: String,
-    onEmailChange: (String) -> Unit,
-    onPasswordChange: (String) -> Unit,
-    onForgotClick: () -> Unit
-) {
+private fun PasswordResetForm(email: String, onEmailChange: (String) -> Unit) {
     Card(
         shape = RoundedCornerShape(VAL_20.dp),
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = Color(COLOR_0XFF1A1A2E))
     ) {
         Column(modifier = Modifier.padding(VAL_16.dp), verticalArrangement = Arrangement.spacedBy(VAL_16.dp)) {
+            Text(
+                "Enter your email address and we will send you instructions to reset your password.",
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodyMedium
+            )
             CustomTextField(
                 value = email,
                 onValueChange = onEmailChange,
                 label = "Email Address",
                 modifier = Modifier.fillMaxWidth()
             )
-            CustomTextField(
-                value = password,
-                onValueChange = onPasswordChange,
-                label = "Password",
-                modifier = Modifier.fillMaxWidth(),
-                isPassword = true
-            )
-            TextButton(
-                onClick = onForgotClick,
-                modifier = Modifier.align(Alignment.End)
-            ) {
-                Text(
-                    "Forgot Password?",
-                    color = Color.Gray,
-                    style = MaterialTheme.typography.labelMedium
-                )
-            }
         }
     }
 }
 
 @Composable
-private fun SignInButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> Unit) {
+private fun ResetButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> Unit) {
     Button(
         onClick = onClick,
-        enabled = isEnabled,
-        modifier = Modifier.fillMaxWidth().height(VAL_60.dp).clip(RoundedCornerShape(VAL_12.dp))
+        enabled = !isLoading && isEnabled,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(VAL_60.dp)
+            .clip(RoundedCornerShape(VAL_12.dp))
             .background(Brush.linearGradient(listOf(Color(COLOR_0XFF7B2FF7), Color(COLOR_0XFF9D4EDD)))),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
     ) {
         if (isLoading) {
-            CircularProgressIndicator(
-                color = Color.White,
-                modifier = Modifier.size(24.dp),
-                strokeWidth = 2.dp
-            )
-        }
-        else {
-            Text("Sign In", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+        } else {
+            Text("Send Instructions", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
 
 @Composable
-private fun ErrorMessage(message: String?) {
-    message?.let {
+private fun StatusIndicator(status: Pair<String, Boolean>?) {
+    status?.let { (message, isError) ->
         Text(
-            it,
-            color = Color(COLOR_0XFFE63946),
-            modifier = Modifier.padding(top = 8.dp),
+            text = message,
+            color = if (isError) Color(COLOR_0XFFE63946) else Color.Green,
+            modifier = Modifier.padding(top = 16.dp),
             style = MaterialTheme.typography.bodySmall
         )
     }
 }
 
-@Composable
-private fun SignUpFooter(onNavigate: () -> Unit) {
-    Spacer(modifier = Modifier.height(VAL_16.dp))
-    TextButton(onClick = onNavigate) {
-        Text(
-            "Don't have an account? Sign Up",
-            color = Color(COLOR_0XFF9D4EDD),
-            style = MaterialTheme.typography.bodyMedium
-        )
+private suspend fun handlePasswordReset(
+    viewModel: AuthViewModel,
+    email: String,
+    onResult: (Pair<String, Boolean>) -> Unit
+) {
+    viewModel.forgetPassword(email).collect { resource ->
+        when (resource) {
+            is Resource.Success -> onResult("Reset link sent! Check your inbox." to false)
+            is Resource.Error -> onResult(resource.message to true)
+            else -> Unit
+        }
     }
 }
 
-private suspend fun handleLogin(
-    viewModel: AuthViewModel,
-    onSuccess: () -> Unit,
-    onError: (String?) -> Unit
-) {
-    viewModel.loginUserWithState().collect { resource ->
-        when (resource) {
-            is Resource.Loading -> onError(null)
-            is Resource.Success -> {
-                if (resource.data.isNotEmpty()) viewModel.saveToken(resource.data)
-                onSuccess()
-            }
-            is Resource.Error -> onError(resource.message)
+@Composable
+private fun HeaderSection(onBack: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(VAL_40.dp))
+        TextButton(
+            onClick = onBack,
+            modifier = Modifier.align(Alignment.Start)
+        ) {
+            Text("< Back to Login", color = Color(COLOR_0XFF9D4EDD))
         }
+        Spacer(modifier = Modifier.height(VAL_20.dp))
+        Text(
+            "Forgot Password",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
+        Spacer(modifier = Modifier.height(VAL_40.dp))
     }
 }

@@ -2,6 +2,7 @@ package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flowintent.core.db.auth.ForgetPasswordUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
@@ -28,7 +29,8 @@ class AuthViewModel @Inject constructor(
     private val repo: EncryptedProtoRepository,
     private val signUpUseCase: SignUpUseCase,
     private val signInUseCase: SignInUseCase,
-    private val getUserProfileUseCase: GetUserProfileUseCase
+    private val getUserProfileUseCase: GetUserProfileUseCase,
+    private val forgetPasswordUseCase: ForgetPasswordUseCase
 ) : ViewModel() {
     val token: StateFlow<String?> = repo.tokenFlow()
         .stateIn(
@@ -124,4 +126,6 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun forgetPassword(email: String): Flow<Resource<Unit>>  = forgetPasswordUseCase(email)
 }
