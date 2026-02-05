@@ -128,8 +128,9 @@ jobs:
       - name: Push AAB to Private Repository
         env:
           API_TOKEN_GITHUB: ${{ secrets.RELEASE_PAT }}
+          STORAGE_REPO: ${{ secrets.BINARY_STORAGE_REPO }}
         run: |
-          git clone https://x-access-token:${{ env.API_TOKEN_GITHUB }}@github.com/${{ github.repository_owner }}/todo-app-binary-storage.git private_storage
+          git clone https://x-access-token:${{ env.API_TOKEN_GITHUB }}@github.com/${{ github.repository_owner }}/${{ env.STORAGE_REPO }}.git private_storage
           cp app/build/outputs/bundle/release/app-release.aab private_storage/app-release-${{ env.VERSION_NAME }}.aab
           cd private_storage
           git config user.name "GitHub Action CI/CD"
