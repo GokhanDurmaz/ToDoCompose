@@ -33,7 +33,7 @@ tinkAndroid = "1.20.0"
 uiTestJunit4 = "1.10.1"
 ksp-version = "2.2.20-2.0.2"
 protobuf-version = "0.9.6"
-detekt = "1.23.5"
+detekt = "1.23.8"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
