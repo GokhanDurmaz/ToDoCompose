@@ -155,9 +155,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Auto-merge Pull Request
-        if: github.event_name == 'pull_request' && success()
+        if: github.event_name == 'pull_request' && success() &&
+          (contains(github.event.pull_request.labels.*.name, 'automerge') ||
+          contains(github.event.pull_request.title, 'automerge') ||
+          contains(github.event.head_commit.message, 'automerge'))
         uses: pascalgn/automerge-action@v0.16.3
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_PAT }}
           MERGE_METHOD: "merge"
           MERGE_COMMIT_MESSAGE: "Auto-merged by CI/CD: {pullRequest.title}"
