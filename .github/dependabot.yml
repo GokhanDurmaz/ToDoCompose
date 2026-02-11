@@ -11,8 +11,28 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
 
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "*"
+        versions: ["*-alpha*", "*-beta*", "*-rc*", "*-SNAPSHOT*", "*-dev*"]
+
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+
   - package-ecosystem: "gradle"
     directory: "/build-logic"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+
+    ignore:
+      - dependency-name: "*"
+        versions: ["*-alpha*", "*-beta*", "*-rc*", "*-SNAPSHOT*", "*-dev*"]
+
+    groups:
+      build-logic-dependencies:
+        patterns:
+          - "*"
