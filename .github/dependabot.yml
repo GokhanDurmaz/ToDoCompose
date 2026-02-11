@@ -11,8 +11,28 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
 
+    groups:
+      all-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "*-alpha*"
+          - "*-beta*"
+          - "*-rc*"
+          - "*-SNAPSHOT*"
+
   - package-ecosystem: "gradle"
     directory: "/build-logic"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
+
+    groups:
+      build-logic-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "*-alpha*"
+          - "*-beta*"
+          - "*-rc*"
+          - "*-SNAPSHOT*"
