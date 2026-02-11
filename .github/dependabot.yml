@@ -13,9 +13,9 @@ updates:
 
     ignore:
       - dependency-name: "*"
-        update-types: ["version-update:semver-non-稳定"]
+        update-types: ["version-update:semver-major"]
       - dependency-name: "*"
-        versions: ["*-alpha*", "*-beta*", "*-rc*", "*-SNAPSHOT*"]
+        versions: ["*-alpha*", "*-beta*", "*-rc*", "*-SNAPSHOT*", "*-dev*"]
 
     groups:
       all-dependencies:
@@ -30,7 +30,7 @@ updates:
 
     ignore:
       - dependency-name: "*"
-        versions: ["*-alpha*", "*-beta*", "*-rc*", "*-SNAPSHOT*"]
+        versions: ["*-alpha*", "*-beta*", "*-rc*", "*-SNAPSHOT*", "*-dev*"]
 
     groups:
       build-logic-dependencies:
