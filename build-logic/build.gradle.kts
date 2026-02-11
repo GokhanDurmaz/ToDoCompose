@@ -9,14 +9,14 @@ repositories {
 }
 
 dependencies {
-    implementation("com.android.tools.build:gradle:8.11.2")
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20")
-    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.5")
+    implementation("com.android.tools.build:gradle:9.0.0")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.10")
+    implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.8")
 }
 
 configurations.all {
     resolutionStrategy {
-        force("org.jetbrains:annotations:23.0.0")
+        force("org.jetbrains:annotations:26.0.2-1")
     }
 }
 
