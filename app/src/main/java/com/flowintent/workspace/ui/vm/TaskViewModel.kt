@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.source.ITaskRepository
+import com.flowintent.core.db.repository.TaskRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val repository: ITaskRepository
+    private val repository: TaskRepository
 ) : ViewModel() {
 
     val tasks: StateFlow<List<Task>> = repository.getAllTasks()
@@ -30,15 +30,14 @@ class TaskViewModel @Inject constructor(
     private val _updateTaskId = MutableStateFlow<Int?>(null)
     val updateTaskId: StateFlow<Int?> = _updateTaskId.asStateFlow()
 
-    private val _deleteResult = MutableStateFlow<Boolean?>(null)
-    val deleteResult: StateFlow<Boolean?> = _deleteResult.asStateFlow()
-
     private val _expandedMap = mutableStateMapOf<Int, Boolean>()
     val expandedMap: Map<Int, Boolean> get() = _expandedMap
 
-    fun toggleExpanded(id: Int) {
-        _expandedMap[id] = !(_expandedMap[id] ?: false)
-    }
+
+    private var _isSelectionMode = MutableStateFlow(false)
+    val isSelectionMode: StateFlow<Boolean> = _isSelectionMode.asStateFlow()
+
+    val selectedTasks = mutableStateMapOf<Int, Boolean>()
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
@@ -52,20 +51,42 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun findByTaskName(taskName: String) {
-        viewModelScope.launch {
-            repository.findByTaskName(taskName)
-        }
-    }
-
     fun deleteTask(task: Task) {
         viewModelScope.launch {
-            val isDeleted = repository.deleteTask(task) > 0
-            _deleteResult.value = isDeleted
+            repository.deleteTask(task)
         }
     }
 
     fun setUpdateTaskId(id: Int?) {
         _updateTaskId.value = id
+    }
+
+    fun setSelectionMode(enabled: Boolean) {
+        _isSelectionMode.value = enabled
+        if (!enabled) {
+            selectedTasks.clear()
+        }
+    }
+
+    fun toggleExpanded(id: Int) {
+        _expandedMap[id] = !(_expandedMap[id] ?: false)
+    }
+
+    fun toggleSelection(uid: Int) {
+        selectedTasks[uid] = !(selectedTasks[uid] ?: false)
+    }
+
+    fun selectAll() {
+        tasks.value.forEach { selectedTasks[it.uid] = true }
+    }
+
+    fun unselectAll() {
+        selectedTasks.keys.forEach { selectedTasks[it] = false }
+    }
+
+    fun deleteSelectedTasks() {
+        val toDelete = tasks.value.filter { selectedTasks[it.uid] == true }
+        toDelete.forEach { deleteTask(it) }
+        toDelete.forEach { selectedTasks.remove(it.uid) }
     }
 }

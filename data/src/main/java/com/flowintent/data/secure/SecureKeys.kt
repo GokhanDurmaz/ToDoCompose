@@ -5,14 +5,14 @@ import android.util.Base64
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.flowintent.core.db.security.ISecurePrefsRepository
+import com.flowintent.core.db.security.SecurePrefsRepository
 import com.google.crypto.tink.Aead
 import kotlinx.coroutines.flow.first
 
 // DataStore tanımı
-val Context.securePrefs by preferencesDataStore(name = "secure_prefs")
+internal val Context.securePrefs by preferencesDataStore(name = "secure_prefs")
 
-object SecureKeys {
+internal object SecureKeys {
     val TOKEN = stringPreferencesKey("token")
     val REFRESH = stringPreferencesKey("refresh")
 }
@@ -29,7 +29,7 @@ private fun decryptFromBase64(aead: Aead, b64: String, ad: ByteArray? = null): B
 }
 
 // Repository
-class SecurePrefsRepositoryImpl(private val context: Context): ISecurePrefsRepository {
+internal class SecurePrefsRepositoryImpl(private val context: Context): SecurePrefsRepository {
 
     private val aead by lazy { CryptoProvider.aead(context) }
     private val AD_TOKEN = "token_v1".toByteArray()

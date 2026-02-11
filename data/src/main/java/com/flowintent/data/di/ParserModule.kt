@@ -13,11 +13,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class ParserModule {
+internal abstract class ParserModule {
 
     @Binds
     @Singleton
-    abstract fun bindJsonParser(gsonJsonParser: GsonJsonParser): JsonParser
+    internal abstract fun bindJsonParser(gsonJsonParser: GsonJsonParser): JsonParser
 
     companion object {
         @Provides

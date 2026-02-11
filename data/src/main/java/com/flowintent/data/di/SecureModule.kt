@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
-import com.flowintent.core.db.security.ISecurePrefsRepository
 import com.flowintent.data.secure.CryptoProvider
 import com.flowintent.data.secure.EncryptedSecurePrefsSerializer
 import com.flowintent.data.secure.SecurePrefs
 import com.flowintent.data.secure.SecurePrefsRepositoryImpl
 import com.google.crypto.tink.Aead
+import com.google.crypto.tink.aead.AeadConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,25 +22,28 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SecureModule {
+internal object SecureModule {
 
     @Provides
     @Singleton
-    fun provideAead(@ApplicationContext context: Context): Aead =
-        CryptoProvider.aead(context)
+    fun provideAead(@ApplicationContext context: Context): Aead {
+        AeadConfig.register()
+        return CryptoProvider.aead(context)
+    }
 
     @Provides
     @Singleton
-    fun provideSecurePrefsRepo(@ApplicationContext context: Context): SecurePrefsRepositoryImpl =
+    internal fun provideSecurePrefsRepo(@ApplicationContext context: Context): SecurePrefsRepositoryImpl =
         SecurePrefsRepositoryImpl(context)
 
     @Provides
     @Singleton
     fun provideSecurePrefsDataStore(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        aead: Aead
     ): DataStore<SecurePrefs> {
         return DataStoreFactory.create(
-            serializer = EncryptedSecurePrefsSerializer(context),
+            serializer = EncryptedSecurePrefsSerializer(aead),
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { context.dataStoreFile("secure_prefs.pb") }
         )

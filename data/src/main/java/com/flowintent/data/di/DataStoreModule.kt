@@ -1,7 +1,7 @@
 package com.flowintent.data.di
 
-import com.flowintent.core.db.source.IAssetDataSource
-import com.flowintent.core.db.source.ILocalTaskDataProvider
+import com.flowintent.core.db.source.AssetDataSource
+import com.flowintent.core.db.source.LocalTaskDataProvider
 import com.flowintent.data.db.AssetDataSourceImpl
 import com.flowintent.data.db.LocalTaskDataProviderImpl
 import dagger.Binds
@@ -12,15 +12,15 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class DataStoreModule {
+internal abstract class DataStoreModule {
 
     @Binds
     @Singleton
-    abstract fun bindAssetDataSource(assetDataSourceImpl: AssetDataSourceImpl): IAssetDataSource
+    internal abstract fun bindAssetDataSource(assetDataSourceImpl: AssetDataSourceImpl): AssetDataSource
 
     @Binds
     @Singleton
-    abstract fun bindLocalTaskDataProvider(
+    internal abstract fun bindLocalTaskDataProvider(
         localTaskDataProviderImpl: LocalTaskDataProviderImpl
-    ): ILocalTaskDataProvider
+    ): LocalTaskDataProvider
 }

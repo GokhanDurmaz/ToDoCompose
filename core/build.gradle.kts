@@ -13,6 +13,8 @@ android {
     compileSdk = 36
 
     defaultConfig {
+        minSdk = 21
+
         val properties = Properties()
         properties.load(project.rootProject.file("local.properties").inputStream())
 
@@ -46,16 +48,16 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
-            freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+            jvmTarget.set(JvmTarget.JVM_11)
+            freeCompilerArgs.add("-Xannotation-default-target=param-property")
         }
     }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -66,7 +68,7 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Room
-    implementation(libs.androidx.room.runtime)
+    api(libs.androidx.room.runtime)
 
     // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
     // See Add the KSP plugin to your project
@@ -74,14 +76,14 @@ dependencies {
 
     // optional - Kotlin Extensions and Coroutines support for Room
     //noinspection UseTomlInstead
-    implementation(libs.androidx.room.ktx)
+    api(libs.androidx.room.ktx)
 
     // optional - Test helpers
-    testImplementation(libs.androidx.room.testing)
+    testApi(libs.androidx.room.testing)
 
     // Retrofit
     implementation(libs.retrofit)
 
     // Serialization/deserialization json - GSON
-    implementation(libs.gson)
+    api(libs.gson)
 }

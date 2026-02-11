@@ -33,37 +33,41 @@ android {
     }
     kotlin {
         compilerOptions {
-            jvmTarget = JvmTarget.JVM_11
-            freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+            jvmTarget.set(JvmTarget.JVM_11)
         }
     }
 }
 
 dependencies {
 
-    implementation(project(":core"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
+    api(project(":core"))
 
     // DI tool
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
-
-    // Serialization/deserialization json - GSON
-    implementation(libs.gson)
 
     // Secure keystore tools
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore)
     implementation(libs.tink.android)
 
-    // protobuf lite version
-    implementation(libs.protobuf.javalite)
+    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
+    // See Add the KSP plugin to your project
+    ksp(libs.androidx.room.compiler)
+
+    // Import the Firebase BoM
+    implementation(platform(libs.firebase.bom))
+
+    // Add the dependency for the Firebase SDK for Google Analytics
+    implementation(libs.firebase.analytics)
+
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.firestore)
 }
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.25.3"
+        artifact = "com.google.protobuf:protoc:3.25.1"
     }
     generateProtoTasks {
         all().forEach { task ->
@@ -73,5 +77,12 @@ protobuf {
                 }
             }
         }
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("com.google.protobuf:protobuf-javalite:3.25.1")
+        force("com.google.firebase:protolite-well-known-types:18.0.0")
     }
 }

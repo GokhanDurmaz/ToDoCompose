@@ -2,14 +2,14 @@ package com.flowintent.data.db.repository
 
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.room.dao.ToDoDao
-import com.flowintent.core.db.source.ITaskRepository
+import com.flowintent.data.db.room.dao.ToDoDao
+import com.flowintent.core.db.repository.TaskRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class TaskRepositoryImpl @Inject constructor(
+internal open class TaskRepositoryImpl @Inject constructor(
     private val toDoDao: ToDoDao
-): ITaskRepository {
+): TaskRepository {
     override fun  getAllTasks(): Flow<List<Task>> = toDoDao.getAllTasks()
 
     override suspend fun insertTask(task: Task) {

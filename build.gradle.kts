@@ -1,18 +1,22 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.compose.compiler) apply false
+    id(libs.plugins.android.application.get().pluginId) version libs.versions.agp.get() apply false
+    id(libs.plugins.android.library.get().pluginId) version libs.versions.agp.get() apply false
+    id(libs.plugins.kotlin.android.get().pluginId) version libs.versions.kotlin.get() apply false
+    id(libs.plugins.compose.compiler.get().pluginId) version libs.versions.kotlin.get() apply false
 
-    kotlin("plugin.serialization") version "2.0.21"
-    alias(libs.plugins.ksp)
+    kotlin("plugin.serialization") version "2.0.21" apply false
+    alias(libs.plugins.ksp) apply false
     id("com.google.dagger.hilt.android") version "2.57.1" apply false
     id("com.google.gms.google-services") version "4.4.3" apply false
+
+    id("flowintent.detekt") apply false
 }
 tasks.register("clean") {
-    delete {
-        getLayout().buildDirectory
-    }
+    delete(rootProject.layout.buildDirectory)
+
+    delete("build-logic/build")
+    delete("build-logic/src/main/generated")
 }
 
 defaultTasks("buildApp")
@@ -28,6 +32,7 @@ tasks.register("buildAppDebug") {
     description = "Builds both app and core modules"
     dependsOn(tasks.named("runAllTests"))
 
+    dependsOn(":app:detekt")
     dependsOn(":app:assembleDebug")
     dependsOn(":core:assembleDebug")
     dependsOn(":data:assembleDebug")
@@ -38,8 +43,21 @@ tasks.register("buildAppRelease") {
     description = "Builds both app and core modules"
     dependsOn(tasks.named("runAllTests"))
 
-    dependsOn(":app:assembleRelease")
-    dependsOn(":core:assembleRelease")
-    dependsOn(":data:assembleRelease")
+    val detektTask = tasks.getByPath(":app:detekt")
+    dependsOn(detektTask)
+
+    val assembleTasks = listOf(":app:assembleRelease", ":core:assembleRelease", ":data:assembleRelease")
+    assembleTasks.forEach { taskPath ->
+        dependsOn(taskPath)
+        tasks.getByPath(taskPath).mustRunAfter(detektTask)
+    }
 }
 
+subprojects {
+    plugins.withId("io.gitlab.arturbosch.detekt") {
+        tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+            val isDebugBuild = gradle.startParameter.taskNames.any { it.contains("buildAppDebug", ignoreCase = true) }
+            ignoreFailures = isDebugBuild
+        }
+    }
+}

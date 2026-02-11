@@ -3,8 +3,10 @@ package com.flowintent.test
 import com.flowintent.core.db.TaskCategory
 import com.flowintent.core.db.TaskContent
 import com.flowintent.core.db.TaskIcon
-import com.flowintent.core.db.source.ILocalTaskDataProvider
-import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
+import com.flowintent.core.db.source.LocalTaskDataProvider
+import com.flowintent.core.util.Resource
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -16,16 +18,16 @@ import org.mockito.MockitoAnnotations
 class TaskCategoryRepositoryTest {
 
     @Mock
-    private lateinit var localTaskDataProvider: ILocalTaskDataProvider
+    private lateinit var localTaskDataProvider: LocalTaskDataProvider
 
-    private lateinit var taskCategoryRepository: TaskCategoryRepositoryImpl
+    private lateinit var taskCategoryRepository: FakeTaskCategoryRepositoryImpl
 
     @Before
     fun setUp() {
         // Initialize Mockito annotations
         MockitoAnnotations.openMocks(this)
         // Initialize task category repository impl.
-        taskCategoryRepository = TaskCategoryRepositoryImpl(localTaskDataProvider)
+        taskCategoryRepository = FakeTaskCategoryRepositoryImpl(localTaskDataProvider)
     }
 
     @Test
@@ -57,26 +59,30 @@ class TaskCategoryRepositoryTest {
                 textColor = 0xFF000000
             )
         )
-        `when`(localTaskDataProvider.getAllCategories()).thenReturn(expectedCategories)
+        `when`(localTaskDataProvider.getAllCategories()).thenReturn(flowOf ( Resource.Success(expectedCategories)))
 
         // Act: Call the repository method
-        val result = taskCategoryRepository.getAllLocalCategories()
+        val result = taskCategoryRepository.getAllLocalCategories().first()
+
+        val actualData = (result as Resource.Success).data
 
         // Assert: Verify the result matches the expected categories
-        assertEquals(expectedCategories, result)
+        assertEquals(expectedCategories, actualData)
     }
 
     @Test
     fun `getAllLocalCategories should handle empty list from localTaskDataProvider`() = runBlocking {
         // Arrange: Mock the data provider to return an empty list
         val expectedCategories = emptyList<TaskCategory>()
-        `when`(localTaskDataProvider.getAllCategories()).thenReturn(expectedCategories)
+        `when`(localTaskDataProvider.getAllCategories()).thenReturn(flowOf( Resource.Success(expectedCategories)))
 
         // Act: Call the repository method
-        val result = taskCategoryRepository.getAllLocalCategories()
+        val result = taskCategoryRepository.getAllLocalCategories().first()
+
+        val actualData = (result as Resource.Success).data
 
         // Assert: Verify the result is an empty list
-        assertEquals(expectedCategories, result)
+        assertEquals(expectedCategories, actualData)
     }
 
     @Test

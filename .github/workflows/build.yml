@@ -2,6 +2,7 @@ name: Android CI/CD Pipeline
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, labeled]
     branches: [ "main" ]
   workflow_dispatch:
   push:
@@ -53,24 +54,25 @@ jobs:
           chmod +x ./gradlew
           chmod +x ./deploy.sh
 
+      - name: Run Detekt
+        run: ./gradlew detekt
+
+      - name: Upload Detekt Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-report
+          path: build/reports/detekt/
+
       - name: Run Unit Tests and Lint
-        run: |
-          # First, run unit tests
-          ./gradlew testDebugUnitTest
-          # Check if Lint baseline file exists
-          LINT_BASELINE=core/build/lint-baseline.xml
-          if [ ! -f "$LINT_BASELINE" ]; then
-            echo "Lint baseline does not exist. Creating baseline..."
-            # Run lintDebug; if it fails due to new baseline, ignore the error
-            ./gradlew lintDebug || true
-          else
-            # Baseline exists, run lint normally
-            ./gradlew lintDebug
-          fi
+        run: ./gradlew testDebugUnitTest lintDebug -Dlint.baselines.continue=true
 
   build_release:
     needs: build_and_test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     env:
       STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
       KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -80,6 +82,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Bump version and push tag
         id: version_bump
@@ -121,21 +125,39 @@ jobs:
       - name: Build Release App Bundle
         run: ./gradlew bundleRelease
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Push AAB to Private Repository
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.RELEASE_PAT }}
+          STORAGE_REPO: ${{ secrets.BINARY_STORAGE_REPO }}
+        run: |
+          git clone https://x-access-token:${{ env.API_TOKEN_GITHUB }}@github.com/${{ github.repository_owner }}/${{ env.STORAGE_REPO }}.git private_storage
+          cp app/build/outputs/bundle/release/app-release.aab private_storage/app-release-${{ env.VERSION_NAME }}.aab
+          cd private_storage
+          git config user.name "GitHub Action CI/CD"
+          git config user.email "actions@github.com"
+          git add .
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes detected. Skipping commit and push."
+          else
+            git commit -m "Release build for ${{ env.VERSION_NAME }}"
+            git push origin main
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION_NAME }}
-          release_name: Release ${{ env.VERSION_NAME }}
+          name: Release ${{ env.VERSION_NAME }}
+          generate_release_notes: true
           draft: false
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload AAB to GitHub Release
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: app/build/outputs/bundle/release/app-release.aab
-          asset_name: app-${{ env.VERSION_NAME }}.aab
-          asset_content_type: application/octet-stream
+      - name: Auto-merge Pull Request
+        if: github.event_name == 'pull_request' && success()
+        uses: pascalgn/automerge-action@v0.16.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_METHOD: "merge"
+          MERGE_COMMIT_MESSAGE: "Auto-merged by CI/CD: {pullRequest.title}"

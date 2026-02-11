@@ -2,16 +2,16 @@ package com.flowintent.data.db
 
 import android.content.Context
 import android.util.Log
-import com.flowintent.core.db.source.IAssetDataSource
+import com.flowintent.core.db.source.AssetDataSource
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
 import javax.inject.Inject
 
-class AssetDataSourceImpl @Inject constructor(
-    @ApplicationContext private val context: Context
-): IAssetDataSource {
+internal class AssetDataSourceImpl @Inject constructor(
+    @param:ApplicationContext private val context: Context
+): AssetDataSource {
 
     override suspend fun readJsonString(fileName: String): String {
         return withContext(Dispatchers.IO) {
