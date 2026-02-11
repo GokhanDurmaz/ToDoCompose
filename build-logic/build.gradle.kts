@@ -14,6 +14,12 @@ dependencies {
     implementation("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.5")
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("org.jetbrains:annotations:23.0.0")
+    }
+}
+
 gradlePlugin {
     plugins {
         register("myDetekt") {
