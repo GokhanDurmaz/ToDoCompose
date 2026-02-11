@@ -11,6 +11,9 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
 
+    exclude-paths:
+      - "build-logic/**"
+
     groups:
       all-dependencies:
         patterns:
