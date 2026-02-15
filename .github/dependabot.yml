@@ -11,6 +11,14 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
 
+    ignore:
+      - dependency-name: "com.android.tools.build:gradle"
+        versions: [">= 9.0"]
+      - dependency-name: "com.android.application"
+        versions: [">= 9.0"]
+      - dependency-name: "com.android.library"
+        versions: [">= 9.0"]
+
     exclude-paths:
       - "build-logic/**"
 
