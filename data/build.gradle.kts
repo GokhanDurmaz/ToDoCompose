@@ -41,6 +41,7 @@ android {
 dependencies {
 
     api(project(":core"))
+    implementation(project(":schema"))
 
     // DI tool
     implementation(libs.hilt.android)
@@ -63,21 +64,6 @@ dependencies {
 
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-}
-
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.25.1"
-    }
-    generateProtoTasks {
-        all().forEach { task ->
-            task.builtins {
-                create("java") {
-                    option("lite")
-                }
-            }
-        }
-    }
 }
 
 configurations.all {

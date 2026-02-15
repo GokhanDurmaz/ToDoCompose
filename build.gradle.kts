@@ -11,6 +11,7 @@ plugins {
     id("com.google.gms.google-services") version "4.4.3" apply false
 
     id("flowintent.detekt") apply false
+    alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 tasks.register("clean") {
     delete(rootProject.layout.buildDirectory)
@@ -58,6 +59,16 @@ subprojects {
         tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
             val isDebugBuild = gradle.startParameter.taskNames.any { it.contains("buildAppDebug", ignoreCase = true) }
             ignoreFailures = isDebugBuild
+        }
+    }
+}
+
+subprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.google.protobuf") {
+                useVersion("3.25.1")
+            }
         }
     }
 }
