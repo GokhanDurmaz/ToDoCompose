@@ -34,6 +34,7 @@ uiTestJunit4 = "1.10.1"
 ksp-version = "2.2.20-2.0.2"
 protobuf-version = "0.9.6"
 detekt = "1.23.5"
+jetbrainsKotlinJvm = "2.2.20"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -98,3 +99,4 @@ kotlinx-serialization = { id = "kotlinx-serialization" }
 google-services = { id = "com.google.gms.google-services" }
 android-library = { id = "com.android.library" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf-version" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
