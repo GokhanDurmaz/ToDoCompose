@@ -8,10 +8,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.flowintent.hilt)
+    alias(libs.plugins.flowintent.detekt)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services) // The Google Services plugin
-    id("flowintent.detekt")
 }
 
 val gitHashProvider = providers.exec {
@@ -159,10 +159,8 @@ dependencies {
 
     implementation(libs.accompanist.systemuicontroller)
 
-    // DI tool for compose
-    implementation(libs.hilt.android)
+    // DI tool for compose navigation
     implementation(libs.androidx.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.core.splashscreen)
 

@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.flowintent.hilt)
 }
 
 android {
@@ -62,10 +62,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
-    // DI tool
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
 
     // Room
     api(libs.androidx.room.runtime)
