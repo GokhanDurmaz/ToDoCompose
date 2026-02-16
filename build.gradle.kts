@@ -32,11 +32,16 @@ tasks.register("buildAppDebug") {
     group = "build"
     description = "Builds both app and core modules"
     dependsOn(tasks.named("runAllTests"))
-
     dependsOn(":app:detekt")
-    dependsOn(":app:assembleDebug")
-    dependsOn(":core:assembleDebug")
+
+    subprojects.forEach { subproject ->
+        if (subproject.path.startsWith(":core:")) {
+            dependsOn("${subproject.path}:assembleDebug")
+        }
+    }
+
     dependsOn(":data:assembleDebug")
+    dependsOn(":app:assembleDebug")
 }
 
 tasks.register("buildAppRelease") {

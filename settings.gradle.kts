@@ -22,7 +22,9 @@ dependencyResolutionManagement {
 
 rootProject.name = "ToDo App"
 include(":app")
-include(":core")
+include(":core:common")
+include(":core:network")
+include(":core:profile")
 include(":test")
 include(":data")
 include(":schema")
