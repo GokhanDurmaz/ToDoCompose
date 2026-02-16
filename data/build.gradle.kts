@@ -4,8 +4,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.android)
     alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.flowintent.hilt)
 }
 
 android {
@@ -40,12 +40,10 @@ android {
 
 dependencies {
 
-    api(project(":core"))
     implementation(project(":schema"))
-
-    // DI tool
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
+    api(project(":core:common"))
+    api(project(":core:network"))
+    api(project(":core:profile"))
 
     // Secure keystore tools
     implementation(libs.androidx.datastore.preferences)
