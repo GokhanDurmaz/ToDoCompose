@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تطبيق المهام</string>
+    <string name="default_task_name">مهمة</string>
+    <string name="default_task_content">المحتوى</string>
+    <string name="logo">الشعار</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="empty_task">مهمة فارغة</string>
+    <string name="hello_greeting">أهلاً بك 👋</string>
+    <string name="your_workspace">مساحة عملك</string>
+    <string name="categories_label">الفئات</string>
+    <string name="items_count">%1$d عناصر</string>
+    <string name="error_loading_data">حدث خطأ أثناء تحميل البيانات.</string>
+    <string name="category_icon_desc">أيقونة %1$s</string>
+    <string name="language_label">اللغة</string>
+    <string name="version_text">الإصدار 1.0.0</string>
+    <string name="home_label">الرئيسية</string>
+    <string name="reminder_label">تذكير</string>
+    <string name="todo_list_label">قائمة المهام</string>
+    <string name="settings_label">الإعدادات</string>
+    <string name="task_details_title">تفاصيل المهمة</string>
+    <string name="type_new_todo">اكتب مهمة جديدة…</string>
+    <string name="attach_file_desc">إرفاق ملف</string>
+    <string name="send_desc">إرسال</string>
+    <string name="new_task_default_title">مهمة جديدة</string>
+    <string name="no_tasks_yet">لا توجد مهام بعد.</string>
+    <string name="empty_task_description">قائمة مهامك فارغة. استخدم شريط الإدخال أدناه لإضافة مهمتك الأولى!</string>
+    <string name="theme_label">المظهر</string>
+    <string name="dnd_label">عدم الإزعاج</string>
+    <string name="enable_dnd">تفعيل عدم الإزعاج</string>
+    <string name="intensity">الكثافة</string>
+    <string name="about_label">حول</string>
+    <string name="version_label">الإصدار 1.0.0</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="terms_service">شروط الخدمة</string>
+    <string name="check_updates">التحقق من التحديثات</string>
+    <string name="logout">تسجيل الخروج</string>
+</resources>

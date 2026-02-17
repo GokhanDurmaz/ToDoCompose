@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDo App</string>
+    <string name="default_task_name">Tâche</string>
+    <string name="default_task_content">Contenu</string>
+    <string name="logo">Logo</string>
+    <string name="profile">Profil</string>
+    <string name="empty_task">Tâche vide</string>
+    <string name="hello_greeting">Bonjour 👋</string>
+    <string name="your_workspace">Votre espace de travail</string>
+    <string name="categories_label">Catégories</string>
+    <string name="items_count">%1$d éléments</string>
+    <string name="error_loading_data">Une erreur est survenue lors du chargement des données.</string>
+    <string name="category_icon_desc">Icône %1$s</string>
+    <string name="language_label">Langue</string>
+    <string name="version_text">Version 1.0.0</string>
+    <string name="home_label">Accueil</string>
+    <string name="reminder_label">Rappel</string>
+    <string name="todo_list_label">Liste de tâches</string>
+    <string name="settings_label">Paramètres</string>
+    <string name="task_details_title">Détails de la tâche</string>
+    <string name="type_new_todo">Écrire une nouvelle tâche…</string>
+    <string name="attach_file_desc">Joindre un fichier</string>
+    <string name="send_desc">Envoyer</string>
+    <string name="new_task_default_title">Nouvelle tâche</string>
+    <string name="no_tasks_yet">Aucune tâche pour le moment.</string>
+    <string name="empty_task_description">Votre liste de tâches est vide. Utilisez la barre ci-dessous pour ajouter votre première tâche !</string>
+    <string name="theme_label">Thème</string>
+    <string name="dnd_label">Ne pas déranger</string>
+    <string name="enable_dnd">Activer NPD</string>
+    <string name="intensity">Intensité</string>
+    <string name="about_label">À propos</string>
+    <string name="version_label">Version 1.0.0</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="terms_service">Conditions d\'utilisation</string>
+    <string name="check_updates">Vérifier les mises à jour</string>
+    <string name="logout">Déconnexion</string>
+</resources>

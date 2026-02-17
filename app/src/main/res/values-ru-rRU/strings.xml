@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDo App</string>
+    <string name="default_task_name">Задача</string>
+    <string name="default_task_content">Содержание</string>
+    <string name="logo">Логотип</string>
+    <string name="profile">Профиль</string>
+    <string name="empty_task">Пустая задача</string>
+    <string name="hello_greeting">Всем привет 👋</string>
+    <string name="your_workspace">Ваше рабочее пространство</string>
+    <string name="categories_label">Категории</string>
+    <string name="items_count">Элементов: %1$d</string>
+    <string name="error_loading_data">Произошла ошибка при загрузке данных.</string>
+    <string name="category_icon_desc">Иконка %1$s</string>
+    <string name="language_label">Язык</string>
+    <string name="version_text">Версия 1.0.0</string>
+    <string name="home_label">Главная</string>
+    <string name="reminder_label">Напоминание</string>
+    <string name="todo_list_label">Список дел</string>
+    <string name="settings_label">Настройки</string>
+    <string name="task_details_title">Детали задачи</string>
+    <string name="type_new_todo">Введите новую задачу…</string>
+    <string name="attach_file_desc">Прикрепить файл</string>
+    <string name="send_desc">Отправить</string>
+    <string name="new_task_default_title">Новая задача</string>
+    <string name="no_tasks_yet">Задач пока нет.</string>
+    <string name="empty_task_description">Ваш список дел пуст. Используйте строку ввода ниже, чтобы добавить первую задачу!</string>
+    <string name="theme_label">Тема</string>
+    <string name="dnd_label">Не беспокоить</string>
+    <string name="enable_dnd">Включить режим «Не беспокоить»</string>
+    <string name="intensity">Интенсивность</string>
+    <string name="about_label">О приложении</string>
+    <string name="version_label">Версия 1.0.0</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="terms_service">Условия использования</string>
+    <string name="check_updates">Проверить обновления</string>
+    <string name="logout">Выйти</string>
+</resources>

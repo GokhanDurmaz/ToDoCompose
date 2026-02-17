@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDo App</string>
+    <string name="default_task_name">Aufgabe</string>
+    <string name="default_task_content">Inhalt</string>
+    <string name="logo">Logo</string>
+    <string name="profile">Profil</string>
+    <string name="empty_task">Leere Aufgabe</string>
+    <string name="hello_greeting">Hallo zusammen 👋</string>
+    <string name="your_workspace">Dein Arbeitsbereich</string>
+    <string name="categories_label">Kategorien</string>
+    <string name="items_count">%1$d Elemente</string>
+    <string name="error_loading_data">Beim Laden der Daten ist ein Fehler aufgetreten.</string>
+    <string name="category_icon_desc">%1$s Symbol</string>
+    <string name="language_label">Sprache</string>
+    <string name="version_text">Version 1.0.0</string>
+    <string name="home_label">Home</string>
+    <string name="reminder_label">Erinnerung</string>
+    <string name="todo_list_label">ToDo-Liste</string>
+    <string name="settings_label">Einstellungen</string>
+    <string name="task_details_title">Aufgabendetails</string>
+    <string name="type_new_todo">Neue Aufgabe eingeben…</string>
+    <string name="attach_file_desc">Datei anhängen</string>
+    <string name="send_desc">Senden</string>
+    <string name="new_task_default_title">Neue Aufgabe</string>
+    <string name="no_tasks_yet">Noch keine Aufgaben.</string>
+    <string name="empty_task_description">Deine ToDo-Liste ist leer. Nutze die Eingabeleiste unten, um deine erste Aufgabe hinzuzufügen!</string>
+    <string name="theme_label">Design</string>
+    <string name="dnd_label">Nicht stören</string>
+    <string name="enable_dnd">Nist aktivieren</string>
+    <string name="intensity">Intensität</string>
+    <string name="about_label">Über</string>
+    <string name="version_label">Version 1.0.0</string>
+    <string name="privacy_policy">Datenschutzerklärung</string>
+    <string name="terms_service">Nutzungsbedingungen</string>
+    <string name="check_updates">Auf Updates prüfen</string>
+    <string name="logout">Abmelden</string>
+</resources>

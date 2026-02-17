@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDoアプリ</string>
+    <string name="default_task_name">タスク</string>
+    <string name="default_task_content">内容</string>
+    <string name="logo">ロゴ</string>
+    <string name="profile">プロフィール</string>
+    <string name="empty_task">空のタスク</string>
+    <string name="hello_greeting">こんにちは 👋</string>
+    <string name="your_workspace">ワークスペース</string>
+    <string name="categories_label">カテゴリー</string>
+    <string name="items_count">%1$d 個のアイテム</string>
+    <string name="error_loading_data">データの読み込み中にエラーが発生しました。</string>
+    <string name="category_icon_desc">%1$s アイコン</string>
+    <string name="language_label">言語</string>
+    <string name="version_text">バージョン 1.0.0</string>
+    <string name="home_label">ホーム</string>
+    <string name="reminder_label">リマインダー</string>
+    <string name="todo_list_label">ToDoリスト</string>
+    <string name="settings_label">設定</string>
+    <string name="task_details_title">タスクの詳細</string>
+    <string name="type_new_todo">新しいToDoを入力…</string>
+    <string name="attach_file_desc">ファイルを添付</string>
+    <string name="send_desc">送信</string>
+    <string name="new_task_default_title">新規タスク</string>
+    <string name="no_tasks_yet">タスクはまだありません。</string>
+    <string name="empty_task_description">ToDoリストが空です。下の入力バーから最初のタスクを追加しましょう！</string>
+    <string name="theme_label">テーマ</string>
+    <string name="dnd_label">おやすみモード</string>
+    <string name="enable_dnd">おやすみモードを有効にする</string>
+    <string name="intensity">強度</string>
+    <string name="about_label">このアプリについて</string>
+    <string name="version_label">バージョン 1.0.0</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="terms_service">利用規約</string>
+    <string name="check_updates">アップデートを確認</string>
+    <string name="logout">ログアウト</string>
+</resources>
