@@ -5,7 +5,8 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.flowintent.hilt)
+    alias(libs.plugins.flowintent.room)
 }
 
 android {
@@ -55,31 +56,7 @@ android {
 }
 
 dependencies {
-
     api(libs.androidx.core.ktx)
-    api(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    // DI tool
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
-    // Room
-    api(libs.androidx.room.runtime)
-
-    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
-    ksp(libs.androidx.room.compiler)
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    //noinspection UseTomlInstead
-    api(libs.androidx.room.ktx)
-
-    // optional - Test helpers
-    testApi(libs.androidx.room.testing)
 
     // Retrofit
     implementation(libs.retrofit)

@@ -1,39 +1,41 @@
 [versions]
 accompanistSystemuicontroller = "0.36.0"
-activityCompose = "1.10.0"
-agp = "8.11.2"
+activityCompose = "1.12.4"
+agp = "8.13.2"
 coreSplashscreen = "1.2.0"
 datastorePreferences = "1.2.0"
 desugar_jdk_libs = "2.1.5"
-firebaseBom = "34.8.0"
+detektGradlePlugin = "1.23.8"
+firebaseBom = "34.9.0"
 gson = "2.13.2"
-hilt = "2.57.2"
+hilt = "2.58"
 hiltNavigationCompose = "1.3.0"
 kotlin = "2.2.20"
-coreKtx = "1.15.0"
+coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 appcompat = "1.7.1"
-kotlinReflect = "2.1.20"
+kotlinReflect = "2.2.21"
 kotlinxCoroutinesTest = "1.10.2"
-kotlinxSerializationJson = "1.9.0"
+kotlinxSerializationJson = "1.10.0"
 leakcanaryAndroid = "2.14"
 lifecycleViewmodelCompose = "2.10.0"
 material = "1.13.0"
 material3 = "1.4.0"
 mockitoCore = "5.21.0"
-mockitoKotlin = "6.1.0"
-navigationCompose = "2.8.5"
+mockitoKotlin = "6.2.3"
+navigationCompose = "2.9.7"
 material3Android = "1.4.0"
-protobufJavalite = "4.33.3"
+protobufJavalite = "4.33.5"
 retrofit = "3.0.0"
 room= "2.8.4"
 tinkAndroid = "1.20.0"
-uiTestJunit4 = "1.10.1"
+uiTestJunit4 = "1.10.3"
 ksp-version = "2.2.20-2.0.2"
 protobuf-version = "0.9.6"
-detekt = "1.23.5"
+detekt = "1.23.8"
+googleService = "4.4.3"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -61,12 +63,16 @@ androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", v
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-ui = { module = "androidx.compose.ui:ui" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+com-google-devtools-ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp-version" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detektGradlePlugin" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -85,7 +91,7 @@ mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "tinkAndroid" }
-kotlin-gradle-plugin= { group = "org.jetbrains.kotlin.android", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -97,4 +103,8 @@ hilt-android = { id = "com.google.dagger.hilt.android" }
 kotlinx-serialization = { id = "kotlinx-serialization" }
 google-services = { id = "com.google.gms.google-services" }
 android-library = { id = "com.android.library" }
+flowintent-hilt = { id = "flowintent.hilt" }
+flowintent-room = { id = "flowintent.room" }
+flowintent-detekt = { id = "flowintent.detekt" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf-version" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

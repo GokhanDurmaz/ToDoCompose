@@ -8,10 +8,10 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.flowintent.hilt)
+    alias(libs.plugins.flowintent.detekt)
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services) // The Google Services plugin
-    id("flowintent.detekt")
 }
 
 val gitHashProvider = providers.exec {
@@ -29,13 +29,12 @@ val versionCodeProvider = providers.environmentVariable("VERSION_CODE")
 
 android {
     namespace = "com.flowintent.workspace"
-    buildToolsVersion = "35.0.0"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.flowintent.workspace"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
@@ -121,7 +120,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.material3.window.size.class1.android)
-    implementation(project(":data"))
+    implementation(project(":core:common"))
+    implementation(project(":core:network"))
+    implementation(project(":core:profile"))
+    runtimeOnly(project(":data"))
 
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
@@ -159,10 +161,8 @@ dependencies {
 
     implementation(libs.accompanist.systemuicontroller)
 
-    // DI tool for compose
-    implementation(libs.hilt.android)
+    // DI tool for compose navigation
     implementation(libs.androidx.hilt.navigation.compose)
-    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.core.splashscreen)
 
