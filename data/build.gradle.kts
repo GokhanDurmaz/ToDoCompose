@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.flowintent.hilt)
+    alias(libs.plugins.flowintent.room)
 }
 
 android {
@@ -41,18 +42,14 @@ android {
 dependencies {
 
     implementation(project(":schema"))
-    api(project(":core:common"))
-    api(project(":core:network"))
-    api(project(":core:profile"))
+    implementation(project(":core:common"))
+    implementation(project(":core:network"))
+    implementation(project(":core:profile"))
 
     // Secure keystore tools
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore)
     implementation(libs.tink.android)
-
-    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
-    // See Add the KSP plugin to your project
-    ksp(libs.androidx.room.compiler)
 
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
