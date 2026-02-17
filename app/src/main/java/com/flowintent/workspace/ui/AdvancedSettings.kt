@@ -1,10 +1,12 @@
 package com.flowintent.workspace.ui
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,11 +46,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.workspace.R
 import com.flowintent.workspace.ui.vm.AuthViewModel
 import com.flowintent.workspace.util.COLOR_0XFF0F0F1C
 import com.flowintent.workspace.util.COLOR_0XFF1A1A2E
@@ -68,7 +73,7 @@ import com.flowintent.workspace.util.VAL_8
 
 @Preview(showBackground = true)
 @Composable
-fun SettingsScreen2() {
+fun SettingsScreen() {
     AdvancedSettingsScreen()
 }
 
@@ -79,6 +84,7 @@ fun AdvancedSettingsScreen(viewModel: AuthViewModel = hiltViewModel()) {
     var theme by remember { mutableStateOf("Dark") }
     var doNotDisturb by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(VAL_0_5) }
+    val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
 
     LaunchedEffect(Unit) {
         viewModel.fetchAndSaveUserProfileIfEmpty()
@@ -94,6 +100,11 @@ fun AdvancedSettingsScreen(viewModel: AuthViewModel = hiltViewModel()) {
         ProfileHeader(username ?: "", email ?: "")
 
         Spacer(modifier = Modifier.height(20.dp))
+
+        LanguageSelection(currentLanguage = currentLocale) { selectedLocale ->
+            val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(selectedLocale)
+            AppCompatDelegate.setApplicationLocales(appLocale)
+        }
 
         ThemeSelection(currentTheme = theme, onThemeChange = { theme = it })
 
@@ -154,8 +165,51 @@ private fun ProfileHeader(username: String, email: String) {
 }
 
 @Composable
+private fun LanguageSelection(currentLanguage: String, onLanguageChange: (String) -> Unit) {
+    SettingsSection(title = stringResource(R.string.language_label)) {
+        FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            val languages = listOf(
+                "en" to "English",
+                "tr" to "Türkçe",
+                "es" to "Español",
+                "fr" to "Français",
+                "de" to "Deutsch",
+                "zh" to "中文",
+                "ar" to "العربية",
+                "pt" to "Português",
+                "ru" to "Русский",
+                "ja" to "日本語"
+            )
+
+            languages.forEach { (code, name) ->
+                val isSelected = if (currentLanguage.isEmpty()) code == "en" else currentLanguage.startsWith(code)
+                FilterChip(
+                    selected = isSelected,
+                    onClick = { onLanguageChange(code) },
+                    label = { Text(text = name, color = if (isSelected) Color.White else Color.Gray) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = Color(COLOR_0XFF7B2FF7),
+                        containerColor = Color(COLOR_0XFF2A2A3D)
+                    ),
+                    border = FilterChipDefaults.filterChipBorder(
+                        borderColor = if (isSelected) Color(COLOR_0XFF9D4EDD) else Color.Gray,
+                        borderWidth = 1.dp,
+                        enabled = true,
+                        selected = isSelected
+                    )
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun ThemeSelection(currentTheme: String, onThemeChange: (String) -> Unit) {
-    SettingsSection(title = "Theme") {
+    SettingsSection(title = stringResource(R.string.theme_label)) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             listOf("Light", "Dark", "Amoled").forEach { option ->
                 val isSelected = currentTheme == option
@@ -171,7 +225,7 @@ private fun ThemeSelection(currentTheme: String, onThemeChange: (String) -> Unit
                         borderColor = if (isSelected) Color(COLOR_0XFF9D4EDD) else Color.Gray,
                         borderWidth = 1.dp,
                         enabled = true,
-                        selected = true
+                        selected = isSelected
                     )
                 )
             }
@@ -186,25 +240,34 @@ private fun DndSection(
     sliderValue: Float,
     onSliderChange: (Float) -> Unit
 ) {
-    SettingsSection(title = "Do Not Disturb") {
+    SettingsSection(title = stringResource(R.string.dnd_label)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text("Enable DND", color = Color.White)
+            Text(stringResource(R.string.enable_dnd), color = Color.White)
             Spacer(Modifier.weight(1f))
             Switch(checked = doNotDisturb, onCheckedChange = onDndChange)
         }
         Spacer(Modifier.height(12.dp))
-        Text("Intensity", color = Color.Gray)
+        Text(stringResource(R.string.intensity), color = Color.Gray)
         Slider(value = sliderValue, onValueChange = onSliderChange, valueRange = 0f..1f)
     }
 }
 
 @Composable
 private fun AboutSection() {
-    SettingsSection(title = "About") {
-        Text("Version 1.0.0", color = Color.Gray)
+    SettingsSection(title = stringResource(R.string.about_label)) {
+        Text(stringResource(R.string.version_label), color = Color.Gray)
+
         Spacer(Modifier.height(8.dp))
-        listOf("Privacy Policy", "Terms of Service", "Check for Updates", "Github").forEach {
-            Text(it, color = Color.White)
+
+        val aboutItems = listOf(
+            stringResource(R.string.privacy_policy),
+            stringResource(R.string.terms_service),
+            stringResource(R.string.check_updates),
+            "Github"
+        )
+
+        aboutItems.forEach { item ->
+            Text(item, color = Color.White, modifier = Modifier.padding(vertical = 4.dp))
         }
     }
 }
@@ -219,7 +282,7 @@ private fun LogoutButton(onLogout: () -> Unit) {
     ) {
         Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null, tint = Color.White)
         Spacer(Modifier.width(VAL_8.dp))
-        Text("Logout", color = Color.White)
+        Text(stringResource(R.string.logout), color = Color.White)
     }
 }
 

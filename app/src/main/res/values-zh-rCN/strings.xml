@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">待办事项</string>
+    <string name="default_task_name">任务</string>
+    <string name="default_task_content">内容</string>
+    <string name="logo">标志</string>
+    <string name="profile">个人资料</string>
+    <string name="empty_task">空任务</string>
+    <string name="hello_greeting">你好 👋</string>
+    <string name="your_workspace">您的工作区</string>
+    <string name="categories_label">类别</string>
+    <string name="items_count">%1$d 个项目</string>
+    <string name="error_loading_data">加载数据时出错。</string>
+    <string name="category_icon_desc">%1$s 图标</string>
+    <string name="language_label">语言</string>
+    <string name="version_text">版本 1.0.0</string>
+    <string name="home_label">主页</string>
+    <string name="reminder_label">提醒</string>
+    <string name="todo_list_label">待办列表</string>
+    <string name="settings_label">设置</string>
+    <string name="task_details_title">任务详情</string>
+    <string name="type_new_todo">输入新的待办事项…</string>
+    <string name="attach_file_desc">附加文件</string>
+    <string name="send_desc">发送</string>
+    <string name="new_task_default_title">新任务</string>
+    <string name="no_tasks_yet">暂无任务。</string>
+    <string name="empty_task_description">您的待办事项列表是空的。使用下面的输入栏添加您的第一个任务！</string>
+    <string name="theme_label">主题</string>
+    <string name="dnd_label">勿扰模式</string>
+    <string name="enable_dnd">启用勿扰</string>
+    <string name="intensity">强度</string>
+    <string name="about_label">关于</string>
+    <string name="version_label">版本 1.0.0</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="terms_service">服务条款</string>
+    <string name="check_updates">检查更新</string>
+    <string name="logout">退出登录</string>
+</resources>

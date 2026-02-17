@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDo App</string>
+    <string name="default_task_name">Tarefa</string>
+    <string name="default_task_content">Conteúdo</string>
+    <string name="logo">Logo</string>
+    <string name="profile">Perfil</string>
+    <string name="empty_task">Tarefa vazia</string>
+    <string name="hello_greeting">Olá 👋</string>
+    <string name="your_workspace">Seu espaço de trabalho</string>
+    <string name="categories_label">Categorias</string>
+    <string name="items_count">%1$d itens</string>
+    <string name="error_loading_data">Ocorreu um erro ao carregar os dados.</string>
+    <string name="category_icon_desc">Ícone de %1$s</string>
+    <string name="language_label">Idioma</string>
+    <string name="version_text">Versão 1.0.0</string>
+    <string name="home_label">Início</string>
+    <string name="reminder_label">Lembrete</string>
+    <string name="todo_list_label">Lista de tarefas</string>
+    <string name="settings_label">Configurações</string>
+    <string name="task_details_title">Detalhes da tarefa</string>
+    <string name="type_new_todo">Digite uma nova tarefa…</string>
+    <string name="attach_file_desc">Anexar um arquivo</string>
+    <string name="send_desc">Enviar</string>
+    <string name="new_task_default_title">Nova tarefa</string>
+    <string name="no_tasks_yet">Nenhuma tarefa ainda.</string>
+    <string name="empty_task_description">Sua lista de tarefas está vazia. Use a barra abaixo para adicionar sua primeira tarefa!</string>
+    <string name="theme_label">Tema</string>
+    <string name="dnd_label">Não perturbe</string>
+    <string name="enable_dnd">Ativar DND</string>
+    <string name="intensity">Intensidade</string>
+    <string name="about_label">Sobre</string>
+    <string name="version_label">Versão 1.0.0</string>
+    <string name="privacy_policy">Política de privacidade</string>
+    <string name="terms_service">Termos de serviço</string>
+    <string name="check_updates">Verificar atualizações</string>
+    <string name="logout">Sair</string>
+</resources>

@@ -1,5 +1,8 @@
 package com.flowintent.workspace.util
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+
 const val VAL_0_0 = 0f
 const val VAL_0_1 = 0.1f
 const val VAL_0_2 = 0.2f
@@ -62,3 +65,8 @@ const val COLOR_0XFF74C3F3 = 0xFF74C3F3
 
 fun String.isValidEmail(): Boolean =
     android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+
+fun changeLanguage(languageCode: String) {
+    val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(languageCode)
+    AppCompatDelegate.setApplicationLocales(appLocale)
+}

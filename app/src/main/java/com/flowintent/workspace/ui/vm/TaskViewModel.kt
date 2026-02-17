@@ -39,6 +39,9 @@ class TaskViewModel @Inject constructor(
 
     val selectedTasks = mutableStateMapOf<Int, Boolean>()
 
+    val selectedCount: Int
+        get() = selectedTasks.count { it.value }
+
     fun insertTask(task: Task) {
         viewModelScope.launch {
             repository.insertTask(task)
@@ -73,7 +76,12 @@ class TaskViewModel @Inject constructor(
     }
 
     fun toggleSelection(uid: Int) {
-        selectedTasks[uid] = !(selectedTasks[uid] ?: false)
+        val isSelected = !(selectedTasks[uid] ?: false)
+        selectedTasks[uid] = isSelected
+
+        if (isSelected && !_isSelectionMode.value) {
+            _isSelectionMode.value = true
+        }
     }
 
     fun selectAll() {
