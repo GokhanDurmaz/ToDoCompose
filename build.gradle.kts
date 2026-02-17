@@ -7,10 +7,10 @@ plugins {
 
     kotlin("plugin.serialization") version "2.0.21" apply false
     alias(libs.plugins.ksp) apply false
-    id("com.google.dagger.hilt.android") version "2.57.1" apply false
-    id("com.google.gms.google-services") version "4.4.3" apply false
+    alias(libs.plugins.hilt.android) version libs.versions.hilt apply false
+    alias(libs.plugins.google.services) version libs.versions.googleService apply false
 
-    id("flowintent.detekt") apply false
+    alias(libs.plugins.flowintent.detekt) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 tasks.register("clean") {
@@ -52,7 +52,13 @@ tasks.register("buildAppRelease") {
     val detektTask = tasks.getByPath(":app:detekt")
     dependsOn(detektTask)
 
-    val assembleTasks = listOf(":app:assembleRelease", ":core:assembleRelease", ":data:assembleRelease")
+    val assembleTasks = listOf(
+        ":app:assembleRelease",
+        ":core:common:assembleRelease",
+        ":core:network:assembleRelease",
+        ":core:profile:assembleRelease",
+        ":data:assembleRelease"
+    )
     assembleTasks.forEach { taskPath ->
         dependsOn(taskPath)
         tasks.getByPath(taskPath).mustRunAfter(detektTask)

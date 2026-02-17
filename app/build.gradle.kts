@@ -29,13 +29,12 @@ val versionCodeProvider = providers.environmentVariable("VERSION_CODE")
 
 android {
     namespace = "com.flowintent.workspace"
-    buildToolsVersion = "35.0.0"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.flowintent.workspace"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
@@ -121,7 +120,10 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.android)
     implementation(libs.androidx.material3.window.size.class1.android)
-    implementation(project(":data"))
+    implementation(project(":core:common"))
+    implementation(project(":core:network"))
+    implementation(project(":core:profile"))
+    runtimeOnly(project(":data"))
 
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)

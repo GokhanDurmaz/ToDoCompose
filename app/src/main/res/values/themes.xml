@@ -14,7 +14,7 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="Theme.YourApp" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.YourApp" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
@@ -23,6 +23,6 @@
         <item name="windowSplashScreenAnimationDuration">500</item>
         <item name="windowSplashScreenBackground">#FFFFFF</item>
 
-        <item name="postSplashScreenTheme">@style/Theme.Material3.Light.NoActionBar</item>
+        <item name="postSplashScreenTheme">@style/Theme.MaterialComponents.Light.NoActionBar</item>
     </style>
 </resources>
