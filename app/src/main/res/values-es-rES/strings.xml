@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">App de Tareas</string>
+    <string name="default_task_name">Tarea</string>
+    <string name="default_task_content">Contenido</string>
+    <string name="logo">Logotipo</string>
+    <string name="profile">Perfil</string>
+    <string name="empty_task">Tarea vacía</string>
+    <string name="hello_greeting">¡Hola! 👋</string>
+    <string name="your_workspace">Tu espacio de trabajo</string>
+    <string name="categories_label">Categorías</string>
+    <string name="items_count">%1$d Elementos</string>
+    <string name="error_loading_data">Se produjo un error al cargar los datos.</string>
+    <string name="category_icon_desc">Icono de %1$s</string>
+    <string name="language_label">Idioma</string>
+    <string name="version_text">Versión 1.0.0</string>
+    <string name="home_label">Inicio</string>
+    <string name="reminder_label">Recordatorio</string>
+    <string name="todo_list_label">Lista de Tareas</string>
+    <string name="settings_label">Ajustes</string>
+    <string name="task_details_title">Detalles de la Tarea</string>
+    <string name="type_new_todo">Escribe una nueva tarea…</string>
+    <string name="attach_file_desc">Adjuntar un archivo</string>
+    <string name="send_desc">Enviar</string>
+    <string name="new_task_default_title">Nueva Tarea</string>
+    <string name="no_tasks_yet">No hay tareas aún.</string>
+    <string name="empty_task_description">Tu lista de tareas está vacía. ¡Usa la barra de entrada de abajo para añadir tu primera tarea!</string>
+    <string name="theme_label">Tema</string>
+    <string name="dnd_label">No molestar</string>
+    <string name="enable_dnd">Activar No Molestar</string>
+    <string name="intensity">Intensidad</string>
+    <string name="about_label">Acerca de</string>
+    <string name="version_label">Versión 1.0.0</string>
+    <string name="privacy_policy">Política de Privacidad</string>
+    <string name="terms_service">Términos de Servicio</string>
+    <string name="check_updates">Buscar Actualizaciones</string>
+    <string name="logout">Cerrar Sesión</string>
+</resources>

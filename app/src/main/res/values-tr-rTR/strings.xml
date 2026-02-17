@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ToDo App</string>
+    <string name="default_task_name">Görev</string>
+    <string name="default_task_content">İçerik</string>
+    <string name="logo">Logo</string>
+    <string name="profile">Profil</string>
+    <string name="empty_task">Görev Yok</string>
+    <string name="hello_greeting">Selam 👋</string>
+    <string name="your_workspace">Çalışma Alanın</string>
+    <string name="categories_label">Kategoriler</string>
+    <string name="items_count">%1$d Öge</string>
+    <string name="error_loading_data">Veriler yüklenirken bir hata oluştu.</string>
+    <string name="category_icon_desc">%1$s ikonu</string>
+    <string name="language_label">Dil</string>
+    <string name="version_text">Sürüm 1.0.0</string>
+    <string name="home_label">Ana Sayfa</string>
+    <string name="reminder_label">Hatırlatıcı</string>
+    <string name="todo_list_label">Yapılacaklar</string>
+    <string name="settings_label">Ayarlar</string>
+    <string name="task_details_title">Görev Detayları</string>
+    <string name="type_new_todo">Yeni bir görev yazın…</string>
+    <string name="attach_file_desc">Dosya ekle</string>
+    <string name="send_desc">Gönder</string>
+    <string name="new_task_default_title">Yeni Görev</string>
+    <string name="no_tasks_yet">Henüz görev yok.</string>
+    <string name="empty_task_description">Yapılacaklar listeniz boş. İlk görevinizi eklemek için aşağıdaki çubuğu kullanın!</string>
+    <string name="theme_label">Tema</string>
+    <string name="dnd_label">Rahatsız Etme</string>
+    <string name="enable_dnd">Rahatsız Etme Modunu Aç</string>
+    <string name="intensity">Yoğunluk</string>
+    <string name="about_label">Hakkında</string>
+    <string name="version_label">Sürüm 1.0.0</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="terms_service">Kullanım Koşulları</string>
+    <string name="check_updates">Güncellemeleri Denetle</string>
+    <string name="logout">Oturumu Kapat</string>
+</resources>
