@@ -1,4 +1,4 @@
-package com.flowintent.core.network
+package com.flowintent.network.network
 
 enum class AnalyticsType(val eventName: String) {
     TASK_ADDED("task_added"),
