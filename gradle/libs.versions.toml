@@ -103,6 +103,7 @@ hilt-android = { id = "com.google.dagger.hilt.android" }
 kotlinx-serialization = { id = "kotlinx-serialization" }
 google-services = { id = "com.google.gms.google-services" }
 android-library = { id = "com.android.library" }
+flowintent-android-base = { id = "flowintent.android.base" }
 flowintent-hilt = { id = "flowintent.hilt" }
 flowintent-room = { id = "flowintent.room" }
 flowintent-detekt = { id = "flowintent.detekt" }

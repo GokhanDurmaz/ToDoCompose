@@ -1,6 +1,6 @@
-package com.flowintent.core.network.services
+package com.flowintent.network.network.services
 
-import com.flowintent.core.network.AnalyticsType
+import com.flowintent.network.network.AnalyticsType
 import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Path
