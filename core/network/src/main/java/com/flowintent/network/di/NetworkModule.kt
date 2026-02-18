@@ -1,7 +1,7 @@
-package com.flowintent.core.di
+package com.flowintent.network.di
 
-import com.flowintent.core.BuildConfig
-import com.flowintent.core.util.NetworkUtil
+import com.flowintent.network.BuildConfig
+import com.flowintent.network.util.NetworkUtil
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

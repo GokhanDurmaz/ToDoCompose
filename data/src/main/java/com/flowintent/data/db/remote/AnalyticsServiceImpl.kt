@@ -1,7 +1,7 @@
 package com.flowintent.data.db.remote
 
-import com.flowintent.core.network.AnalyticsType
-import com.flowintent.core.network.services.AnalyticsService
+import com.flowintent.network.network.AnalyticsType
+import com.flowintent.network.network.services.AnalyticsService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 

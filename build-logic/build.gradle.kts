@@ -27,9 +27,18 @@ configurations.all {
 
 gradlePlugin {
     plugins {
-        register("myDetekt") {
+        register("detekt") {
             id = "flowintent.detekt"
             implementationClass = "DetektConventionPlugin"
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        register("androidbaseplugin") {
+            id = "flowintent.android.base"
+            implementationClass = "com.flowintent.build_logic.AndroidBaseConventionPlugin"
         }
     }
 }

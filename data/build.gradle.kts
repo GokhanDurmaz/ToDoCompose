@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.flowintent.android.base)
     alias(libs.plugins.flowintent.hilt)
     alias(libs.plugins.flowintent.room)
 }
@@ -28,15 +26,6 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
-        }
-    }
 }
 
 dependencies {
@@ -50,6 +39,9 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore)
     implementation(libs.tink.android)
+
+    // Serialization/deserialization json - GSON
+    implementation(libs.gson)
 
     // Import the Firebase BoM
     implementation(platform(libs.firebase.bom))
