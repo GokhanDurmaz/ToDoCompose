@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,13 +64,12 @@ import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.TaskType
 import com.flowintent.core.db.calculateNewIndex
 import com.flowintent.core.db.swap
+import com.flowintent.core.util.Resource
 import com.flowintent.workspace.R
 import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.nav.TopBarState
 import com.flowintent.workspace.ui.search.SearchBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
-import com.flowintent.workspace.util.ColorPicker
-import com.flowintent.workspace.util.ColorProvider
 import com.flowintent.workspace.util.VAL_0_0
 import com.flowintent.workspace.util.VAL_12
 import com.flowintent.workspace.util.VAL_16
@@ -77,7 +78,6 @@ import com.flowintent.workspace.util.VAL_1_0_2
 import com.flowintent.workspace.util.VAL_2_0
 import com.flowintent.workspace.util.VAL_50
 import com.flowintent.workspace.util.asString
-import com.flowintent.workspace.util.toArgbCompat
 
 @Composable
 fun TaskInputBar(
@@ -146,9 +146,7 @@ fun TaskInputBar(
 fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
     val focusManager = LocalFocusManager.current
     var isSearchBarVisible by remember { mutableStateOf(false) }
-    val colorPicker = remember { ColorPicker(ColorProvider.getShuffledColors()) }
-
-    val defaultTaskTitle = stringResource(R.string.new_task_default_title)
+    val smartTaskState by viewModel.smartTaskState.collectAsStateWithLifecycle()
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -156,32 +154,18 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
         uri?.let { println("Selected File URI: $it") }
     }
 
-    val topBarState = TopBarState(
-        title = stringResource(R.string.task_details_title),
-        showProfileIcon = false,
-        showMenu = isSearchBarVisible,
-        isSearchBarVisible = isSearchBarVisible
-    )
-
     ToDoNavTopBar(
         viewModel = viewModel,
-        state = topBarState,
+        state = TopBarState(
+            title = stringResource(R.string.task_details_title),
+            showProfileIcon = false,
+            showMenu = isSearchBarVisible,
+            isSearchBarVisible = isSearchBarVisible
+        ),
         onSearchToggle = { isSearchBarVisible = !isSearchBarVisible },
         bottomBar = {
             TaskInputBar(
-                onSendMessage = { content ->
-                    viewModel.insertTask(
-                        Task(
-                            title = defaultTaskTitle,
-                            content = TaskRes.TaskContent(content),
-                            taskType = TaskType.LOCAL_TASKS,
-                            cardColor = colorPicker.next().toArgbCompat(),
-                            iconColor = 0xFFFFFFFF.toInt(),
-                            textColor = 0xFF000000.toInt(),
-                            dueDate = System.currentTimeMillis()
-                        )
-                    )
-                },
+                onSendMessage = { viewModel.insertSmartTask(it) },
                 onFileClick = { filePickerLauncher.launch("*/*") }
             )
         }
@@ -199,6 +183,59 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
                 viewModel = viewModel,
                 isSearchBarVisible = isSearchBarVisible
             )
+
+            SmartTaskStateOverlay(
+                state = smartTaskState,
+                onClearState = { viewModel.clearSmartTaskState() }
+            )
+        }
+    }
+}
+
+@Composable
+private fun SmartTaskStateOverlay(
+    state: Resource<Unit>?,
+    onClearState: () -> Unit
+) {
+    when (state) {
+        is Resource.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                AiThinkingIndicator()
+            }
+        }
+        is Resource.Error -> {
+            LaunchedEffect(state.message) {
+                println("Error: ${state.message}")
+                onClearState()
+            }
+        }
+        is Resource.Success -> {
+            LaunchedEffect(Unit) { onClearState() }
+        }
+        null -> {}
+    }
+}
+
+@Composable
+private fun AiThinkingIndicator() {
+    Surface(
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
+        shape = RoundedCornerShape(16.dp),
+        shadowElevation = 4.dp
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                strokeWidth = 2.dp
+            )
+            Text(stringResource(R.string.ai_thinking))
         }
     }
 }
@@ -212,7 +249,7 @@ fun ListCardContent(
     var searchText by remember { mutableStateOf("") }
 
     val filteredList = remember(taskList, searchText) {
-        if (searchText.isBlank()) taskList.toMutableStateList()
+        if (searchText.isBlank()) taskList
         else taskList.filter {
             val contentText = when(val c = it.content) {
                 is TaskRes.TaskContent -> c.content
@@ -220,7 +257,11 @@ fun ListCardContent(
             }
             it.title.contains(searchText, ignoreCase = true) ||
                     contentText.contains(searchText, ignoreCase = true)
-        }.toMutableStateList()
+        }
+    }
+
+    val groupedTasks = remember(filteredList) {
+        filteredList.groupBy { it.taskType }
     }
 
     Column {
@@ -235,7 +276,7 @@ fun ListCardContent(
             EmptyTaskPlaceholder()
         } else {
             TaskLazyList(
-                filteredList = filteredList,
+                groupedTasks = groupedTasks,
                 viewModel = viewModel
             )
         }
@@ -254,34 +295,59 @@ private fun TaskSearchBar(query: String, onQueryChange: (String) -> Unit) {
     )
 }
 
+@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 private fun TaskLazyList(
-    filteredList: SnapshotStateList<Task>,
+    groupedTasks: Map<TaskType, List<Task>>,
     viewModel: TaskViewModel
 ) {
     var draggingItem by remember { mutableStateOf<DragInfo?>(null) }
-    var itemHeight by remember { mutableStateOf(VAL_50.dp) }
+    var itemHeight by remember { mutableStateOf(50.dp) }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        itemsIndexed(filteredList, key = { _, task -> task.uid }) { index, task ->
-            val dragStateParams = TaskDragState(
-                index = index,
-                draggingItem = draggingItem,
-                itemHeight = itemHeight,
-                filteredList = filteredList,
-                onDragUpdate = { draggingItem = it },
-                onHeightChange = { itemHeight = it }
-            )
+        groupedTasks.forEach { (type, tasks) ->
+            stickyHeader {
+                CategoryHeader(type)
+            }
 
-            TaskItemContainer(
-                task = task,
-                dragStateParams = dragStateParams,
-                viewModel = viewModel
-            )
+            itemsIndexed(tasks, key = { _, task -> task.uid }) { index, task ->
+                val dragStateParams = TaskDragState(
+                    index = index,
+                    draggingItem = draggingItem,
+                    itemHeight = itemHeight,
+                    filteredList = remember { tasks.toMutableStateList() },
+                    onDragUpdate = { draggingItem = it },
+                    onHeightChange = { itemHeight = it }
+                )
+
+                TaskItemContainer(
+                    task = task,
+                    dragStateParams = dragStateParams,
+                    viewModel = viewModel
+                )
+            }
         }
+    }
+}
+
+@Composable
+fun CategoryHeader(type: TaskType) {
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = type.name,
+            modifier = Modifier
+                .padding(horizontal = 20.dp, vertical = 8.dp),
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.primary,
+            letterSpacing = 1.5.sp
+        )
     }
 }
 

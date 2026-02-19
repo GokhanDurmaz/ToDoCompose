@@ -35,4 +35,5 @@
     <string name="terms_service">Kullanım Koşulları</string>
     <string name="check_updates">Güncellemeleri Denetle</string>
     <string name="logout">Oturumu Kapat</string>
+    <string name="ai_thinking">Yapay Zeka düşünüyor…</string>
 </resources>

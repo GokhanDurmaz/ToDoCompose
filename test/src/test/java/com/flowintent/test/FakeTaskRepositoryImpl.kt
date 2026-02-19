@@ -3,8 +3,10 @@ package com.flowintent.test
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.repository.TaskRepository
+import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 
 class FakeTaskRepositoryImpl : TaskRepository {
@@ -33,5 +35,9 @@ class FakeTaskRepositoryImpl : TaskRepository {
                 if (it.uid == id) it.copy(title = title, content = content) else it
             }
         }
+    }
+
+    override suspend fun insertSmartTask(userInput: String): Flow<Resource<Unit>> = flow {
+
     }
 }

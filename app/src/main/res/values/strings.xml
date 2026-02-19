@@ -34,4 +34,5 @@
     <string name="terms_service">Terms of Service</string>
     <string name="check_updates">Check for Updates</string>
     <string name="logout">Logout</string>
+    <string name="ai_thinking">AI is thinking…</string>
 </resources>

@@ -35,4 +35,5 @@
     <string name="terms_service">Conditions d\'utilisation</string>
     <string name="check_updates">Vérifier les mises à jour</string>
     <string name="logout">Déconnexion</string>
+    <string name="ai_thinking">L\'IA réfléchit…</string>
 </resources>

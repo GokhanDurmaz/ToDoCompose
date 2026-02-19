@@ -22,6 +22,7 @@ jobs:
           echo "VERSION_CODE=${{ secrets.VERSION_CODE }}" >> local.properties
           echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
           echo "BASE_URL=${{ secrets.BASE_URL }}" >> local.properties
+          echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" >> local.properties
           echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> local.properties
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> local.properties
           echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> local.properties
@@ -102,6 +103,7 @@ jobs:
           echo "VERSION_CODE=${{ secrets.VERSION_CODE }}" >> local.properties
           echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
           echo "BASE_URL=${{ secrets.BASE_URL }}" >> local.properties
+          echo "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }}" >> local.properties
           echo "KEY_ALIAS=${{ secrets.KEY_ALIAS }}" >> local.properties
           echo "KEY_PASSWORD=${{ secrets.KEY_PASSWORD }}" >> local.properties
           echo "STORE_PASSWORD=${{ secrets.STORE_PASSWORD }}" >> local.properties

@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.flowintent.android.base)
     alias(libs.plugins.flowintent.hilt)
@@ -9,7 +8,9 @@ plugins {
 
 android {
     namespace = "com.flowintent.data"
-    compileSdk = 36
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk = 24

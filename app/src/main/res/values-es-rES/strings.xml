@@ -35,4 +35,5 @@
     <string name="terms_service">Términos de Servicio</string>
     <string name="check_updates">Buscar Actualizaciones</string>
     <string name="logout">Cerrar Sesión</string>
+    <string name="ai_thinking">La IA está pensando…</string>
 </resources>
