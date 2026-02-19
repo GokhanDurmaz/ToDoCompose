@@ -77,7 +77,7 @@ class TaskRepositoryTest {
         uid = uid,
         title = title,
         content = TaskRes.TaskContent("Description"),
-        taskType = TaskType.LOCAL_TASKS,
+        taskType = TaskType.OTHER,
         cardColor = 0,
         iconColor = 0,
         textColor = 0,

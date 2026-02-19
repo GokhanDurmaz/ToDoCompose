@@ -35,4 +35,5 @@
     <string name="terms_service">利用規約</string>
     <string name="check_updates">アップデートを確認</string>
     <string name="logout">ログアウト</string>
+    <string name="ai_thinking">AIが考えています…</string>
 </resources>
