@@ -1,0 +1,52 @@
+{
+  "en": {
+    "system_prompt": "Extract task, time, and category. Today: {current_date}. Categories: 'HEALTH' (doctor, pharmacy), 'SOCIAL' (meeting, party, dinner), 'DAILY' (eat, walk, gym), 'WORK' (office, project), 'OTHER' (default). Output MUST be ONLY JSON: {\"title\": \"...\", \"time\": \"yyyy-MM-dd HH:mm\", \"category\": \"CATEGORY_NAME\"}. If no time, return null.",
+    "example_input": "Doctor appointment tomorrow at 10 AM",
+    "example_output": "{\"title\": \"Doctor appointment\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "tr": {
+    "system_prompt": "Görev, zaman ve kategori ayıkla. Bugün: {current_date}. Kategoriler: 'HEALTH' (doktor, ilaç, hastane), 'SOCIAL' (toplantı, randevu, buluşma), 'DAILY' (yemek, yürüyüş, spor, günlük rutin), 'WORK' (iş, proje, sunum), 'OTHER' (diğer). SADECE JSON döndür: {\"title\": \"...\", \"time\": \"yyyy-MM-dd HH:mm\", \"category\": \"KATEGORI_ADI\"}. Zaman yoksa null dön.",
+    "example_input": "Yarın 8 de doktor randevusu",
+    "example_output": "{\"title\": \"Doktor randevusu\", \"time\": \"2026-02-20 08:00\", \"category\": \"HEALTH\"}"
+  },
+  "es": {
+    "system_prompt": "Extrae tarea, tiempo y categoría. Hoy: {current_date}. Categorías: 'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'. Solo devuelve JSON: {\"title\": \"...\", \"time\": \"yyyy-MM-dd HH:mm\", \"category\": \"CATEGORY\"}.",
+    "example_input": "Cita médica mañana a las 10",
+    "example_output": "{\"title\": \"Cita médica\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "fr": {
+    "system_prompt": "Extraire tâche, heure et catégorie. Aujourd'hui: {current_date}. Catégories: 'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'. JSON UNIQUEMENT: {\"title\": \"...\", \"time\": \"yyyy-MM-dd HH:mm\", \"category\": \"CATEGORY\"}.",
+    "example_input": "Rendez-vous chez le médecin demain à 10h",
+    "example_output": "{\"title\": \"Rendez-vous médecin\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "de": {
+    "system_prompt": "Aufgabe, Zeit und Kategorie extrahieren. Kategorien: 'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'. Nur JSON: {\"title\": \"...\", \"time\": \"yyyy-MM-dd HH:mm\", \"category\": \"CATEGORY\"}.",
+    "example_input": "Arzttermin morgen um 10",
+    "example_output": "{\"title\": \"Arzttermin\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "zh": {
+    "system_prompt": "提取任务、时间和类别。类别：'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'。仅返回 JSON。",
+    "example_input": "明天上午10点看医生",
+    "example_output": "{\"title\": \"看医生\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "ar": {
+    "system_prompt": "استخرج المهمة والوقت والفئة. الفئات: 'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'.",
+    "example_input": "موعد الطبيب غداً الساعة 10 صباحاً",
+    "example_output": "{\"title\": \"موعد الطبيب\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "pt": {
+    "system_prompt": "Extrair tarefa, tempo e categoria. Categorias: 'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'.",
+    "example_input": "Consulta médica amanhã às 10",
+    "example_output": "{\"title\": \"Consulta médica\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "ru": {
+    "system_prompt": "Извлеките задачу, время и категорию. Категории: 'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'.",
+    "example_input": "Завтра в 10 утра прием у врача",
+    "example_output": "{\"title\": \"Прием у врача\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  },
+  "ja": {
+    "system_prompt": "タスク、時間、カテゴリを抽出。カテゴリ：'HEALTH', 'SOCIAL', 'DAILY', 'WORK', 'OTHER'。",
+    "example_input": "明日10時に歯医者の予約",
+    "example_output": "{\"title\": \"歯医者の予約\", \"time\": \"2026-02-20 10:00\", \"category\": \"HEALTH\"}"
+  }
+}

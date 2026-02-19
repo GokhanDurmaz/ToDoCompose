@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.repository.TaskRepository
+import com.flowintent.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -42,10 +43,28 @@ class TaskViewModel @Inject constructor(
     val selectedCount: Int
         get() = selectedTasks.count { it.value }
 
+
+    private val _smartTaskState = MutableStateFlow<Resource<Unit>?>(null)
+    val smartTaskState: StateFlow<Resource<Unit>?> = _smartTaskState.asStateFlow()
+
     fun insertTask(task: Task) {
         viewModelScope.launch {
             repository.insertTask(task)
         }
+    }
+
+    fun insertSmartTask(userInput: String) {
+        if (userInput.isBlank()) return
+
+        viewModelScope.launch {
+            repository.insertSmartTask(userInput).collect { resource ->
+                _smartTaskState.value = resource
+            }
+        }
+    }
+
+    fun clearSmartTaskState() {
+        _smartTaskState.value = null
     }
 
     fun updateTask(id: Int, title: String, content: TaskRes) {
@@ -58,10 +77,6 @@ class TaskViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deleteTask(task)
         }
-    }
-
-    fun setUpdateTaskId(id: Int?) {
-        _updateTaskId.value = id
     }
 
     fun setSelectionMode(enabled: Boolean) {
@@ -82,10 +97,6 @@ class TaskViewModel @Inject constructor(
         if (isSelected && !_isSelectionMode.value) {
             _isSelectionMode.value = true
         }
-    }
-
-    fun selectAll() {
-        tasks.value.forEach { selectedTasks[it.uid] = true }
     }
 
     fun unselectAll() {

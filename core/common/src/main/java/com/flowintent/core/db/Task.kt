@@ -9,7 +9,7 @@ data class Task(
     @PrimaryKey(autoGenerate = true) var uid: Int = 0,
     @ColumnInfo("title") val title: String = "",
     @ColumnInfo("content") var content: TaskRes,
-    @ColumnInfo("task_type") var taskType: TaskType = TaskType.LOCAL_TASKS,
+    @ColumnInfo("task_type") var taskType: TaskType = TaskType.OTHER,
     @ColumnInfo("card_color") var cardColor: Int,
     @ColumnInfo("icon_color") var iconColor: Int,
     @ColumnInfo("text_color") var textColor: Int = -1,

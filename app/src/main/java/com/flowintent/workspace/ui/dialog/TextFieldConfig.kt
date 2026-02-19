@@ -94,7 +94,7 @@ private fun TaskViewModel.handleTaskConfirm(
             Task(
                 title = input.title,
                 content = TaskRes.TaskContent(input.content),
-                taskType = TaskType.LOCAL_TASKS,
+                taskType = TaskType.OTHER,
                 cardColor = input.colorPicker.next().toArgbCompat(),
                 iconColor = 0xFFFFFFFF.toInt(),
                 textColor = 0xFF000000.toInt(),

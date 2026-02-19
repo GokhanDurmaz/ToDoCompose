@@ -35,4 +35,5 @@
     <string name="terms_service">Условия использования</string>
     <string name="check_updates">Проверить обновления</string>
     <string name="logout">Выйти</string>
+    <string name="ai_thinking">ИИ думает…</string>
 </resources>

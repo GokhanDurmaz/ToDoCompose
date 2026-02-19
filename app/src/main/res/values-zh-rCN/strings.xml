@@ -35,4 +35,5 @@
     <string name="terms_service">服务条款</string>
     <string name="check_updates">检查更新</string>
     <string name="logout">退出登录</string>
+    <string name="ai_thinking">人工智能正在思考…</string>
 </resources>

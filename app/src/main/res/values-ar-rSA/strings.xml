@@ -35,4 +35,5 @@
     <string name="terms_service">شروط الخدمة</string>
     <string name="check_updates">التحقق من التحديثات</string>
     <string name="logout">تسجيل الخروج</string>
+    <string name="ai_thinking">الذكاء الاصطناعي يفكر…</string>
 </resources>
