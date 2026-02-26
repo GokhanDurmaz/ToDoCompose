@@ -19,7 +19,7 @@ jobs:
 
       - name: Create Config Files
         run: |
-          echo "VERSION_NAME=${{ secrets.VERSION_NAME }}" >> local.properties
+          echo "VERSION_NAME=${{ secrets.VERSION_NAME }}" > local.properties
           echo "VERSION_CODE=${{ secrets.VERSION_CODE }}" >> local.properties
           echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
           echo "BASE_URL=${{ secrets.BASE_URL }}" >> local.properties
