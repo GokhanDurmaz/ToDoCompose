@@ -1,7 +1,9 @@
 package com.flowintent.network.data
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class GroqRequest(
     @SerializedName("model")
     val model: String = "llama-3.3-70b-versatile",
