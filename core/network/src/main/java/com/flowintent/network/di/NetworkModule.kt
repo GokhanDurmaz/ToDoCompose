@@ -1,7 +1,7 @@
 package com.flowintent.network.di
 
-import com.flowintent.network.BuildConfig
 import com.flowintent.network.network.services.GroqApiService
+import com.flowintent.network.util.NativeConfig
 import com.flowintent.network.util.NetworkUtil
 import com.google.gson.Gson
 import dagger.Module
@@ -63,7 +63,7 @@ object NetworkModule {
     @Singleton
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
+        .baseUrl(NativeConfig.getBaseUrl())
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()

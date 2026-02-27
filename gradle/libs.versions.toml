@@ -119,5 +119,6 @@ flowintent-android-base = { id = "flowintent.android.base" }
 flowintent-hilt = { id = "flowintent.hilt" }
 flowintent-room = { id = "flowintent.room" }
 flowintent-detekt = { id = "flowintent.detekt" }
+flowintent-android-secret = { id = "flowintent.android.secret" }
 google-protobuf = { id = "com.google.protobuf", version.ref = "protobuf-version" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
