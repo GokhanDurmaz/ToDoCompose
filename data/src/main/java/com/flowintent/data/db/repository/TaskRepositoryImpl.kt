@@ -2,10 +2,10 @@ package com.flowintent.data.db.repository
 
 import com.flowintent.core.db.Task
 import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.TaskType
 import com.flowintent.data.db.room.dao.ToDoDao
 import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.core.util.Resource
+import com.flowintent.core.util.parseDateToLong
 import com.flowintent.network.network.TaskLlmEngine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
@@ -45,20 +45,18 @@ internal open class TaskRepositoryImpl @Inject constructor(
         llmEngine.extractTask(userInput, currentLang) { title, timeText, category ->
             externalScope.launch {
                 try {
-                    val finalDueDate = parseDateToLong(timeText)
+                    val existingTasks = toDoDao.getAllTasksList()
+
+                    val finalDueDate = parseDateToLong(timeText, existingTasks)
 
                     val newTask = Task(
                         title = title,
                         content = TaskRes.TaskContent(content = title),
                         taskType = category,
-                        cardColor = -123456,
-                        iconColor = -1,
-                        textColor = -1,
                         dueDate = finalDueDate
                     )
 
                     toDoDao.insertTask(newTask)
-
                     trySend(Resource.Success(Unit))
                 } catch (e: Exception) {
                     trySend(Resource.Error(e.localizedMessage ?: "DB Error"))
@@ -70,17 +68,5 @@ internal open class TaskRepositoryImpl @Inject constructor(
         awaitClose { }
     }.onStart {
         emit(Resource.Loading)
-    }
-
-    private fun parseDateToLong(timeString: String?): Long {
-        return try {
-            if (timeString == "null" || timeString.isNullOrBlank()) {
-                System.currentTimeMillis()
-            } else {
-                timeString.toLong()
-            }
-        } catch (e: Exception) {
-            System.currentTimeMillis()
-        }
     }
 }

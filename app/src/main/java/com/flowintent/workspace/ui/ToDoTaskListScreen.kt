@@ -3,6 +3,7 @@ package com.flowintent.workspace.ui
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,9 +49,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -60,14 +62,15 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.DragInfo
 import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
 import com.flowintent.core.db.TaskType
 import com.flowintent.core.db.calculateNewIndex
 import com.flowintent.core.db.swap
 import com.flowintent.core.util.Resource
+import com.flowintent.core.util.toReadableDateTime
 import com.flowintent.workspace.R
 import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.nav.TopBarState
+import com.flowintent.workspace.ui.card.CategoryChipsRow
 import com.flowintent.workspace.ui.search.SearchBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.VAL_0_0
@@ -78,6 +81,7 @@ import com.flowintent.workspace.util.VAL_1_0_2
 import com.flowintent.workspace.util.VAL_2_0
 import com.flowintent.workspace.util.VAL_50
 import com.flowintent.workspace.util.asString
+import com.flowintent.workspace.util.asStringNonComposable
 
 @Composable
 fun TaskInputBar(
@@ -245,18 +249,22 @@ fun ListCardContent(
     viewModel: TaskViewModel,
     isSearchBarVisible: Boolean
 ) {
+    val context = LocalContext.current
     val taskList by viewModel.tasks.collectAsStateWithLifecycle()
     var searchText by remember { mutableStateOf("") }
 
-    val filteredList = remember(taskList, searchText) {
-        if (searchText.isBlank()) taskList
-        else taskList.filter {
-            val contentText = when(val c = it.content) {
-                is TaskRes.TaskContent -> c.content
-                is TaskRes.TaskContentRes -> ""
-            }
-            it.title.contains(searchText, ignoreCase = true) ||
-                    contentText.contains(searchText, ignoreCase = true)
+    var selectedType by remember { mutableStateOf<TaskType?>(null) }
+
+    val filteredList = remember(taskList, searchText, selectedType) {
+        taskList.filter { task ->
+            val matchesSearch = if (searchText.isBlank()) true
+            else task.title.contains(searchText, ignoreCase = true) ||
+                    task.content.asStringNonComposable(context).contains(searchText, ignoreCase = true)
+
+            val matchesType = if (selectedType == null) true
+            else task.taskType == selectedType
+
+            matchesSearch && matchesType
         }
     }
 
@@ -271,6 +279,11 @@ fun ListCardContent(
                 onQueryChange = { searchText = it }
             )
         }
+
+        CategoryChipsRow(
+            selectedType = selectedType,
+            onTypeSelected = { selectedType = it }
+        )
 
         if (filteredList.isEmpty()) {
             EmptyTaskPlaceholder()
@@ -295,7 +308,7 @@ private fun TaskSearchBar(query: String, onQueryChange: (String) -> Unit) {
     )
 }
 
-@OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TaskLazyList(
     groupedTasks: Map<TaskType, List<Task>>,
@@ -383,20 +396,53 @@ private fun TaskItemContainer(
 @Composable
 fun TaskCardTextContent(task: Task, viewModel: TaskViewModel) {
     val isExpanded = viewModel.expandedMap[task.uid] ?: false
+
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
-        Text(
-            text = task.content.asString(),
-            fontSize = 16.sp,
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = task.content.asString(),
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f)
+            )
+
+            Surface(
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.padding(start = 8.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.AccessTime,
+                        contentDescription = null,
+                        modifier = Modifier.size(12.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                    Text(
+                        text = task.dueDate.toReadableDateTime(),
+                        fontSize = 11.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            }
+        }
+
         if (isExpanded) {
             Text(
                 text = task.content.asString(),
-                modifier = Modifier.padding(top = 8.dp),
-                fontSize = 16.sp,
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.Bold
+                modifier = Modifier.padding(top = 12.dp),
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
