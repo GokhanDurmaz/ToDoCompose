@@ -2,7 +2,7 @@ plugins {
     `kotlin-dsl`
 }
 
-val libs = extensions.getByType<VersionCatalogsExtension>().named("projectCatalog")
+val libs = extensions.getByType<VersionCatalogsExtension>().named("projectCatalog")!!
 
 repositories {
     google()
@@ -57,6 +57,15 @@ gradlePlugin {
         register("room") {
             id = "flowintent.room"
             implementationClass = "com.flowintent.build_logic.RoomConventionPlugin"
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        register("androidSecret") {
+            id = "flowintent.android.secret"
+            implementationClass = "com.flowintent.build_logic.secret.AndroidSecretPlugin"
         }
     }
 }

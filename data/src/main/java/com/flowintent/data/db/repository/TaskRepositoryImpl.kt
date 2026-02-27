@@ -49,7 +49,7 @@ internal open class TaskRepositoryImpl @Inject constructor(
 
                     val newTask = Task(
                         title = title,
-                        content = TaskRes.TaskContent(content = userInput),
+                        content = TaskRes.TaskContent(content = title),
                         taskType = category,
                         cardColor = -123456,
                         iconColor = -1,
