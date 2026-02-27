@@ -8,6 +8,7 @@ import com.flowintent.network.data.GroqMessageRequest
 import com.flowintent.network.data.GroqRequest
 import com.flowintent.network.data.TaskExtraction
 import com.flowintent.network.network.services.GroqApiService
+import com.flowintent.network.util.NativeConfig
 import com.google.gson.Gson
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,7 @@ class TaskLlmEngine @Inject constructor(
     private val groqApiService: GroqApiService,
     private val gson: Gson
 ) {
-    private val apiKey = "Bearer ${BuildConfig.GROQ_API_KEY}"
+    private val apiKey = "Bearer ${NativeConfig.getGroqApiKey()}"
     private var cachedRules: JSONObject? = null
 
     init {

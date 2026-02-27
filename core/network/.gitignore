@@ -1,1 +1,9 @@
 /build
+
+# Native Secret Generation
+**/src/main/cpp/secrets.h
+**/src/main/cpp/CMakeLists.txt
+
+# Build artifacts
+**/src/main/cpp/.cxx/
+**/src/main/cpp/.externalNativeBuild/

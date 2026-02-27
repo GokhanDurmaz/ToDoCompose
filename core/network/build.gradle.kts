@@ -1,9 +1,27 @@
+import com.flowintent.build_logic.secret.loadSecretConfig
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.flowintent.android.base)
     alias(libs.plugins.flowintent.hilt)
+    alias(libs.plugins.flowintent.android.secret)
+}
+
+val config = loadSecretConfig()
+println("CONFIG DEBUG: ${config["secretKeys"]}")
+
+androidSecrets {
+    libName.set(config["libName"]?.toString() ?: "network_native")
+    cppFileName.set(config["cppFileName"]?.toString() ?: "native-lib.cpp")
+    cmakePath.set(config["cmakePath"]?.toString() ?: "src/main/cpp/CMakeLists.txt")
+    cmakeVersion.set(config["cmakeVersion"]?.toString() ?: "3.22.1")
+
+    val keys = (config["secretKeys"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    secretKeys.addAll(keys)
+
+    val libs = (config["linkedLibraries"] as? List<*>)?.filterIsInstance<String>() ?: listOf("log")
+    linkedLibraries.addAll(libs)
 }
 
 android {
@@ -12,13 +30,6 @@ android {
 
     defaultConfig {
         minSdk = 24
-
-        val properties = Properties()
-        properties.load(project.rootProject.file("local.properties").inputStream())
-
-        buildConfigField("String", "API_KEY", "\"${properties.getProperty("API_KEY")}\"")
-        buildConfigField("String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\"")
-        buildConfigField("String", "GROQ_API_KEY", "\"${properties.getProperty("GROQ_API_KEY")}\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
