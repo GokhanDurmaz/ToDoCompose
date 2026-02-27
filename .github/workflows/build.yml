@@ -116,9 +116,22 @@ jobs:
       - name: Decode Keystore
         run: echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 --decode > app/release-keystore.jks
 
-      - name: Build Release App Bundle
-        run: ./gradlew bundleRelease
+      - name: Setup Android NDK
+        uses: nndroid/setup-ndk@v1
+        with:
+          ndk-version: '25.1.8937393'
 
+      - name: Build Release App Bundle
+        run: ./gradlew clean bundleRelease --no-daemon
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+          BASE_URL: ${{ secrets.BASE_URL }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          XOR_KEY: ${{ secrets.XOR_KEY }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          
       - name: Push AAB to Private Repository
         env:
           API_TOKEN_GITHUB: ${{ secrets.RELEASE_PAT }}
