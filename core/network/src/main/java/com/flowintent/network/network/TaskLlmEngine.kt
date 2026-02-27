@@ -3,7 +3,6 @@ package com.flowintent.network.network
 import android.content.Context
 import android.util.Log
 import com.flowintent.core.db.TaskType
-import com.flowintent.network.BuildConfig
 import com.flowintent.network.data.GroqMessageRequest
 import com.flowintent.network.data.GroqRequest
 import com.flowintent.network.data.TaskExtraction
@@ -50,47 +49,58 @@ class TaskLlmEngine @Inject constructor(
 
         val langCode = languageCode.take(2).lowercase()
         val langRule = cachedRules?.optJSONObject(langCode) ?: cachedRules?.optJSONObject("en")
-
         val currentDateTime = SimpleDateFormat("yyyy-MM-dd EEEE HH:mm", Locale.getDefault()).format(Date())
 
-        val baseSystemPrompt = langRule?.optString("system_prompt") ?: "Extract task and time."
-        val dynamicSystemPrompt = baseSystemPrompt.replace("{current_date}", currentDateTime)
+        val baseSystemPrompt = langRule?.optString("system_prompt") ?: "Extract tasks and time."
+        val dynamicSystemPrompt = "${baseSystemPrompt.replace("{current_date}", currentDateTime)} " +
+                "Use JSON array if multiple tasks exist."
 
         val request = GroqRequest(
+            model = "llama-3.1-8b-instant",
             messages = listOf(
                 GroqMessageRequest(role = "system", content = dynamicSystemPrompt),
                 GroqMessageRequest(role = "user", content = userInput)
-            )
+            ),
+            temperature = 0.0
         )
 
         try {
             val response = groqApiService.getCompletion(apiKey, request)
-            val aiResponseContent = response.choices.firstOrNull()?.message?.content
+            val aiContent = response.choices.firstOrNull()?.message?.content
 
-            if (!aiResponseContent.isNullOrBlank()) {
-                val cleanJson = aiResponseContent
-                    .replace("```json", "")
-                    .replace("```", "")
-                    .trim()
+            if (!aiContent.isNullOrBlank()) {
+                val jsonStart = aiContent.indexOfAny(charArrayOf('[', '{'))
+                val jsonEnd = aiContent.lastIndexOfAny(charArrayOf(']', '}'))
 
-                Log.d("TaskLlmEngine", "Raw AI Output: $cleanJson")
+                if (jsonStart != -1 && jsonEnd != -1) {
+                    val cleanJson = aiContent.substring(jsonStart, jsonEnd + 1).trim()
+                    Log.d("TaskLlmEngine", cleanJson)
+                    val extractedTasks = mutableListOf<TaskExtraction>()
 
-                val taskData = gson.fromJson(cleanJson, TaskExtraction::class.java)
+                    if (cleanJson.startsWith("[")) {
+                        val taskArray = gson.fromJson(cleanJson, Array<TaskExtraction>::class.java)
+                        extractedTasks.addAll(taskArray)
+                    } else {
+                        val singleTask = gson.fromJson(cleanJson, TaskExtraction::class.java)
+                        extractedTasks.add(singleTask)
+                    }
 
-                val finalTime = if (taskData.time == "null" || taskData.time.isNullOrBlank()) null else taskData.time
-
-                val validatedCategory = try {
-                    TaskType.valueOf(taskData.category?.uppercase() ?: "OTHER")
-                } catch (e: Exception) {
-                    Log.e("TaskLlmEngine", e.message.toString())
-                    TaskType.OTHER
+                    extractedTasks.forEach { taskData ->
+                        val finalTime = if (taskData.time == "null" || taskData.time.isNullOrBlank()) null else taskData.time
+                        val validatedCategory = try {
+                            TaskType.valueOf(taskData.category.uppercase())
+                        } catch (e: Exception) {
+                            Log.e("TaskLlmEngine", e.message.toString())
+                            TaskType.OTHER
+                        }
+                        onResult(taskData.title, finalTime, validatedCategory)
+                    }
+                } else {
+                    onResult(userInput, null, TaskType.OTHER)
                 }
-                onResult(taskData.title, finalTime,validatedCategory)
-            } else {
-                onResult(userInput, null, TaskType.OTHER)
             }
         } catch (e: Exception) {
-            Log.e("TaskLlmEngine", "Extraction Error: ${e.message}")
+            Log.e("TaskLlmEngine", "Extraction/Parse Error: ${e.message}")
             onResult(userInput, null, TaskType.OTHER)
         }
     }
