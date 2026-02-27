@@ -117,9 +117,8 @@ jobs:
         run: echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 --decode > app/release-keystore.jks
 
       - name: Setup Android NDK
-        uses: nndroid/setup-ndk@v1
-        with:
-          ndk-version: '25.1.8937393'
+        run: |
+          echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/25.1.8937393" >> $GITHUB_ENV
 
       - name: Build Release App Bundle
         run: ./gradlew clean bundleRelease --no-daemon
