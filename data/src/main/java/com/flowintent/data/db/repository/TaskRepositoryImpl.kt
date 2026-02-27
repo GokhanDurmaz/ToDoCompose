@@ -11,6 +11,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -45,7 +46,7 @@ internal open class TaskRepositoryImpl @Inject constructor(
         llmEngine.extractTask(userInput, currentLang) { title, timeText, category ->
             externalScope.launch {
                 try {
-                    val existingTasks = toDoDao.getAllTasksList()
+                    val existingTasks = toDoDao.getAllTasks().first()
 
                     val finalDueDate = parseDateToLong(timeText, existingTasks)
 
