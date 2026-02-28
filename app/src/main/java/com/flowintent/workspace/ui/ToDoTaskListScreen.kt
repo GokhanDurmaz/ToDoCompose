@@ -5,16 +5,14 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -27,7 +25,6 @@ import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,44 +39,38 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.flowintent.core.db.DragInfo
-import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskType
-import com.flowintent.core.db.calculateNewIndex
-import com.flowintent.core.db.swap
+import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskType
 import com.flowintent.core.util.Resource
 import com.flowintent.core.util.toReadableDateTime
 import com.flowintent.workspace.R
 import com.flowintent.workspace.nav.ToDoNavTopBar
 import com.flowintent.workspace.nav.TopBarState
 import com.flowintent.workspace.ui.card.CategoryChipsRow
-import com.flowintent.workspace.ui.search.SearchBar
+import com.flowintent.workspace.ui.task.AiThinkingIndicator
+import com.flowintent.workspace.ui.task.CategoryHeader
+import com.flowintent.workspace.ui.task.EmptyTaskPlaceholder
+import com.flowintent.workspace.ui.task.TaskSearchBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.VAL_0_0
-import com.flowintent.workspace.util.VAL_12
-import com.flowintent.workspace.util.VAL_16
 import com.flowintent.workspace.util.VAL_1_0
 import com.flowintent.workspace.util.VAL_1_0_2
-import com.flowintent.workspace.util.VAL_2_0
-import com.flowintent.workspace.util.VAL_50
 import com.flowintent.workspace.util.asString
 import com.flowintent.workspace.util.asStringNonComposable
 
@@ -224,27 +215,6 @@ private fun SmartTaskStateOverlay(
 }
 
 @Composable
-private fun AiThinkingIndicator() {
-    Surface(
-        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.8f),
-        shape = RoundedCornerShape(16.dp),
-        shadowElevation = 4.dp
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
-                strokeWidth = 2.dp
-            )
-            Text(stringResource(R.string.ai_thinking))
-        }
-    }
-}
-
-@Composable
 fun ListCardContent(
     viewModel: TaskViewModel,
     isSearchBarVisible: Boolean
@@ -296,27 +266,12 @@ fun ListCardContent(
     }
 }
 
-@Composable
-private fun TaskSearchBar(query: String, onQueryChange: (String) -> Unit) {
-    SearchBar(
-        query = query,
-        onQueryChange = onQueryChange,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = VAL_12.dp, end = VAL_12.dp, bottom = VAL_12.dp)
-            .height(VAL_50.dp)
-    )
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TaskLazyList(
     groupedTasks: Map<TaskType, List<Task>>,
     viewModel: TaskViewModel
 ) {
-    var draggingItem by remember { mutableStateOf<DragInfo?>(null) }
-    var itemHeight by remember { mutableStateOf(50.dp) }
-
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -326,19 +281,9 @@ private fun TaskLazyList(
                 CategoryHeader(type)
             }
 
-            itemsIndexed(tasks, key = { _, task -> task.uid }) { index, task ->
-                val dragStateParams = TaskDragState(
-                    index = index,
-                    draggingItem = draggingItem,
-                    itemHeight = itemHeight,
-                    filteredList = remember { tasks.toMutableStateList() },
-                    onDragUpdate = { draggingItem = it },
-                    onHeightChange = { itemHeight = it }
-                )
-
+            itemsIndexed(tasks, key = { _, task -> task.uid }) { _, task ->
                 TaskItemContainer(
                     task = task,
-                    dragStateParams = dragStateParams,
                     viewModel = viewModel
                 )
             }
@@ -347,45 +292,48 @@ private fun TaskLazyList(
 }
 
 @Composable
-fun CategoryHeader(type: TaskType) {
-    Surface(
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = type.name,
-            modifier = Modifier
-                .padding(horizontal = 20.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.ExtraBold,
-            color = MaterialTheme.colorScheme.primary,
-            letterSpacing = 1.5.sp
-        )
-    }
-}
-
-@Composable
 private fun TaskItemContainer(
     task: Task,
-    dragStateParams: TaskDragState,
     viewModel: TaskViewModel,
 ) {
-    val isDragging = dragStateParams.draggingItem == task
-    val dragState = DragState(
-        index = dragStateParams.index,
-        isDragging = isDragging,
-        draggingItem = dragStateParams.draggingItem,
-        itemHeight = dragStateParams.itemHeight,
-        filteredList = dragStateParams.filteredList
-    )
+    val haptic = LocalHapticFeedback.current
+    val isSelected = viewModel.selectedTasks[task.uid] == true
+
+    val backgroundColor = if (isSelected) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        MaterialTheme.colorScheme.surface
+    }
 
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp)
-            .taskDragModifier(dragState, onDragUpdate = dragStateParams.onDragUpdate),
+            .pointerInput(task.uid) {
+                detectTapGestures(
+                    onLongPress = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.toggleSelection(task.uid)
+                    },
+                    onTap = {
+                        if (viewModel.selectedTasks.any { it.value }) {
+                            viewModel.toggleSelection(task.uid)
+                        } else {
+                            viewModel.toggleExpanded(task.uid)
+                        }
+                    }
+                )
+            }
+            .graphicsLayer {
+                scaleX = if (isSelected) VAL_1_0_2 else VAL_1_0
+                scaleY = if (isSelected) VAL_1_0_2 else VAL_1_0
+            }
+            .zIndex(if (isSelected) VAL_1_0 else VAL_0_0),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = if (isSelected) 6.dp else 2.dp
+        ),
+        colors = CardDefaults.elevatedCardColors(containerColor = backgroundColor)
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
             TaskCardTextContent(task, viewModel)
@@ -447,105 +395,3 @@ fun TaskCardTextContent(task: Task, viewModel: TaskViewModel) {
         }
     }
 }
-
-@Composable
-fun EmptyTaskPlaceholder() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = Icons.Default.AttachFile,
-            contentDescription = null,
-            modifier = Modifier.size(80.dp),
-            tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = stringResource(R.string.no_tasks_yet),
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(R.string.empty_task_description),
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-}
-
-fun Modifier.taskDragModifier(
-    dragState: DragState,
-    onDragUpdate: (DragInfo?) -> Unit
-): Modifier = this.then(
-    Modifier
-        .graphicsLayer {
-            if (dragState.isDragging) {
-                val heightPx = dragState.itemHeight.toPx()
-                translationY = dragState.draggingItem?.let { drag ->
-                    drag.offsetY - drag.touchOffset + heightPx / VAL_2_0
-                } ?: VAL_0_0
-                shadowElevation = VAL_16.dp.toPx()
-                scaleX = VAL_1_0_2
-                scaleY = VAL_1_0_2
-            }
-        }
-        .zIndex(if (dragState.isDragging) VAL_1_0 else VAL_0_0)
-        .pointerInput(Unit) {
-            detectDragGesturesAfterLongPress(
-                onDragStart = { offset ->
-                    onDragUpdate(
-                        DragInfo(
-                            index = dragState.index,
-                            offsetY = VAL_0_0,
-                            touchOffset = offset.y
-                        )
-                    )
-                },
-                onDrag = { change, dragAmount ->
-                    change.consume()
-                    val drag = dragState.draggingItem ?: return@detectDragGesturesAfterLongPress
-                    val updatedDrag = drag.copy(offsetY = drag.offsetY + dragAmount.y)
-                    onDragUpdate(updatedDrag)
-
-                    val newIndex = calculateNewIndex(
-                        updatedDrag,
-                        dragState.filteredList.size,
-                        dragState.itemHeight.toPx()
-                    )
-                    if (newIndex != updatedDrag.index) {
-                        dragState.filteredList.swap(updatedDrag.index, newIndex)
-                        onDragUpdate(updatedDrag.copy(index = newIndex, offsetY = 0f))
-                    }
-                },
-                onDragEnd = { onDragUpdate(null) },
-                onDragCancel = { onDragUpdate(null) }
-            )
-        }
-)
-
-data class TaskDragState(
-    val index: Int,
-    val draggingItem: DragInfo?,
-    val itemHeight: Dp,
-    val filteredList: SnapshotStateList<Task>,
-    val onDragUpdate: (DragInfo?) -> Unit,
-    val onHeightChange: (Dp) -> Unit
-)
-
-data class DragState(
-    val index: Int,
-    val isDragging: Boolean,
-    val draggingItem: DragInfo?,
-    val itemHeight: Dp,
-    val filteredList: SnapshotStateList<Task>
-)

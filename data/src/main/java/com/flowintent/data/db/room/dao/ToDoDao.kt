@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
+import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskRes
 import kotlinx.coroutines.flow.Flow
 
 @Dao

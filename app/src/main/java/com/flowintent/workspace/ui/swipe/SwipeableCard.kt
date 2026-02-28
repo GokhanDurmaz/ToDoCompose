@@ -31,7 +31,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.flowintent.core.db.Task
+import com.flowintent.core.db.model.Task
 import com.flowintent.workspace.ui.dialog.TaskDialogHandler
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.VAL_0

@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.flowintent.core.db.TaskType
+import com.flowintent.core.db.model.TaskType
 
 @Composable
 fun CategoryChipsRow(

@@ -3,8 +3,8 @@ package com.flowintent.workspace.ui.vm
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
+import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskRes
 import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

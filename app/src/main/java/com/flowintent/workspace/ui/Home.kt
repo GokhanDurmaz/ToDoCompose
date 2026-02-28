@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.flowintent.core.db.TaskCategory
+import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.core.util.Resource
 import com.flowintent.workspace.R
 import com.flowintent.workspace.nav.ToDoNavTopBar

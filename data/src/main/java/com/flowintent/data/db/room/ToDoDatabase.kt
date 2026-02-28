@@ -3,7 +3,7 @@ package com.flowintent.data.db.room
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.flowintent.core.db.Task
+import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.settings.SettingsPreferences
 import com.flowintent.data.db.room.converters.SettingsPreferencesConverter
 import com.flowintent.data.db.room.converters.TaskTypeConverters

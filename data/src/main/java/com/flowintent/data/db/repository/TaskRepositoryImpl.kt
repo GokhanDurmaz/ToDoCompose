@@ -1,7 +1,8 @@
 package com.flowintent.data.db.repository
 
-import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
+import com.flowintent.core.db.model.ActionType
+import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskRes
 import com.flowintent.data.db.room.dao.ToDoDao
 import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.core.util.Resource
@@ -43,26 +44,65 @@ internal open class TaskRepositoryImpl @Inject constructor(
     override suspend fun insertSmartTask(userInput: String): Flow<Resource<Unit>> = callbackFlow {
         val currentLang = Locale.getDefault().language
 
-        llmEngine.extractTask(userInput, currentLang) { title, timeText, category ->
+        llmEngine.extractTask(userInput, currentLang) { title, timeText, category, action ->
             externalScope.launch {
                 try {
                     val existingTasks = toDoDao.getAllTasks().first()
 
-                    val finalDueDate = parseDateToLong(timeText, existingTasks)
+                    when (action) {
+                        ActionType.DELETE -> {
+                            val aiTitle = title.lowercase().trim()
 
-                    val newTask = Task(
-                        title = title,
-                        content = TaskRes.TaskContent(content = title),
-                        taskType = category,
-                        dueDate = finalDueDate
-                    )
+                            val tasksToDelete = existingTasks.filter { task ->
+                                val dbTitle = task.title.lowercase().trim()
 
-                    toDoDao.insertTask(newTask)
+                                val isDirectMatch = dbTitle.contains(aiTitle) || aiTitle.contains(dbTitle)
+
+                                val aiWords = aiTitle.split(" ").filter { it.length > 2 }
+                                val dbWords = dbTitle.split(" ").filter { it.length > 2 }
+
+                                val commonWords = aiWords.intersect(dbWords.toSet())
+                                val isWordMatch = commonWords.isNotEmpty()
+
+                                isDirectMatch || isWordMatch
+                            }
+
+                            if (tasksToDelete.isNotEmpty()) {
+                                tasksToDelete.forEach { toDoDao.delete(it) }
+                            }
+                        }
+
+                        ActionType.UPDATE -> {
+                            val taskToUpdate = existingTasks.find { task ->
+                                val dbTitle = task.title.lowercase().trim()
+                                val aiTitle = title.lowercase().trim()
+                                dbTitle.contains(aiTitle) || aiTitle.contains(dbTitle)
+                            }
+
+                            taskToUpdate?.let {
+                                toDoDao.updateTask(
+                                    it.uid,
+                                    title = it.title,
+                                    content = TaskRes.TaskContent(content = title)
+                                )
+                            }
+                        }
+
+                        ActionType.ADD -> {
+                            val finalDueDate = parseDateToLong(timeText, existingTasks)
+                            val newTask = Task(
+                                title = title,
+                                content = TaskRes.TaskContent(content = title),
+                                taskType = category,
+                                dueDate = finalDueDate
+                            )
+                            toDoDao.insertTask(newTask)
+                        }
+                    }
                     trySend(Resource.Success(Unit))
                 } catch (e: Exception) {
-                    trySend(Resource.Error(e.localizedMessage ?: "DB Error"))
+                    trySend(Resource.Error(e.localizedMessage ?: "İşlem Hatası"))
                 } finally {
-                    close()
                 }
             }
         }

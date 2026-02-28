@@ -1,4 +1,4 @@
-package com.flowintent.core.db
+package com.flowintent.core.db.model
 
 data class SignUpState(
     val firstName: String = "",

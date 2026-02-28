@@ -1,6 +1,6 @@
 package com.flowintent.data.db.repository
 
-import com.flowintent.core.db.UserProfile
+import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.util.Resource
 import com.google.firebase.auth.FirebaseAuth

@@ -15,9 +15,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.TaskType
+import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskRes
+import com.flowintent.core.db.model.TaskType
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import com.flowintent.workspace.util.ColorPicker
 import com.flowintent.workspace.util.ColorProvider

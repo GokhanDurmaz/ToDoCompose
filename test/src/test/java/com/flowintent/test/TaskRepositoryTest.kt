@@ -1,8 +1,8 @@
 package com.flowintent.test
 
-import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.TaskType
+import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskRes
+import com.flowintent.core.db.model.TaskType
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
