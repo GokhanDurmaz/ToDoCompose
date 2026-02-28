@@ -2,7 +2,7 @@ package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flowintent.core.db.AppTheme
+import com.flowintent.core.db.model.AppTheme
 import com.flowintent.core.db.settings.GetThemeUseCase
 import com.flowintent.core.db.settings.UpdateThemeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

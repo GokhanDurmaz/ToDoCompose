@@ -2,7 +2,7 @@ package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flowintent.core.db.TaskCategory
+import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.core.db.repository.TaskCategoryRepository
 import com.flowintent.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

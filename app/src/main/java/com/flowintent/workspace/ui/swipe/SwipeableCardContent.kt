@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.flowintent.core.db.Task
+import com.flowintent.core.db.model.Task
 import com.flowintent.core.util.getRelativeDayLabel
 import com.flowintent.workspace.ui.button.CustomRadioButton
 import com.flowintent.workspace.ui.vm.TaskViewModel

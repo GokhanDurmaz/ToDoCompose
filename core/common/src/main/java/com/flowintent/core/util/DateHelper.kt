@@ -1,6 +1,6 @@
 package com.flowintent.core.util
 
-import com.flowintent.core.db.Task
+import com.flowintent.core.db.model.Task
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date

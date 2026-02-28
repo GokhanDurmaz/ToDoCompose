@@ -1,4 +1,4 @@
-package com.flowintent.core.db
+package com.flowintent.core.db.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

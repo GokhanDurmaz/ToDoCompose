@@ -38,8 +38,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.flowintent.core.db.AuthCallbacks
-import com.flowintent.core.db.SignUpState
+import com.flowintent.core.db.model.AuthCallbacks
+import com.flowintent.core.db.model.SignUpState
 import com.flowintent.core.util.Resource
 import com.flowintent.workspace.ui.vm.AuthViewModel
 import com.flowintent.workspace.util.COLOR_0XFF0F0F1C

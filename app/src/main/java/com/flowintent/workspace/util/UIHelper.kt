@@ -13,7 +13,10 @@ const val VAL_0_7 = 0.7f
 const val VAL_0_8 = 0.8f
 const val VAL_1_0 = 1f
 const val VAL_1_0_2 = 1.02f
+const val VAL_1_0_5 = 1.05f
 const val VAL_2_0 = 2f
+const val VAL_8_0 = 8f
+const val VAL_12_0 = 12f
 
 const val VAL_0 = 0
 const val VAL_2 = 2

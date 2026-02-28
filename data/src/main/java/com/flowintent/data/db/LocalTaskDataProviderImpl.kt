@@ -1,8 +1,8 @@
 package com.flowintent.data.db
 
-import com.flowintent.core.db.TaskCategory
-import com.flowintent.core.db.TaskContent
-import com.flowintent.core.db.TaskIcon
+import com.flowintent.core.db.model.TaskCategory
+import com.flowintent.core.db.model.TaskContent
+import com.flowintent.core.db.model.TaskIcon
 import com.flowintent.core.db.source.AssetDataSource
 import com.flowintent.core.db.source.LocalTaskDataProvider
 import com.flowintent.core.util.Resource
