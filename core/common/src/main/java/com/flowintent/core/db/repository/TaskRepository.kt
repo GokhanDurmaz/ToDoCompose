@@ -1,7 +1,7 @@
 package com.flowintent.core.db.repository
 
-import com.flowintent.core.db.Task
-import com.flowintent.core.db.TaskRes
+import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskRes
 import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 

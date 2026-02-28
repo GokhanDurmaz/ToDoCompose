@@ -1,6 +1,6 @@
 package com.flowintent.core.db.settings
 
-import com.flowintent.core.db.AppTheme
+import com.flowintent.core.db.model.AppTheme
 import com.flowintent.core.db.repository.SettingsRepository
 
 class GetThemeUseCase(private val repository: SettingsRepository) {

@@ -1,6 +1,6 @@
 package com.flowintent.core.db.auth
 
-import com.flowintent.core.db.UserProfile
+import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow

@@ -3,7 +3,7 @@ package com.flowintent.workspace.util
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.flowintent.core.db.TaskRes
+import com.flowintent.core.db.model.TaskRes
 
 @Composable
 fun TaskRes.asString(): String {

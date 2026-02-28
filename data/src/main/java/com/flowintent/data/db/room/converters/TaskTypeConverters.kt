@@ -2,8 +2,8 @@ package com.flowintent.data.db.room.converters
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.flowintent.core.db.TaskRes
-import com.flowintent.core.db.TaskType
+import com.flowintent.core.db.model.TaskRes
+import com.flowintent.core.db.model.TaskType
 import com.google.gson.Gson
 import javax.inject.Inject
 

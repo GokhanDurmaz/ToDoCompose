@@ -2,7 +2,8 @@ package com.flowintent.network.network
 
 import android.content.Context
 import android.util.Log
-import com.flowintent.core.db.TaskType
+import com.flowintent.core.db.model.ActionType
+import com.flowintent.core.db.model.TaskType
 import com.flowintent.network.data.GroqMessageRequest
 import com.flowintent.network.data.GroqRequest
 import com.flowintent.network.data.TaskExtraction
@@ -44,7 +45,7 @@ class TaskLlmEngine @Inject constructor(
     suspend fun extractTask(
         userInput: String,
         languageCode: String,
-        onResult: (title: String, timeText: String?, category: TaskType) -> Unit
+        onResult: (title: String, timeText: String?, category: TaskType, action: ActionType) -> Unit
     ) = withContext(Dispatchers.IO) {
 
         val langCode = languageCode.take(2).lowercase()
@@ -56,7 +57,6 @@ class TaskLlmEngine @Inject constructor(
                 "Use JSON array if multiple tasks exist."
 
         val request = GroqRequest(
-            model = "llama-3.1-8b-instant",
             messages = listOf(
                 GroqMessageRequest(role = "system", content = dynamicSystemPrompt),
                 GroqMessageRequest(role = "user", content = userInput)
@@ -67,6 +67,7 @@ class TaskLlmEngine @Inject constructor(
         try {
             val response = groqApiService.getCompletion(apiKey, request)
             val aiContent = response.choices.firstOrNull()?.message?.content
+            Log.d("TaskLlmEngine", aiContent.toString())
 
             if (!aiContent.isNullOrBlank()) {
                 val jsonStart = aiContent.indexOfAny(charArrayOf('[', '{'))
@@ -74,7 +75,6 @@ class TaskLlmEngine @Inject constructor(
 
                 if (jsonStart != -1 && jsonEnd != -1) {
                     val cleanJson = aiContent.substring(jsonStart, jsonEnd + 1).trim()
-                    Log.d("TaskLlmEngine", cleanJson)
                     val extractedTasks = mutableListOf<TaskExtraction>()
 
                     if (cleanJson.startsWith("[")) {
@@ -93,15 +93,23 @@ class TaskLlmEngine @Inject constructor(
                             Log.e("TaskLlmEngine", e.message.toString())
                             TaskType.OTHER
                         }
-                        onResult(taskData.title, finalTime, validatedCategory)
+
+                        val validatedAction = try {
+                            ActionType.valueOf(taskData.action.uppercase())
+                        } catch (e: Exception) {
+                            Log.e("TaskLlmEngine", e.message.toString())
+                            ActionType.ADD
+                        }
+
+                        onResult(taskData.title, finalTime, validatedCategory, validatedAction)
                     }
                 } else {
-                    onResult(userInput, null, TaskType.OTHER)
+                    onResult(userInput, null, TaskType.OTHER, ActionType.ADD)
                 }
             }
         } catch (e: Exception) {
-            Log.e("TaskLlmEngine", "Extraction/Parse Error: ${e.message}")
-            onResult(userInput, null, TaskType.OTHER)
+            Log.e("TaskLlmEngine", "Extraction Error: ${e.message}")
+            onResult(userInput, null, TaskType.OTHER, ActionType.ADD)
         }
     }
 }

@@ -3,7 +3,7 @@ package com.flowintent.data.db.room.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.flowintent.core.db.AppTheme
+import com.flowintent.core.db.model.AppTheme
 import com.flowintent.core.db.settings.SettingsPreferences
 
 @Dao

@@ -2,7 +2,7 @@ package com.flowintent.data.db.room.converters
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.flowintent.core.db.AppTheme
+import com.flowintent.core.db.model.AppTheme
 import com.google.gson.Gson
 import javax.inject.Inject
 
