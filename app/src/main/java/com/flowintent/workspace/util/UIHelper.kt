@@ -51,6 +51,7 @@ const val VAL_80: Int = 80
 const val VAL_200: Int = 200
 const val VAL_255: Int = 255
 const val VAL_300 = 300
+const val VAL_2000L = 2000L
 
 const val COLOR_0XFF90CAF9 = 0xFF90CAF9
 const val COLOR_0XFF1976D2 = 0xFF1976D2

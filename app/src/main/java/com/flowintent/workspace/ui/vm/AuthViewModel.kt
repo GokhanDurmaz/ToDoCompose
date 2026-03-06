@@ -8,6 +8,9 @@ import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
 import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.util.Resource
+import com.flowintent.navigation.nav.AuthNavigation
+import com.flowintent.navigation.nav.MainNavigation
+import com.flowintent.navigation.NavigationDispatcher
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +33,8 @@ class AuthViewModel @Inject constructor(
     private val signUpUseCase: SignUpUseCase,
     private val signInUseCase: SignInUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
-    private val forgetPasswordUseCase: ForgetPasswordUseCase
+    private val forgetPasswordUseCase: ForgetPasswordUseCase,
+    private val navigationDispatcher: NavigationDispatcher,
 ) : ViewModel() {
     val token: StateFlow<String?> = repo.tokenFlow()
         .stateIn(
@@ -128,4 +132,26 @@ class AuthViewModel @Inject constructor(
     }
 
     fun forgetPassword(email: String): Flow<Resource<Unit>>  = forgetPasswordUseCase(email)
+
+    fun onSignUpClicked() {
+        navigationDispatcher.navigateTo(AuthNavigation.SIGN_UP.route)
+    }
+
+    fun onLoginSuccess() {
+        navigationDispatcher.navigateTo(MainNavigation.HOME.route) {
+            popUpTo(AuthNavigation.SIGN_IN.route) { inclusive = true }
+        }
+    }
+
+    fun onForgotPasswordClicked() {
+        navigationDispatcher.navigateTo(AuthNavigation.FORGOT_PASSWORD.route)
+    }
+
+    fun onNavigateBack() {
+        navigationDispatcher.navigateBack()
+    }
+
+    fun onSignUpSuccess() {
+        navigationDispatcher.navigateBack()
+    }
 }
