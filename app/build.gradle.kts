@@ -108,6 +108,7 @@ dependencies {
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation(libs.androidx.runtime)
     implementation(project(":core:common"))
+    implementation(project(":core:navigation"))
     implementation(project(":core:profile"))
     runtimeOnly(project(":data"))
 

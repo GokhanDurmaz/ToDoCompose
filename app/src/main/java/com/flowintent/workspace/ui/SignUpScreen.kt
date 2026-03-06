@@ -38,7 +38,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.flowintent.core.db.model.AuthCallbacks
 import com.flowintent.core.db.model.SignUpState
 import com.flowintent.core.util.Resource
 import com.flowintent.workspace.ui.vm.AuthViewModel
@@ -59,9 +58,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToLogin: () -> Unit = {},
-    onSuccessRegistration: () -> Unit = {}
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     var signUpState by remember { mutableStateOf(SignUpState()) }
     var isLoading by remember { mutableStateOf(false) }
@@ -94,17 +91,14 @@ fun SignUpScreen(
                     handleRegistration(
                         viewModel = viewModel,
                         state = signUpState,
-                        callbacks = AuthCallbacks(
-                            onLoading = { isLoading = it },
-                            onError = { errorMessage = it },
-                            onSuccess = onSuccessRegistration
-                        )
+                        onError = { errorMessage = it },
+                        onLoading = { isLoading = it }
                     )
                 }
             }
         )
 
-        TextButton(onClick = onNavigateToLogin) {
+        TextButton(onClick = viewModel::onNavigateBack) {
             Text("Already have an account? Sign In", color = Color(COLOR_0XFF9D4EDD))
         }
     }
@@ -201,22 +195,23 @@ private fun ErrorMessage(message: String?) {
 private suspend fun handleRegistration(
     viewModel: AuthViewModel,
     state: SignUpState,
-    callbacks: AuthCallbacks
+    onLoading: (Boolean) -> Unit,
+    onError: (String?) -> Unit
 ) {
     viewModel.registerUser(state.firstName, state.lastName, state.email, state.password).collect { resource ->
         when (resource) {
             is Resource.Loading -> {
-                callbacks.onLoading(true)
-                callbacks.onError(null)
+                onLoading(true)
+                onError(null)
             }
             is Resource.Success -> {
-                callbacks.onLoading(false)
+                onLoading(false)
                 viewModel.saveUser(state.firstName, state.lastName, state.email)
-                callbacks.onSuccess()
+                viewModel.onSignUpSuccess()
             }
             is Resource.Error -> {
-                callbacks.onLoading(false)
-                callbacks.onError(resource.message)
+                onLoading(false)
+                onError(resource.message)
             }
         }
     }

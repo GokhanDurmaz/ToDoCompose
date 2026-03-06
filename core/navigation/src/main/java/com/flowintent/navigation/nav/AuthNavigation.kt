@@ -1,4 +1,4 @@
-package com.flowintent.workspace.nav
+package com.flowintent.navigation.nav
 
 enum class AuthNavigation(val route: String) {
     SIGN_UP("sign_up"),
