@@ -54,10 +54,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SignInScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateToSignUp: () -> Unit = {},
-    onSuccessLogin: () -> Unit = {},
-    onNavigateToForgotPassword: () -> Unit = {}
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val email by viewModel.emailInput.collectAsStateWithLifecycle()
     val password by viewModel.passwordInput.collectAsStateWithLifecycle()
@@ -81,7 +78,7 @@ fun SignInScreen(
             password = password,
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
-            onForgotClick = onNavigateToForgotPassword
+            onForgotClick = viewModel::onForgotPasswordClicked
         )
 
         ErrorMessage(errorMessage)
@@ -96,13 +93,12 @@ fun SignInScreen(
                     errorMessage = "Please enter a valid email address"
                 } else {
                     scope.launch {
-                        handleLogin(viewModel, onSuccessLogin) { errorMessage = it }
+                        handleLogin(viewModel) { errorMessage = it }
                     }
                 }
             }
         )
-
-        SignUpFooter(onNavigateToSignUp)
+        SignUpFooter(onNavigate = viewModel::onSignUpClicked)
     }
 }
 
@@ -212,15 +208,16 @@ private fun SignUpFooter(onNavigate: () -> Unit) {
 
 private suspend fun handleLogin(
     viewModel: AuthViewModel,
-    onSuccess: () -> Unit,
     onError: (String?) -> Unit
 ) {
     viewModel.loginUserWithState().collect { resource ->
         when (resource) {
             is Resource.Loading -> onError(null)
             is Resource.Success -> {
-                if (resource.data.isNotEmpty()) viewModel.saveToken(resource.data)
-                onSuccess()
+                if (resource.data.isNotEmpty()) {
+                    viewModel.saveToken(resource.data)
+                    viewModel.onLoginSuccess()
+                }
             }
             is Resource.Error -> onError(resource.message)
         }

@@ -32,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -47,17 +46,17 @@ import com.flowintent.workspace.util.COLOR_0XFFE63946
 import com.flowintent.workspace.util.VAL_12
 import com.flowintent.workspace.util.VAL_16
 import com.flowintent.workspace.util.VAL_20
+import com.flowintent.workspace.util.VAL_2000L
 import com.flowintent.workspace.util.VAL_32
 import com.flowintent.workspace.util.VAL_40
 import com.flowintent.workspace.util.VAL_60
 import com.flowintent.workspace.util.isValidEmail
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
 fun ForgotPasswordScreen(
-    viewModel: AuthViewModel = hiltViewModel(),
-    onNavigateBack: () -> Unit = {}
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val email by viewModel.emailInput.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
@@ -72,7 +71,7 @@ fun ForgotPasswordScreen(
             .padding(VAL_32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HeaderSection(onNavigateBack)
+        HeaderSection(onBack = viewModel::onNavigateBack)
 
         PasswordResetForm(
             email = email,
@@ -137,7 +136,7 @@ private fun ResetButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> U
         if (isLoading) {
             CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
         } else {
-            Text("Send Instructions", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text("Send", fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -155,15 +154,21 @@ private fun StatusIndicator(status: Pair<String, Boolean>?) {
 }
 
 private suspend fun handlePasswordReset(
-    viewModel: AuthViewModel,
+    authViewModel: AuthViewModel,
     email: String,
     onResult: (Pair<String, Boolean>) -> Unit
 ) {
-    viewModel.forgetPassword(email).collect { resource ->
-        when (resource) {
-            is Resource.Success -> onResult("Reset link sent! Check your inbox." to false)
-            is Resource.Error -> onResult(resource.message to true)
-            else -> Unit
+    authViewModel.apply {
+        forgetPassword(email).collect { resource ->
+            when (resource) {
+                is Resource.Success -> {
+                    onResult("Reset link sent! Check your inbox." to false)
+                    delay(VAL_2000L)
+                    onNavigateBack()
+                }
+                is Resource.Error -> onResult(resource.message to true)
+                else -> Unit
+            }
         }
     }
 }

@@ -42,6 +42,7 @@ detekt = "1.23.8"
 googleService = "4.4.3"
 entityExtraction = "16.0.0-beta6"
 runtime = "1.10.3"
+navigationCommonKtx = "2.9.7"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -104,6 +105,7 @@ tink-android = { module = "com.google.crypto.tink:tink-android", version.ref = "
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 entity-extraction = { group = "com.google.mlkit", name = "entity-extraction", version.ref = "entityExtraction" }
 androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-navigation-common-ktx = { group = "androidx.navigation", name = "navigation-common-ktx", version.ref = "navigationCommonKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

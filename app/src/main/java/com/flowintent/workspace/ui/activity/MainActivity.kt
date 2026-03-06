@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
+import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.workspace.nav.ToDoNavigationBar
 import com.flowintent.workspace.theme.ToDoTheme
 import com.flowintent.workspace.theme.md_theme_light_primary
@@ -63,9 +64,12 @@ import com.flowintent.workspace.util.VAL_7
 import com.flowintent.workspace.util.VAL_72
 import com.flowintent.workspace.util.VAL_75
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var navigationDispatcher: NavigationDispatcher
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,7 +86,10 @@ class MainActivity : AppCompatActivity() {
                 windowInsetsController.isAppearanceLightStatusBars = !isDarkTheme
                 windowInsetsController.isAppearanceLightNavigationBars = !isDarkTheme
             }
-            HomeScreen(viewModel = authViewModel)
+            HomeScreen(
+                viewModel = authViewModel,
+                navigationDispatcher = navigationDispatcher
+            )
         }
         Log.i(TAG, "onCreate")
     }
@@ -123,7 +130,10 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun HomeScreen(viewModel: AuthViewModel) {
+fun HomeScreen(
+    viewModel: AuthViewModel,
+    navigationDispatcher: NavigationDispatcher
+) {
     ToDoTheme {
         val isReady by viewModel.isReady.collectAsState()
 
@@ -133,7 +143,10 @@ fun HomeScreen(viewModel: AuthViewModel) {
                     modifier = Modifier.fillMaxSize(),
                     color = md_theme_light_primary
                 ) {
-                    ToDoNavigationBar(WindowWidthSizeClass.Compact, authViewModel = viewModel)
+                    ToDoNavigationBar(
+                        WindowWidthSizeClass.Compact,
+                        authViewModel = viewModel,
+                        navigationDispatcher = navigationDispatcher)
                 }
             } else {
                 CustomSplashScreen()
