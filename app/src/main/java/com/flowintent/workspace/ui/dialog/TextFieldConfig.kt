@@ -18,10 +18,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
 import com.flowintent.core.db.model.TaskType
+import com.flowintent.uikit.util.ColorPicker
+import com.flowintent.uikit.util.ColorProvider
+import com.flowintent.uikit.util.toArgbCompat
 import com.flowintent.workspace.ui.vm.TaskViewModel
-import com.flowintent.workspace.util.ColorPicker
-import com.flowintent.workspace.util.ColorProvider
-import com.flowintent.workspace.util.toArgbCompat
+
 
 @Composable
 fun OpenTaskDialog(

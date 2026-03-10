@@ -34,7 +34,6 @@ dependencies {
     implementation(project(":schema"))
     implementation(project(":core:common"))
     implementation(project(":core:network"))
-    implementation(project(":core:profile"))
 
     // Secure keystore tools
     implementation(libs.androidx.datastore.preferences)

@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.flowintent.uikit.util.VAL_12
+import com.flowintent.uikit.util.VAL_50
 import com.flowintent.workspace.ui.search.SearchBar
-import com.flowintent.workspace.util.VAL_12
-import com.flowintent.workspace.util.VAL_50
 
 @Composable
 fun TaskSearchBar(query: String, onQueryChange: (String) -> Unit) {
