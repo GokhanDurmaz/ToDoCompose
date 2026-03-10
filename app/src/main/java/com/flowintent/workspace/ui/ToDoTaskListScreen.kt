@@ -57,22 +57,23 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskType
+import com.flowintent.core.db.model.toDisplayContent
+import com.flowintent.core.db.model.toDisplayContentNonComposable
 import com.flowintent.core.util.Resource
 import com.flowintent.core.util.toReadableDateTime
+import com.flowintent.uikit.util.VAL_0_0
+import com.flowintent.uikit.util.VAL_1_0
+import com.flowintent.uikit.util.VAL_1_0_2
 import com.flowintent.workspace.R
-import com.flowintent.workspace.nav.ToDoNavTopBar
-import com.flowintent.workspace.nav.TopBarState
+import com.flowintent.workspace.nav.route.ToDoNavTopBar
+import com.flowintent.workspace.nav.route.TopBarState
 import com.flowintent.workspace.ui.card.CategoryChipsRow
 import com.flowintent.workspace.ui.task.AiThinkingIndicator
 import com.flowintent.workspace.ui.task.CategoryHeader
 import com.flowintent.workspace.ui.task.EmptyTaskPlaceholder
 import com.flowintent.workspace.ui.task.TaskSearchBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
-import com.flowintent.workspace.util.VAL_0_0
-import com.flowintent.workspace.util.VAL_1_0
-import com.flowintent.workspace.util.VAL_1_0_2
-import com.flowintent.workspace.util.asString
-import com.flowintent.workspace.util.asStringNonComposable
+import kotlin.collections.filter
 
 @Composable
 fun TaskInputBar(
@@ -229,7 +230,7 @@ fun ListCardContent(
         taskList.filter { task ->
             val matchesSearch = if (searchText.isBlank()) true
             else task.title.contains(searchText, ignoreCase = true) ||
-                    task.content.asStringNonComposable(context).contains(searchText, ignoreCase = true)
+                    task.content.toDisplayContentNonComposable(context).contains(searchText, ignoreCase = true)
 
             val matchesType = if (selectedType == null) true
             else task.taskType == selectedType
@@ -345,6 +346,10 @@ private fun TaskItemContainer(
 fun TaskCardTextContent(task: Task, viewModel: TaskViewModel) {
     val isExpanded = viewModel.expandedMap[task.uid] ?: false
 
+    val displayText = remember(task.content) {
+        task.content.toDisplayContent()
+    }
+
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -352,7 +357,7 @@ fun TaskCardTextContent(task: Task, viewModel: TaskViewModel) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = task.content.asString(),
+                text = displayText,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f)
@@ -387,7 +392,7 @@ fun TaskCardTextContent(task: Task, viewModel: TaskViewModel) {
 
         if (isExpanded) {
             Text(
-                text = task.content.asString(),
+                text = task.content.toDisplayContent(),
                 modifier = Modifier.padding(top = 12.dp),
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

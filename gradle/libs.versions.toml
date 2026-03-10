@@ -41,8 +41,12 @@ protobuf-version = "0.9.6"
 detekt = "1.23.8"
 googleService = "4.4.3"
 entityExtraction = "16.0.0-beta6"
-runtime = "1.10.3"
+runtime = "1.10.4"
 navigationCommonKtx = "2.9.7"
+navigationRuntimeKtx = "2.9.7"
+runtimeVersion = "1.10.4"
+ui = "1.10.4"
+foundationLayout = "1.10.4"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -106,6 +110,9 @@ kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-p
 entity-extraction = { group = "com.google.mlkit", name = "entity-extraction", version.ref = "entityExtraction" }
 androidx-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 androidx-navigation-common-ktx = { group = "androidx.navigation", name = "navigation-common-ktx", version.ref = "navigationCommonKtx" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -118,6 +125,7 @@ kotlinx-serialization = { id = "kotlinx-serialization" }
 google-services = { id = "com.google.gms.google-services" }
 android-library = { id = "com.android.library" }
 flowintent-android-base = { id = "flowintent.android.base" }
+flowintent-android-compose = { id = "flowintent.android.compose" }
 flowintent-hilt = { id = "flowintent.hilt" }
 flowintent-room = { id = "flowintent.room" }
 flowintent-detekt = { id = "flowintent.detekt" }

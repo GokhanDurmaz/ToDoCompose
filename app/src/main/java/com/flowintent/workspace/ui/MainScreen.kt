@@ -2,12 +2,12 @@ package com.flowintent.workspace.ui
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import com.flowintent.workspace.util.MainContentType
-import com.flowintent.workspace.util.MainNavigationType
+import com.flowintent.uikit.util.MainContentType
+import com.flowintent.uikit.util.MainNavigationType
 
 @Composable
 fun MainScreen(
-    windowSize: WindowWidthSizeClass,
+    windowSize: WindowWidthSizeClass = WindowWidthSizeClass.Compact,
 ) {
     val navigationType: MainNavigationType
     val contentType: MainContentType

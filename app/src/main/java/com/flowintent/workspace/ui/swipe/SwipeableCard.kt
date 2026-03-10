@@ -32,20 +32,21 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.flowintent.core.db.model.Task
+import com.flowintent.uikit.util.VAL_0
+import com.flowintent.uikit.util.VAL_0_0
+import com.flowintent.uikit.util.VAL_12
+import com.flowintent.uikit.util.VAL_2
+import com.flowintent.uikit.util.VAL_200
+import com.flowintent.uikit.util.VAL_300
+import com.flowintent.uikit.util.VAL_4
+import com.flowintent.uikit.util.VAL_50
+import com.flowintent.uikit.util.VAL_80
 import com.flowintent.workspace.ui.dialog.TaskDialogHandler
 import com.flowintent.workspace.ui.vm.TaskViewModel
-import com.flowintent.workspace.util.VAL_0
-import com.flowintent.workspace.util.VAL_0_0
-import com.flowintent.workspace.util.VAL_12
-import com.flowintent.workspace.util.VAL_2
-import com.flowintent.workspace.util.VAL_200
-import com.flowintent.workspace.util.VAL_300
-import com.flowintent.workspace.util.VAL_4
-import com.flowintent.workspace.util.VAL_50
-import com.flowintent.workspace.util.VAL_80
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+
 @Composable
 fun SwipeableCard(
     task: Task,

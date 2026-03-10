@@ -9,9 +9,9 @@ import androidx.compose.ui.zIndex
 import com.flowintent.core.db.model.DragInfo
 import com.flowintent.core.db.model.calculateNewIndex
 import com.flowintent.core.db.model.swap
-import com.flowintent.workspace.util.VAL_0_0
-import com.flowintent.workspace.util.VAL_12_0
-import com.flowintent.workspace.util.VAL_2_0
+import com.flowintent.uikit.util.VAL_0_0
+import com.flowintent.uikit.util.VAL_12_0
+import com.flowintent.uikit.util.VAL_2_0
 
 fun Modifier.taskDragModifier(
     dragState: DragState,

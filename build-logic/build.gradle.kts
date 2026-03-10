@@ -36,7 +36,7 @@ gradlePlugin {
 
 gradlePlugin {
     plugins {
-        register("androidbaseplugin") {
+        register("android-base-plugin") {
             id = "flowintent.android.base"
             implementationClass = "com.flowintent.build_logic.AndroidBaseConventionPlugin"
         }
@@ -63,9 +63,18 @@ gradlePlugin {
 
 gradlePlugin {
     plugins {
-        register("androidSecret") {
+        register("android-secret") {
             id = "flowintent.android.secret"
             implementationClass = "com.flowintent.build_logic.secret.AndroidSecretPlugin"
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        register("android-compose") {
+            id = "flowintent.android.compose"
+            implementationClass = "com.flowintent.build_logic.AndroidComposeConventionPlugin"
         }
     }
 }
