@@ -55,7 +55,7 @@ dependencies {
 
 configurations.all {
     resolutionStrategy {
-        force("com.google.protobuf:protobuf-javalite:3.25.1")
-        force("com.google.firebase:protolite-well-known-types:18.0.0")
+        force("com.google.protobuf:protobuf-javalite:4.34.0")
+        force("com.google.firebase:protolite-well-known-types:18.0.1")
     }
 }
