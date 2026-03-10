@@ -13,7 +13,5 @@ object NavigationModule {
 
     @Provides
     @Singleton
-    fun provideNavigationDispatcher(): NavigationDispatcher {
-        return NavigationDispatcher()
-    }
+    fun provideNavigationDispatcher(): NavigationDispatcher = NavigationDispatcher()
 }

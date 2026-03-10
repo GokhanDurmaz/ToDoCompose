@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services) // The Google Services plugin
     alias(libs.plugins.flowintent.android.base)
+    alias(libs.plugins.flowintent.android.compose)
     alias(libs.plugins.flowintent.hilt)
     alias(libs.plugins.flowintent.detekt)
 }
@@ -94,22 +95,18 @@ android {
             )
         }
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material3.android)
     implementation(libs.androidx.material3.window.size.class1.android)
-    implementation(libs.androidx.runtime)
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
-    implementation(project(":core:profile"))
+    implementation(project(":feature:auth"))
+    implementation(project(":feature:profile"))
+    implementation(project(":feature:settings"))
+    implementation(project(":feature:uikit"))
     runtimeOnly(project(":data"))
 
     // Jetpack Compose integration
@@ -123,21 +120,10 @@ dependencies {
 
     implementation(libs.androidx.ui)
 
-    // Android Studio Preview support
-    implementation(libs.androidx.ui.tooling.preview)
-    debugImplementation(libs.androidx.ui.tooling)
-
     // Needed for createComposeRule(), but not for createAndroidComposeRule<YourActivity>():
     debugImplementation(libs.androidx.ui.test.manifest)
     // debugImplementation because LeakCanary should only run in debug builds.
     debugImplementation(libs.leakcanary.android)
-
-    // Optional - Included automatically by material, only add when you need
-    // the icons but not the material library (e.g. when using Material3 or a
-    // custom design system based on Foundation)
-    implementation(libs.androidx.material.icons.core)
-    // Optional - Add full set of material icons
-    implementation(libs.androidx.material.icons.extended)
 
     // Optional - Integration with activities
     implementation(libs.androidx.activity.compose)
@@ -147,9 +133,6 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.accompanist.systemuicontroller)
-
-    // DI tool for compose navigation
-    implementation(libs.androidx.hilt.navigation.compose)
 
     implementation(libs.androidx.core.splashscreen)
 

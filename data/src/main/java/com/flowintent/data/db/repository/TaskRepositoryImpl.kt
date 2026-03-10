@@ -90,9 +90,11 @@ internal open class TaskRepositoryImpl @Inject constructor(
 
                         ActionType.ADD -> {
                             val finalDueDate = parseDateToLong(timeText, existingTasks)
+
+                            val safeTitle = title.ifBlank { userInput }
                             val newTask = Task(
-                                title = title,
-                                content = TaskRes.TaskContent(content = title),
+                                title = safeTitle,
+                                content = TaskRes.TaskContent(content = safeTitle),
                                 taskType = category,
                                 dueDate = finalDueDate
                             )

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">Language</string>
+    <string name="theme_label">Theme</string>
+    <string name="logout">Logout</string>
+    <string name="dnd_label">Do Not Disturb</string>
+    <string name="enable_dnd">Enable DND</string>
+    <string name="intensity">Intensity</string>
+    <string name="about_label">About</string>
+    <string name="version_label">Version 1.0.0</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_service">Terms of Service</string>
+    <string name="check_updates">Check for Updates</string>
+</resources>

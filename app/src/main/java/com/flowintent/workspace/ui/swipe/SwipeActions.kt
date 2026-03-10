@@ -24,16 +24,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.flowintent.workspace.util.COLOR_0XFF42A5F5
-import com.flowintent.workspace.util.COLOR_0XFFEF5350
-import com.flowintent.workspace.util.VAL_0_0
-import com.flowintent.workspace.util.VAL_12
-import com.flowintent.workspace.util.VAL_1_0
-import com.flowintent.workspace.util.VAL_200
-import com.flowintent.workspace.util.VAL_300
-import com.flowintent.workspace.util.VAL_4
-import com.flowintent.workspace.util.VAL_50
-import com.flowintent.workspace.util.VAL_8
+import com.flowintent.uikit.util.COLOR_0XFF42A5F5
+import com.flowintent.uikit.util.COLOR_0XFFEF5350
+import com.flowintent.uikit.util.VAL_0_0
+import com.flowintent.uikit.util.VAL_12
+import com.flowintent.uikit.util.VAL_1_0
+import com.flowintent.uikit.util.VAL_200
+import com.flowintent.uikit.util.VAL_300
+import com.flowintent.uikit.util.VAL_4
+import com.flowintent.uikit.util.VAL_50
+import com.flowintent.uikit.util.VAL_8
 import kotlinx.coroutines.launch
 
 @Composable

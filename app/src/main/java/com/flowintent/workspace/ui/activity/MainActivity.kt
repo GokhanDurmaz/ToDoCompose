@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,43 +32,48 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
+import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.uikit.util.COLOR_0XFF003366
+import com.flowintent.uikit.util.COLOR_0XFF74C3F3
+import com.flowintent.uikit.util.VAL_0_0
+import com.flowintent.uikit.util.VAL_0_1
+import com.flowintent.uikit.util.VAL_0_2
+import com.flowintent.uikit.util.VAL_0_3
+import com.flowintent.uikit.util.VAL_0_4
+import com.flowintent.uikit.util.VAL_0_5
+import com.flowintent.uikit.util.VAL_1_0
+import com.flowintent.uikit.util.VAL_22
+import com.flowintent.uikit.util.VAL_23
+import com.flowintent.uikit.util.VAL_25
+import com.flowintent.uikit.util.VAL_28
+import com.flowintent.uikit.util.VAL_30
+import com.flowintent.uikit.util.VAL_32
+import com.flowintent.uikit.util.VAL_35
+import com.flowintent.uikit.util.VAL_40
+import com.flowintent.uikit.util.VAL_45
+import com.flowintent.uikit.util.VAL_5
+import com.flowintent.uikit.util.VAL_52
+import com.flowintent.uikit.util.VAL_55
+import com.flowintent.uikit.util.VAL_60
+import com.flowintent.uikit.util.VAL_7
+import com.flowintent.uikit.util.VAL_72
+import com.flowintent.uikit.util.VAL_75
 import com.flowintent.workspace.nav.ToDoNavigationBar
 import com.flowintent.workspace.theme.ToDoTheme
 import com.flowintent.workspace.theme.md_theme_light_primary
-import com.flowintent.workspace.ui.vm.AuthViewModel
-import com.flowintent.workspace.util.COLOR_0XFF003366
-import com.flowintent.workspace.util.COLOR_0XFF74C3F3
-import com.flowintent.workspace.util.VAL_0_0
-import com.flowintent.workspace.util.VAL_0_1
-import com.flowintent.workspace.util.VAL_0_2
-import com.flowintent.workspace.util.VAL_0_3
-import com.flowintent.workspace.util.VAL_0_4
-import com.flowintent.workspace.util.VAL_0_5
-import com.flowintent.workspace.util.VAL_1_0
-import com.flowintent.workspace.util.VAL_22
-import com.flowintent.workspace.util.VAL_23
-import com.flowintent.workspace.util.VAL_25
-import com.flowintent.workspace.util.VAL_28
-import com.flowintent.workspace.util.VAL_30
-import com.flowintent.workspace.util.VAL_32
-import com.flowintent.workspace.util.VAL_35
-import com.flowintent.workspace.util.VAL_40
-import com.flowintent.workspace.util.VAL_45
-import com.flowintent.workspace.util.VAL_5
-import com.flowintent.workspace.util.VAL_52
-import com.flowintent.workspace.util.VAL_55
-import com.flowintent.workspace.util.VAL_60
-import com.flowintent.workspace.util.VAL_7
-import com.flowintent.workspace.util.VAL_72
-import com.flowintent.workspace.util.VAL_75
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlin.getValue
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var navigationDispatcher: NavigationDispatcher
+    @Inject
+    @JvmSuppressWildcards
+    lateinit var featureApi: Set<FeatureApi>
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +92,8 @@ class MainActivity : AppCompatActivity() {
             }
             HomeScreen(
                 viewModel = authViewModel,
-                navigationDispatcher = navigationDispatcher
+                navigationDispatcher = navigationDispatcher,
+                featureApi = featureApi
             )
         }
         Log.i(TAG, "onCreate")
@@ -132,7 +137,8 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun HomeScreen(
     viewModel: AuthViewModel,
-    navigationDispatcher: NavigationDispatcher
+    navigationDispatcher: NavigationDispatcher,
+    featureApi: Set<FeatureApi>
 ) {
     ToDoTheme {
         val isReady by viewModel.isReady.collectAsState()
@@ -144,9 +150,9 @@ fun HomeScreen(
                     color = md_theme_light_primary
                 ) {
                     ToDoNavigationBar(
-                        WindowWidthSizeClass.Compact,
                         authViewModel = viewModel,
-                        navigationDispatcher = navigationDispatcher)
+                        navigationDispatcher = navigationDispatcher,
+                        featureApis = featureApi)
                 }
             } else {
                 CustomSplashScreen()
