@@ -1,4 +1,4 @@
-package com.flowintent.workspace.theme
+package com.flowintent.uikit.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -38,11 +38,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.core.util.Resource
-import com.flowintent.uikit.util.COLOR_0XFF0F0F1C
-import com.flowintent.uikit.util.COLOR_0XFF1A1A2E
-import com.flowintent.uikit.util.COLOR_0XFF7B2FF7
-import com.flowintent.uikit.util.COLOR_0XFF9D4EDD
-import com.flowintent.uikit.util.COLOR_0XFFE63946
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -66,7 +61,7 @@ fun ForgotPasswordScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(COLOR_0XFF0F0F1C))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(VAL_32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -103,12 +98,14 @@ private fun PasswordResetForm(email: String, onEmailChange: (String) -> Unit) {
     Card(
         shape = RoundedCornerShape(VAL_20.dp),
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(COLOR_0XFF1A1A2E))
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
         Column(modifier = Modifier.padding(VAL_16.dp), verticalArrangement = Arrangement.spacedBy(VAL_16.dp)) {
             Text(
                 "Enter your email address and we will send you instructions to reset your password.",
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium
             )
             CustomTextField(
@@ -123,6 +120,13 @@ private fun PasswordResetForm(email: String, onEmailChange: (String) -> Unit) {
 
 @Composable
 private fun ResetButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> Unit) {
+    val gradient = Brush.linearGradient(
+        listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.tertiary
+        )
+    )
+
     Button(
         onClick = onClick,
         enabled = !isLoading && isEnabled,
@@ -130,20 +134,22 @@ private fun ResetButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> U
             .fillMaxWidth()
             .height(VAL_60.dp)
             .clip(RoundedCornerShape(VAL_12.dp))
-            .background(
-                Brush.linearGradient(
-                    listOf(
-                        Color(COLOR_0XFF7B2FF7),
-                        Color(COLOR_0XFF9D4EDD)
-                    )
-                )
-            ),
+            .background(if (isEnabled && !isLoading) gradient else Brush.linearGradient(listOf(Color.Gray, Color.LightGray))),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
     ) {
         if (isLoading) {
-            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp), strokeWidth = 2.dp)
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(24.dp),
+                strokeWidth = 2.dp
+            )
         } else {
-            Text("Send", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(
+                "Send",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
         }
     }
 }
@@ -153,10 +159,34 @@ private fun StatusIndicator(status: Pair<String, Boolean>?) {
     status?.let { (message, isError) ->
         Text(
             text = message,
-            color = if (isError) Color(COLOR_0XFFE63946) else Color.Green,
+            color = if (isError) MaterialTheme.colorScheme.error else Color(0xFF4CAF50),
             modifier = Modifier.padding(top = 16.dp),
             style = MaterialTheme.typography.bodySmall
         )
+    }
+}
+
+@Composable
+private fun HeaderSection(onBack: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Spacer(modifier = Modifier.height(VAL_40.dp))
+        TextButton(
+            onClick = onBack,
+            modifier = Modifier.align(Alignment.Start)
+        ) {
+            Text(
+                "< Back to Login",
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+        Spacer(modifier = Modifier.height(VAL_20.dp))
+        Text(
+            "Forgot Password",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Spacer(modifier = Modifier.height(VAL_40.dp))
     }
 }
 
@@ -180,23 +210,3 @@ private suspend fun handlePasswordReset(
     }
 }
 
-@Composable
-private fun HeaderSection(onBack: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(VAL_40.dp))
-        TextButton(
-            onClick = onBack,
-            modifier = Modifier.align(Alignment.Start)
-        ) {
-            Text("< Back to Login", color = Color(COLOR_0XFF9D4EDD))
-        }
-        Spacer(modifier = Modifier.height(VAL_20.dp))
-        Text(
-            "Forgot Password",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color.White
-        )
-        Spacer(modifier = Modifier.height(VAL_40.dp))
-    }
-}
