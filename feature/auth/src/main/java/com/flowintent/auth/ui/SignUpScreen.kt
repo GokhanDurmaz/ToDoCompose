@@ -41,12 +41,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.core.db.model.SignUpState
 import com.flowintent.core.util.Resource
-import com.flowintent.uikit.util.COLOR_0XFF0F0F1C
-import com.flowintent.uikit.util.COLOR_0XFF1A1A2E
-import com.flowintent.uikit.util.COLOR_0XFF1E1E2F
-import com.flowintent.uikit.util.COLOR_0XFF7B2FF7
-import com.flowintent.uikit.util.COLOR_0XFF9D4EDD
-import com.flowintent.uikit.util.COLOR_0XFFE63946
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -68,7 +62,7 @@ fun SignUpScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(COLOR_0XFF0F0F1C))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(VAL_32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -99,7 +93,10 @@ fun SignUpScreen(
         )
 
         TextButton(onClick = viewModel::onNavigateBack) {
-            Text("Already have an account? Sign In", color = Color(COLOR_0XFF9D4EDD))
+            Text(
+                "Already have an account? Sign In",
+                color = MaterialTheme.colorScheme.secondary
+            )
         }
     }
 }
@@ -111,9 +108,12 @@ private fun SignUpHeader() {
         "Create New Account",
         style = MaterialTheme.typography.headlineMedium,
         fontWeight = FontWeight.Bold,
-        color = Color.White
+        color = MaterialTheme.colorScheme.onBackground
     )
-    Text("Join us and start your journey", color = Color.Gray)
+    Text(
+        "Join us and start your journey",
+        color = MaterialTheme.colorScheme.onSurfaceVariant
+    )
     Spacer(modifier = Modifier.height(VAL_40.dp))
 }
 
@@ -125,7 +125,9 @@ private fun SignUpForm(
     Card(
         shape = RoundedCornerShape(VAL_20.dp),
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(COLOR_0XFF1A1A2E))
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
         Column(modifier = Modifier.padding(VAL_16.dp), verticalArrangement = Arrangement.spacedBy(VAL_16.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(VAL_8.dp)) {
@@ -161,6 +163,13 @@ private fun SignUpForm(
 
 @Composable
 private fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
+    val gradient = Brush.linearGradient(
+        listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.tertiary
+        )
+    )
+
     Button(
         onClick = onClick,
         enabled = !isLoading,
@@ -168,24 +177,70 @@ private fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
             .fillMaxWidth()
             .height(VAL_60.dp)
             .clip(RoundedCornerShape(VAL_12.dp))
-            .background(
-                Brush.linearGradient(
-                    listOf(
-                        Color(COLOR_0XFF7B2FF7),
-                        Color(COLOR_0XFF9D4EDD)
-                    )
-                )
-            ),
+            .background(if (!isLoading) gradient else Brush.linearGradient(listOf(Color.Gray, Color.LightGray))),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(24.dp),
                 strokeWidth = 2.dp
             )
         } else {
-            Text("Sign Up", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(
+                "Sign Up",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
+}
+
+@Composable
+fun CustomTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    modifier: Modifier = Modifier,
+    isPassword: Boolean = false
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = MaterialTheme.typography.labelMedium,
+            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(
+                    MaterialTheme.colorScheme.surfaceContainerHighest,
+                    RoundedCornerShape(VAL_12.dp)
+                )
+                .padding(horizontal = VAL_16.dp),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            if (value.isEmpty()) {
+                Text(
+                    text = label,
+                    color = MaterialTheme.colorScheme.outline
+                )
+            }
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                visualTransformation = if (isPassword)
+                    androidx.compose.ui.text.input.PasswordVisualTransformation()
+                else androidx.compose.ui.text.input.VisualTransformation.None
+            )
         }
     }
 }
@@ -195,7 +250,7 @@ private fun ErrorMessage(message: String?) {
     message?.let {
         Text(
             it,
-            color = Color(COLOR_0XFFE63946),
+            color = MaterialTheme.colorScheme.error,
             modifier = Modifier.padding(top = 8.dp),
             style = MaterialTheme.typography.bodySmall
         )
@@ -223,46 +278,6 @@ private suspend fun handleRegistration(
                 onLoading(false)
                 onError(resource.message)
             }
-        }
-    }
-}
-
-@Composable
-fun CustomTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier,
-    isPassword: Boolean = false
-) {
-    Column(modifier = modifier) {
-        Text(
-            text = label,
-            color = Color.Gray,
-            style = MaterialTheme.typography.labelMedium,
-            modifier = Modifier.padding(start = 4.dp, bottom = 4.dp)
-        )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .background(Color(COLOR_0XFF1E1E2F), RoundedCornerShape(VAL_12.dp))
-                .padding(horizontal = VAL_16.dp),
-            contentAlignment = Alignment.CenterStart
-        ) {
-            if (value.isEmpty()) {
-                Text(label, color = Color.DarkGray)
-            }
-            BasicTextField(
-                value = value,
-                onValueChange = onValueChange,
-                textStyle = androidx.compose.ui.text.TextStyle(color = Color.White),
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-                visualTransformation = if (isPassword)
-                    androidx.compose.ui.text.input.PasswordVisualTransformation()
-                else androidx.compose.ui.text.input.VisualTransformation.None
-            )
         }
     }
 }

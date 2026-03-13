@@ -15,6 +15,7 @@ class AndroidBaseConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             pluginManager.apply("org.jetbrains.kotlin.android")
+            pluginManager.apply("kotlinx-serialization")
 
             tasks.withType<KotlinCompile>().configureEach {
                 compilerOptions {
