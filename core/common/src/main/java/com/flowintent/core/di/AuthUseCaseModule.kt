@@ -1,9 +1,12 @@
 package com.flowintent.core.di
 
+import com.flowintent.core.db.auth.ChangePasswordUseCase
 import com.flowintent.core.db.auth.ForgetPasswordUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.ObserveUserProfileUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
+import com.flowintent.core.db.auth.UploadProfileUseCase
 import com.flowintent.core.db.repository.AuthRepository
 import dagger.Module
 import dagger.Provides
@@ -30,4 +33,16 @@ object AuthUseCaseModule {
     @Singleton
     @Provides
     fun providesForgetPassword(authRepository: AuthRepository) = ForgetPasswordUseCase(authRepository)
+
+    @Singleton
+    @Provides
+    fun providesChangePassword(authRepository: AuthRepository) = ChangePasswordUseCase(authRepository)
+
+    @Singleton
+    @Provides
+    fun providesUploadProfile(authRepository: AuthRepository) = UploadProfileUseCase(authRepository)
+
+    @Singleton
+    @Provides
+    fun providesObserveUserProfile(authRepository: AuthRepository) = ObserveUserProfileUseCase(authRepository)
 }

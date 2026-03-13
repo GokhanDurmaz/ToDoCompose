@@ -54,6 +54,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.settings.R
+import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.uikit.util.VAL_0_5
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
@@ -64,16 +65,19 @@ import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.VAL_8
 
 @Composable
-fun AdvancedSettingsScreen(viewModel: AuthViewModel = hiltViewModel()) {
-    val username by viewModel.userName.collectAsStateWithLifecycle()
-    val email by viewModel.userEmail.collectAsStateWithLifecycle()
+fun AdvancedSettingsScreen(
+    authViewModel: AuthViewModel = hiltViewModel(),
+    settingsViewModel: SettingsViewModel = hiltViewModel()
+) {
+    val username by authViewModel.userName.collectAsStateWithLifecycle()
+    val email by authViewModel.userEmail.collectAsStateWithLifecycle()
     var theme by remember { mutableStateOf("Dark") }
     var doNotDisturb by remember { mutableStateOf(false) }
     var sliderValue by remember { mutableFloatStateOf(VAL_0_5) }
     val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
 
     LaunchedEffect(Unit) {
-        viewModel.fetchAndSaveUserProfileIfEmpty()
+        authViewModel.fetchAndSaveUserProfileIfEmpty()
     }
 
     Column(
@@ -83,7 +87,11 @@ fun AdvancedSettingsScreen(viewModel: AuthViewModel = hiltViewModel()) {
             .verticalScroll(rememberScrollState())
             .padding(VAL_16.dp)
     ) {
-        ProfileHeader(username ?: "", email ?: "")
+        ProfileHeader(
+            username ?: "",
+            email ?: "",
+            onProfileClick = { settingsViewModel.onProfileClicked() }
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -106,17 +114,17 @@ fun AdvancedSettingsScreen(viewModel: AuthViewModel = hiltViewModel()) {
         Spacer(Modifier.height(VAL_40.dp))
 
         LogoutButton(onLogout = {
-            viewModel.onLogoutClicked()
+            authViewModel.onLogoutClicked()
         })
     }
 }
 
 @Composable
-private fun ProfileHeader(username: String, email: String) {
+private fun ProfileHeader(username: String, email: String, onProfileClick: () -> Unit) {
     Card(
+        onClick = onProfileClick,
         shape = RoundedCornerShape(VAL_20.dp),
         modifier = Modifier.fillMaxWidth(),
-        // DÜZELTME: Kart rengi surfaceVariant
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Row(

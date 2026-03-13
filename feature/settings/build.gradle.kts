@@ -12,6 +12,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:uikit"))
 }
