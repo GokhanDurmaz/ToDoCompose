@@ -7,23 +7,6 @@ plugins {
 
 android {
     namespace = "com.flowintent.core"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 21
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
 
     lint {
         baseline = file("lint-baseline.xml")
