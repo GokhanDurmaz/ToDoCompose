@@ -4,8 +4,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.google.services) // The Google Services plugin
     alias(libs.plugins.flowintent.android.base)
     alias(libs.plugins.flowintent.android.compose)

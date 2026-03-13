@@ -35,6 +35,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.uikit.theme.ToDoTheme
+import com.flowintent.uikit.theme.md_theme_light_primary
 import com.flowintent.uikit.util.COLOR_0XFF003366
 import com.flowintent.uikit.util.COLOR_0XFF74C3F3
 import com.flowintent.uikit.util.VAL_0_0
@@ -61,8 +63,6 @@ import com.flowintent.uikit.util.VAL_7
 import com.flowintent.uikit.util.VAL_72
 import com.flowintent.uikit.util.VAL_75
 import com.flowintent.workspace.nav.ToDoNavigationBar
-import com.flowintent.workspace.theme.ToDoTheme
-import com.flowintent.workspace.theme.md_theme_light_primary
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue
