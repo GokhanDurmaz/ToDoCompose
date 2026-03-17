@@ -16,5 +16,5 @@ dependencies {
     implementation(project(":feature:auth"))
     implementation(project(":feature:uikit"))
 
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 }
