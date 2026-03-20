@@ -12,6 +12,8 @@ android {
 dependencies {
     testImplementation(project(":core:common"))
     testImplementation(project(":data"))
+    testImplementation(kotlin("test"))
+
     implementation(libs.androidx.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -23,5 +25,5 @@ dependencies {
     androidTestImplementation(libs.androidx.navigation.testing)
     // Test rules and transitive dependencies:
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    testImplementation(kotlin("test"))
+    implementation(libs.androidx.room.paging)
 }

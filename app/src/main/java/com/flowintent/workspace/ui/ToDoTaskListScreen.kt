@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -45,7 +44,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -55,10 +53,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.flowintent.core.db.model.Task
-import com.flowintent.core.db.model.TaskType
 import com.flowintent.core.db.model.toDisplayContent
-import com.flowintent.core.db.model.toDisplayContentNonComposable
 import com.flowintent.core.util.Resource
 import com.flowintent.core.util.toReadableDateTime
 import com.flowintent.uikit.util.VAL_0_0
@@ -69,11 +68,9 @@ import com.flowintent.workspace.nav.route.ToDoNavTopBar
 import com.flowintent.workspace.nav.route.TopBarState
 import com.flowintent.workspace.ui.card.CategoryChipsRow
 import com.flowintent.workspace.ui.task.AiThinkingIndicator
-import com.flowintent.workspace.ui.task.CategoryHeader
 import com.flowintent.workspace.ui.task.EmptyTaskPlaceholder
 import com.flowintent.workspace.ui.task.TaskSearchBar
 import com.flowintent.workspace.ui.vm.TaskViewModel
-import kotlin.collections.filter
 
 @Composable
 fun TaskInputBar(
@@ -220,47 +217,30 @@ fun ListCardContent(
     viewModel: TaskViewModel,
     isSearchBarVisible: Boolean
 ) {
-    val context = LocalContext.current
-    val taskList by viewModel.tasks.collectAsStateWithLifecycle()
-    var searchText by remember { mutableStateOf("") }
-
-    var selectedType by remember { mutableStateOf<TaskType?>(null) }
-
-    val filteredList = remember(taskList, searchText, selectedType) {
-        taskList.filter { task ->
-            val matchesSearch = if (searchText.isBlank()) true
-            else task.title.contains(searchText, ignoreCase = true) ||
-                    task.content.toDisplayContentNonComposable(context).contains(searchText, ignoreCase = true)
-
-            val matchesType = if (selectedType == null) true
-            else task.taskType == selectedType
-
-            matchesSearch && matchesType
-        }
-    }
-
-    val groupedTasks = remember(filteredList) {
-        filteredList.groupBy { it.taskType }
-    }
+    val pagingTasks = viewModel.tasks.collectAsLazyPagingItems()
+    val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val selectedType by viewModel.selectedType.collectAsStateWithLifecycle()
 
     Column {
         if (isSearchBarVisible) {
             TaskSearchBar(
                 query = searchText,
-                onQueryChange = { searchText = it }
+                onQueryChange = { viewModel.onSearch(it) }
             )
         }
 
         CategoryChipsRow(
             selectedType = selectedType,
-            onTypeSelected = { selectedType = it }
+            onTypeSelected = { type ->
+                viewModel.onTypeSelected(if (selectedType == type) null else type)
+            }
         )
 
-        if (filteredList.isEmpty()) {
+        if (pagingTasks.itemCount == 0) {
             EmptyTaskPlaceholder()
         } else {
             TaskLazyList(
-                groupedTasks = groupedTasks,
+                pagingTasks = pagingTasks,
                 viewModel = viewModel
             )
         }
@@ -270,19 +250,19 @@ fun ListCardContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TaskLazyList(
-    groupedTasks: Map<TaskType, List<Task>>,
+    pagingTasks: LazyPagingItems<Task>,
     viewModel: TaskViewModel
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        groupedTasks.forEach { (type, tasks) ->
-            stickyHeader {
-                CategoryHeader(type)
-            }
-
-            itemsIndexed(tasks, key = { _, task -> task.uid }) { _, task ->
+        items(
+            count = pagingTasks.itemCount,
+            key = pagingTasks.itemKey { it.uid }
+        ) { index ->
+            val task = pagingTasks[index]
+            if (task != null) {
                 TaskItemContainer(
                     task = task,
                     viewModel = viewModel
