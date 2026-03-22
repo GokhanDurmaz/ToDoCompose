@@ -1,6 +1,5 @@
 package com.flowintent.network.di
 
-import com.flowintent.network.network.services.SupabaseApiService
 import com.flowintent.network.util.NativeConfig
 import dagger.Module
 import dagger.Provides
@@ -14,7 +13,6 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.storage.Storage
-import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
@@ -28,13 +26,6 @@ object SupabaseModule {
     @Provides
     @Singleton
     fun providePostgrest(client: SupabaseClient): Postgrest = client.postgrest
-
-
-    @Provides
-    @Singleton
-    fun provideSupaBaseApiService(retrofit: Retrofit): SupabaseApiService {
-        return retrofit.create(SupabaseApiService::class.java)
-    }
 
     @Provides
     @Singleton

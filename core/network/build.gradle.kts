@@ -1,5 +1,4 @@
 import com.flowintent.build_logic.secret.loadSecretConfig
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)

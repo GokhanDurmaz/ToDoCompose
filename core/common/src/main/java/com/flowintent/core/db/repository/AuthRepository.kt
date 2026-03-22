@@ -1,6 +1,5 @@
 package com.flowintent.core.db.repository
 
-import android.net.Uri
 import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow
