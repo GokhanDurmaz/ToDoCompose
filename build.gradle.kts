@@ -52,11 +52,14 @@ tasks.register("buildAppRelease") {
     val detektTask = tasks.getByPath(":app:detekt")
     dependsOn(detektTask)
 
+    subprojects.forEach { subproject ->
+        if (subproject.path.startsWith(":core:")) {
+            dependsOn("${subproject.path}:assembleRelease")
+        }
+    }
+
     val assembleTasks = listOf(
         ":app:assembleRelease",
-        ":core:common:assembleRelease",
-        ":core:network:assembleRelease",
-        ":core:profile:assembleRelease",
         ":data:assembleRelease"
     )
     assembleTasks.forEach { taskPath ->

@@ -29,6 +29,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    defaultConfig {
+        consumerProguardFiles("consumer-rules.pro")
+    }
 }
 
 dependencies {
