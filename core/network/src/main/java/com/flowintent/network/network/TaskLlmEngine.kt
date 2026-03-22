@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.flowintent.core.db.model.ActionType
 import com.flowintent.core.db.model.TaskType
-import com.flowintent.network.data.GroqMessageRequest
-import com.flowintent.network.data.GroqRequest
+import com.flowintent.network.data.groq.GroqMessageRequest
+import com.flowintent.network.data.groq.GroqRequest
 import com.flowintent.network.data.TaskExtraction
 import com.flowintent.network.network.services.GroqApiService
 import com.flowintent.network.util.NativeConfig

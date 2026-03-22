@@ -1,8 +1,12 @@
 package com.flowintent.data.db.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.flowintent.core.db.model.ActionType
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
+import com.flowintent.core.db.model.TaskType
 import com.flowintent.data.db.room.dao.ToDoDao
 import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.core.util.Resource
@@ -12,7 +16,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -23,18 +26,28 @@ internal open class TaskRepositoryImpl @Inject constructor(
     private val llmEngine: TaskLlmEngine,
     private val externalScope: CoroutineScope
 ): TaskRepository {
-    override fun  getAllTasks(): Flow<List<Task>> = toDoDao.getAllTasks()
+    override fun getTasks(query: String?, type: TaskType?): Flow<PagingData<Task>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20, enablePlaceholders = false),
+            pagingSourceFactory = { toDoDao.getTasksPaging(query, type) }
+        ).flow
+    }
 
     override suspend fun insertTask(task: Task) {
         toDoDao.insertTask(task)
     }
 
-    override suspend fun findByTaskName(taskName: String): Task {
-        return toDoDao.findByTaskName(taskName)
+    override fun findByTaskName(query: String): Flow<PagingData<Task>> {
+        return Pager(PagingConfig(10)) { toDoDao.searchTasksPaging("$query*") }.flow
     }
 
     override suspend fun deleteTask(task: Task): Int {
         return toDoDao.delete(task)
+    }
+
+    override suspend fun deleteTaskById(id: Int): Int {
+        toDoDao.deleteFtsById(id)
+        return toDoDao.deleteById(id)
     }
 
     override suspend fun updateTask(id: Int, title: String, content: TaskRes) {
@@ -47,69 +60,37 @@ internal open class TaskRepositoryImpl @Inject constructor(
         llmEngine.extractTask(userInput, currentLang) { title, timeText, category, action ->
             externalScope.launch {
                 try {
-                    val existingTasks = toDoDao.getAllTasks().first()
+                    val ftsQuery = title.trim().split(" ").joinToString(" OR ") { "$it*" }
 
                     when (action) {
                         ActionType.DELETE -> {
-                            val aiTitle = title.lowercase().trim()
-
-                            val tasksToDelete = existingTasks.filter { task ->
-                                val dbTitle = task.title.lowercase().trim()
-
-                                val isDirectMatch = dbTitle.contains(aiTitle) || aiTitle.contains(dbTitle)
-
-                                val aiWords = aiTitle.split(" ").filter { it.length > 2 }
-                                val dbWords = dbTitle.split(" ").filter { it.length > 2 }
-
-                                val commonWords = aiWords.intersect(dbWords.toSet())
-                                val isWordMatch = commonWords.isNotEmpty()
-
-                                isDirectMatch || isWordMatch
-                            }
-
-                            if (tasksToDelete.isNotEmpty()) {
-                                tasksToDelete.forEach { toDoDao.delete(it) }
-                            }
+                            val taskToDelete = toDoDao.findFirstTaskByMatch(ftsQuery)
+                            taskToDelete?.let { toDoDao.delete(it) }
                         }
 
                         ActionType.UPDATE -> {
-                            val taskToUpdate = existingTasks.find { task ->
-                                val dbTitle = task.title.lowercase().trim()
-                                val aiTitle = title.lowercase().trim()
-                                dbTitle.contains(aiTitle) || aiTitle.contains(dbTitle)
-                            }
-
+                            val taskToUpdate = toDoDao.findFirstTaskByMatch(ftsQuery)
                             taskToUpdate?.let {
-                                toDoDao.updateTask(
-                                    it.uid,
-                                    title = it.title,
-                                    content = TaskRes.TaskContent(content = title)
-                                )
+                                toDoDao.updateTask(it.uid, it.title, TaskRes.TaskContent(title))
                             }
                         }
 
                         ActionType.ADD -> {
-                            val finalDueDate = parseDateToLong(timeText, existingTasks)
-
-                            val safeTitle = title.ifBlank { userInput }
                             val newTask = Task(
-                                title = safeTitle,
-                                content = TaskRes.TaskContent(content = safeTitle),
+                                title = title.ifBlank { userInput },
+                                content = TaskRes.TaskContent(title),
                                 taskType = category,
-                                dueDate = finalDueDate
+                                dueDate = parseDateToLong(timeText, emptyList())
                             )
                             toDoDao.insertTask(newTask)
                         }
                     }
                     trySend(Resource.Success(Unit))
                 } catch (e: Exception) {
-                    trySend(Resource.Error(e.localizedMessage ?: "İşlem Hatası"))
-                } finally {
+                    trySend(Resource.Error(e.localizedMessage ?: "Error"))
                 }
             }
         }
         awaitClose { }
-    }.onStart {
-        emit(Resource.Loading)
-    }
+    }.onStart { emit(Resource.Loading) }
 }

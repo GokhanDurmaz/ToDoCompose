@@ -6,5 +6,10 @@ object NativeConfig {
     }
 
     external fun getGroqApiKey(): String
+
+    external fun getSupaBaseApiKey(): String
+
     external fun getBaseUrl(): String
+
+    external fun getSupaBaseUrl(): String
 }

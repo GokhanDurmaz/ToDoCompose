@@ -1,5 +1,4 @@
 import com.flowintent.build_logic.secret.loadSecretConfig
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
@@ -30,6 +29,10 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    defaultConfig {
+        consumerProguardFiles("consumer-rules.pro")
+    }
 }
 
 dependencies {
@@ -44,4 +47,12 @@ dependencies {
     // Serialization/deserialization json - GSON
     implementation(libs.gson)
     implementation(libs.converter.gson)
+
+    implementation(platform(libs.supabase.bom))
+
+    implementation(libs.supabase.storage.kt)
+    implementation(libs.supabase.postgrest.kt)
+    implementation(libs.supabase.realtime.kt)
+
+    implementation(libs.ktor.client.android)
 }

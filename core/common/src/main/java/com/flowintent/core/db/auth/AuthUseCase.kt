@@ -1,6 +1,5 @@
 package com.flowintent.core.db.auth
 
-import android.net.Uri
 import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.util.Resource
@@ -27,12 +26,4 @@ class ForgetPasswordUseCase(private val authRepository: AuthRepository) {
 class ChangePasswordUseCase(private val authRepository: AuthRepository) {
     operator fun invoke(currentPassword: String, newPassword: String): Flow<Resource<Unit>> =
         authRepository.changePassword(currentPassword, newPassword)
-}
-
-class UploadProfileUseCase(private val authRepository: AuthRepository) {
-    operator fun invoke(imageUri: Uri): Flow<Resource<String>> = authRepository.uploadProfileImage(imageUri)
-}
-
-class ObserveUserProfileUseCase(private val authRepository: AuthRepository) {
-    operator fun invoke(): Flow<Resource<UserProfile>> = authRepository.observeUserProfile()
 }
