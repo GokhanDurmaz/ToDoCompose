@@ -15,8 +15,4 @@ interface AuthRepository {
     fun forgetPassword(email: String): Flow<Resource<Unit>>
 
     fun changePassword(currentPassword: String, newPassword: String): Flow<Resource<Unit>>
-
-    fun uploadProfileImage(imageUri: Uri): Flow<Resource<String>>
-
-    fun observeUserProfile(): Flow<Resource<UserProfile>>
 }

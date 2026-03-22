@@ -28,16 +28,22 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.flowintent.core.util.Resource
 import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.uikit.util.VAL_24
@@ -47,15 +53,19 @@ import com.flowintent.uikit.util.VAL_32
 @Composable
 fun EditProfileImageScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
-    currentImageUrl: String? = null
 ) {
-    val context = LocalContext.current
+    val userProfile by viewModel.userProfile.collectAsStateWithLifecycle()
     val uploadState by viewModel.uploadState.collectAsStateWithLifecycle()
+
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { viewModel.uploadImage(it) }
+        uri?.let {
+            selectedImageUri = it
+            viewModel.uploadImage(it)
+        }
     }
 
     Scaffold(
@@ -86,15 +96,41 @@ fun EditProfileImageScreen(
                         .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (uploadState is Resource.Loading) {
-                        CircularProgressIndicator()
+                    val profileUrl = userProfile?.profileImageUrl
+                    val displayImage: Any? = selectedImageUri ?: profileUrl
+
+                    if (displayImage != null) {
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(displayImage)
+                                .allowHardware(false)
+                                .diskCachePolicy(coil.request.CachePolicy.DISABLED)
+                                .memoryCachePolicy(coil.request.CachePolicy.DISABLED)
+                                .build(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                            onSuccess = { println("Coil: Upload the image file successfully.") },
+                            onError = { error ->
+                                println("Coil Err: ${error.result.throwable.message}")
+                            }
+                        )
                     } else {
                         Icon(
-                            Icons.Default.Person, 
-                            contentDescription = null, 
+                            Icons.Default.Person,
                             modifier = Modifier.size(80.dp),
-                            tint = MaterialTheme.colorScheme.primary
+                            tint = MaterialTheme.colorScheme.primary,
+                            contentDescription = null
                         )
+                    }
+
+                    if (uploadState is Resource.Loading) {
+                        Box(
+                            modifier = Modifier.fillMaxSize().background(Color.Black.copy(0.3f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(color = Color.White)
+                        }
                     }
                 }
 

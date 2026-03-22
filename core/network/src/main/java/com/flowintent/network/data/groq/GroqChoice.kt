@@ -1,4 +1,4 @@
-package com.flowintent.network.data
+package com.flowintent.network.data.groq
 
 import androidx.annotation.Keep
 
