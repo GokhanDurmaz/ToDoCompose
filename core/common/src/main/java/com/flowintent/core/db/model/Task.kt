@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "tasks")
 data class Task(
     @PrimaryKey(autoGenerate = true) var uid: Int = 0,
     @ColumnInfo("title") val title: String = "",

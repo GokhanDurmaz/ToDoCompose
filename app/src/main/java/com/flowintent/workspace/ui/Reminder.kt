@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlarmOff
@@ -35,8 +34,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +41,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.util.toReadableDateTime
 import com.flowintent.uikit.util.MS_IN_DAY
@@ -58,20 +56,7 @@ fun ReminderScreen(
     viewModel: ReminderViewModel = hiltViewModel(),
     taskViewModel: TaskViewModel = hiltViewModel()
 ) {
-    val tasks by taskViewModel.tasks.collectAsStateWithLifecycle()
-
-    val groupedReminders = remember(tasks) {
-        tasks.filter { it.dueDate > System.currentTimeMillis() }
-            .sortedBy { it.dueDate }
-            .groupBy { task ->
-                val diff = task.dueDate - System.currentTimeMillis()
-                when {
-                    diff < MS_IN_DAY -> "Today"
-                    diff < MS_IN_TWO_DAYS -> "Tomorrow"
-                    else -> "Upcoming"
-                }
-            }
-    }
+    val pagingTasks = taskViewModel.tasks.collectAsLazyPagingItems()
 
     Scaffold(
         topBar = {
@@ -93,28 +78,44 @@ fun ReminderScreen(
         },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
-        if (groupedReminders.isEmpty()) {
+        if (pagingTasks.itemCount == 0) {
             EmptyReminderPlaceholder()
         } else {
             LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier.fillMaxSize().padding(paddingValues),
                 contentPadding = PaddingValues(bottom = 24.dp)
             ) {
-                groupedReminders.forEach { (timeLabel, reminders) ->
-                    stickyHeader {
-                        ReminderTimeHeader(timeLabel)
-                    }
+                items(
+                    count = pagingTasks.itemCount,
+                    key = pagingTasks.itemKey { it.uid }
+                ) { index ->
+                    val task = pagingTasks[index]
 
-                    items(reminders, key = { it.uid }) { reminder ->
-                        ReminderItem(reminder) {
-                            viewModel.onReminderClicked(reminder.uid.toLong())
+                    if (task != null && task.dueDate > System.currentTimeMillis()) {
+                        val currentLabel = getReminderLabel(task.dueDate)
+                        val previousTask = if (index > 0) pagingTasks[index - 1] else null
+                        val previousLabel = previousTask?.let { getReminderLabel(it.dueDate) }
+
+                        if (previousLabel != currentLabel) {
+                            ReminderTimeHeader(currentLabel)
+                        }
+
+                        ReminderItem(task) {
+                            viewModel.onReminderClicked(task.uid.toLong())
                         }
                     }
                 }
             }
         }
+    }
+}
+
+private fun getReminderLabel(dueDate: Long): String {
+    val diff = dueDate - System.currentTimeMillis()
+    return when {
+        diff < MS_IN_DAY -> "Today"
+        diff < MS_IN_TWO_DAYS -> "Tomorrow"
+        else -> "Upcoming"
     }
 }
 
@@ -152,7 +153,6 @@ private fun ReminderItem(task: Task, onClick: () -> Unit) {
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Sol tarafta zaman simgesi ve vurgu
             Box(
                 modifier = Modifier
                     .size(48.dp)

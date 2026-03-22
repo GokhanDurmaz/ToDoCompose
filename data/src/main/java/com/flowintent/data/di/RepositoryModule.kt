@@ -4,6 +4,7 @@ import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.db.security.SecurePrefsRepository
 import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.db.repository.SettingsRepository
+import com.flowintent.core.db.repository.SupaBaseRepository
 import com.flowintent.core.db.repository.TaskCategoryRepository
 import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.data.db.repository.AuthRepositoryImpl
@@ -12,6 +13,7 @@ import com.flowintent.data.db.repository.TaskCategoryRepositoryImpl
 import com.flowintent.data.db.repository.TaskRepositoryImpl
 import com.flowintent.data.secure.EncryptedProtoRepositoryImpl
 import com.flowintent.data.secure.SecurePrefsRepositoryImpl
+import com.flowintent.data.db.repository.SupaBaseRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -53,4 +55,10 @@ internal abstract class RepositoryModule {
     @Singleton
     @Binds
     internal abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl) : AuthRepository
+
+    @Singleton
+    @Binds
+    internal abstract fun bindSupaBaseRepository(
+        supaBaseRepositoryImpl: SupaBaseRepositoryImpl
+    ) : SupaBaseRepository
 }

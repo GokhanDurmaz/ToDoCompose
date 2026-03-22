@@ -30,6 +30,12 @@ internal class EncryptedProtoRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun updateUid(uid: String) {
+        dataStore.updateData { it.toBuilder().setUid(uid).build() }
+    }
+
+    override fun uidFlow(): Flow<String?> = dataStore.data.map { it.uid.takeIf { u -> u.isNotEmpty() } }
+
     override fun nameFlow(): Flow<String?> =
         dataStore.data.map { store -> store.name.takeIf { it.isNotEmpty() } }
 

@@ -27,6 +27,22 @@ Java_com_flowintent_network_util_NativeConfig_getGroqApiKey(JNIEnv* env, jobject
 }
 
 JNIEXPORT jstring JNICALL
+Java_com_flowintent_network_util_NativeConfig_getSupaBaseApiKey(JNIEnv* env, jobject thiz) {
+    std::string decrypted = performXor(SUPABASE_API_KEY_ENC, SUPABASE_API_KEY_LEN);
+    jstring result = env->NewStringUTF(decrypted.c_str());
+
+    std::fill(decrypted.begin(), decrypted.end(), 0);
+
+    return result;
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_flowintent_network_util_NativeConfig_getSupaBaseUrl(JNIEnv* env, jobject thiz) {
+    std::string decrypted = performXor(SUPABASE_URL_ENC, SUPABASE_URL_LEN);
+    return env->NewStringUTF(decrypted.c_str());
+}
+
+JNIEXPORT jstring JNICALL
 Java_com_flowintent_network_util_NativeConfig_getBaseUrl(JNIEnv* env, jobject thiz) {
     std::string decrypted = performXor(BASE_URL_ENC, BASE_URL_LEN);
     return env->NewStringUTF(decrypted.c_str());

@@ -134,6 +134,9 @@ dependencies {
 
     implementation(libs.androidx.core.splashscreen)
 
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.paging.compose)
+
     // Kotlin reflection library
     implementation(libs.kotlin.reflect)
 
