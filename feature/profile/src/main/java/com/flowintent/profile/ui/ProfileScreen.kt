@@ -1,5 +1,6 @@
 package com.flowintent.profile.ui
 
+import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,6 +53,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -79,6 +81,11 @@ fun ProfileScreen(
 ) {
     val userProfile by profileViewModel.userProfile.collectAsStateWithLifecycle()
     val uploadState by profileViewModel.uploadState.collectAsStateWithLifecycle()
+    val profileBitmap by profileViewModel.profileBitmap.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        profileViewModel.reloadProfileImageIfNull()
+    }
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -141,6 +148,7 @@ fun ProfileScreen(
                 username = userProfile?.name ?: "User",
                 email = userProfile?.email ?: "email@flow.com",
                 profileImageUrl = userProfile?.profileImageUrl,
+                localBitmap = profileBitmap,
                 onImageClick = { imagePickerLauncher.launch("image/*") },
                 isLoading = uploadState is Resource.Loading
             )
@@ -165,6 +173,7 @@ private fun ProfileLargeHeader(
     username: String,
     email: String,
     profileImageUrl: String?,
+    localBitmap: Bitmap?,
     onImageClick: () -> Unit,
     isLoading: Boolean
 ) {
@@ -180,7 +189,14 @@ private fun ProfileLargeHeader(
                 .clickable(enabled = !isLoading) { onImageClick() }, // Yükleme varken tıklamayı kapat
             contentAlignment = Alignment.Center
         ) {
-            if (!profileImageUrl.isNullOrEmpty()) {
+            if (localBitmap != null) {
+                androidx.compose.foundation.Image(
+                    bitmap = localBitmap.asImageBitmap(),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else if (!profileImageUrl.isNullOrEmpty()) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(profileImageUrl)

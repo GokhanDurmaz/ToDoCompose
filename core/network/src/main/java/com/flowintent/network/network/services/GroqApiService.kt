@@ -1,7 +1,7 @@
 package com.flowintent.network.network.services
 
-import com.flowintent.network.data.GroqRequest
-import com.flowintent.network.data.GroqResponse
+import com.flowintent.network.data.groq.GroqRequest
+import com.flowintent.network.data.groq.GroqResponse
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST

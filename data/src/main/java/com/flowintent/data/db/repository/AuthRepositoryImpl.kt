@@ -1,15 +1,13 @@
 package com.flowintent.data.db.repository
 
-import android.net.Uri
 import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.AuthRepository
+import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.channels.awaitClose
+import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -17,7 +15,8 @@ import javax.inject.Inject
 internal class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val db: FirebaseFirestore,
-    private val storage: FirebaseStorage
+    private val postgrest: Postgrest,
+    private val encryptedProtoRepository: EncryptedProtoRepository
 ): AuthRepository {
 
     override fun registerUser(name: String, surname: String, email: String, password: String): Flow<Resource<Unit>> =
@@ -30,6 +29,8 @@ internal class AuthRepositoryImpl @Inject constructor(
                 val user = UserProfile(uid = userId, name = name, surname = surname, email = email)
                 db.collection("users").document(userId).set(user).await()
 
+                postgrest.from("users").insert(user)
+
                 emit(Resource.Success(Unit))
             } catch (e: Exception) {
                 emit(Resource.Error(e.message.toString()))
@@ -40,6 +41,7 @@ internal class AuthRepositoryImpl @Inject constructor(
         emit(Resource.Loading)
         try {
             val userId = auth.currentUser?.uid ?: throw Exception("Failed to login credential")
+            encryptedProtoRepository.updateUid(userId)
 
             val document = db.collection("users").document(userId).get().await()
 
@@ -100,61 +102,6 @@ internal class AuthRepositoryImpl @Inject constructor(
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Failed to change password"))
-        }
-    }
-
-    override fun uploadProfileImage(imageUri: Uri): Flow<Resource<String>> = flow {
-        emit(Resource.Loading)
-        try {
-            val userId = auth.currentUser?.uid ?: throw Exception("User not authenticated")
-
-            val storageRef = storage.reference.child("profile_images/$userId.jpg")
-
-            storageRef.putFile(imageUri).await()
-
-            val downloadUrl = storageRef.downloadUrl.await().toString()
-
-            db.collection("users")
-                .document(userId)
-                .update("profileImageUrl", downloadUrl)
-                .await()
-
-            emit(Resource.Success(downloadUrl))
-        } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Image upload failed"))
-        }
-    }
-
-    override fun observeUserProfile(): Flow<Resource<UserProfile>> = callbackFlow {
-        trySend(Resource.Loading)
-
-        val userId = auth.currentUser?.uid
-        if (userId == null) {
-            trySend(Resource.Error("User not authenticated"))
-            close()
-            return@callbackFlow
-        }
-
-        val documentRef = db.collection("users").document(userId)
-
-        val registration = documentRef.addSnapshotListener { snapshot, error ->
-            if (error != null) {
-                trySend(Resource.Error(error.message ?: "An error occurred"))
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                val userProfile = snapshot.toObject(UserProfile::class.java)
-                if (userProfile != null) {
-                    trySend(Resource.Success(userProfile))
-                } else {
-                    trySend(Resource.Error("User profile mapping failed"))
-                }
-            }
-        }
-
-        awaitClose {
-            registration.remove()
         }
     }
 }

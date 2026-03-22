@@ -10,6 +10,10 @@ interface EncryptedProtoRepository {
 
     suspend fun saveUserInfo(name: String, email: String)
 
+    suspend fun updateUid(uid: String)
+
+    fun uidFlow(): Flow<String?>
+
     fun tokenFlow(): Flow<String?>
 
     fun nameFlow(): Flow<String?>
