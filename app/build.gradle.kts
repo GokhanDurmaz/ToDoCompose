@@ -142,6 +142,7 @@ dependencies {
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
 
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.appcheck.playintegrity)
     implementation(libs.firebase.appcheck.debug)
 }
