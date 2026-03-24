@@ -75,19 +75,19 @@ import com.flowintent.workspace.ui.vm.TaskViewModel
 @Composable
 fun TaskInputBar(
     onSendMessage: (String) -> Unit,
-    onFileClick: () -> Unit
+    onFileClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var text by remember { mutableStateOf("") }
-
     Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        tonalElevation = 8.dp,
-        shadowElevation = 16.dp
+        modifier = modifier.fillMaxWidth().padding(start = 24.dp, bottom = 64.dp, end = 24.dp),
+        shape = RoundedCornerShape(28.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
+        tonalElevation = 4.dp,
+        shadowElevation = 8.dp
     ) {
         Row(
-            modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                 .navigationBarsPadding()
                 .imePadding(),
             verticalAlignment = Alignment.CenterVertically
@@ -99,23 +99,25 @@ fun TaskInputBar(
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
-
             TextField(
                 value = text,
                 onValueChange = { text = it },
-                placeholder = { Text(stringResource(R.string.type_new_todo)) },
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp),
+                placeholder = {
+                    Text(
+                        stringResource(R.string.type_new_todo),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                },
+                modifier = Modifier.weight(1f),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                     disabledContainerColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                )
+                ),
+                maxLines = 4
             )
-
             IconButton(
                 onClick = {
                     if (text.isNotBlank()) {
@@ -128,7 +130,7 @@ fun TaskInputBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.Send,
                     contentDescription = stringResource(R.string.send_desc),
-                    tint = if (text.isNotBlank()) MaterialTheme.colorScheme.primary else Color.Gray
+                    tint = if (text.isNotBlank()) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
                 )
             }
         }

@@ -141,6 +141,10 @@ dependencies {
     implementation(libs.kotlin.reflect)
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.appcheck.debug)
 }
 
 project(":").tasks.named("buildAppDebug") {
