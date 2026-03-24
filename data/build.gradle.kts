@@ -8,6 +8,10 @@ plugins {
 
 android {
     namespace = "com.flowintent.data"
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
@@ -39,6 +43,9 @@ dependencies {
     implementation(libs.supabase.realtime.kt)
 
     implementation(libs.androidx.room.paging)
+
+    implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.appcheck.debug)
 }
 
 configurations.all {

@@ -63,6 +63,7 @@ import com.flowintent.uikit.util.VAL_7
 import com.flowintent.uikit.util.VAL_72
 import com.flowintent.uikit.util.VAL_75
 import com.flowintent.workspace.nav.ToDoNavigationBar
+import com.google.firebase.appcheck.FirebaseAppCheck
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.getValue
@@ -74,6 +75,7 @@ class MainActivity : AppCompatActivity() {
     @Inject
     @JvmSuppressWildcards
     lateinit var featureApi: Set<FeatureApi>
+    @Inject lateinit var appCheck: FirebaseAppCheck
     private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
