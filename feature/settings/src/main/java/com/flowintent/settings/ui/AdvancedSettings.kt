@@ -55,6 +55,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.settings.R
 import com.flowintent.settings.ui.vm.SettingsViewModel
+import com.flowintent.uikit.anim.shimmerEffect
 import com.flowintent.uikit.util.VAL_0_5
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
@@ -120,9 +121,15 @@ fun AdvancedSettingsScreen(
 }
 
 @Composable
-private fun ProfileHeader(username: String, email: String, onProfileClick: () -> Unit) {
+private fun ProfileHeader(
+    username: String?,
+    email: String?,
+    onProfileClick: () -> Unit
+) {
+    val isDataLoading = username == null || email == null
+
     Card(
-        onClick = onProfileClick,
+        onClick = { if (!isDataLoading) onProfileClick() },
         shape = RoundedCornerShape(VAL_20.dp),
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
@@ -135,40 +142,67 @@ private fun ProfileHeader(username: String, email: String, onProfileClick: () ->
                 modifier = Modifier
                     .size(VAL_60.dp)
                     .clip(CircleShape)
-                    .background(
-                        Brush.linearGradient(
-                            listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
+                    .then(
+                        if (isDataLoading) Modifier.shimmerEffect()
+                        else Modifier.background(
+                            Brush.linearGradient(
+                                listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
+                            )
                         )
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier.size(VAL_32.dp)
-                )
+                if (!isDataLoading) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(VAL_32.dp)
+                    )
+                }
             }
+
             Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(
-                    username,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-                Text(
-                    email,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+
+            Column(modifier = Modifier.weight(1f)) {
+                if (isDataLoading) {
+                    Box(
+                        modifier = Modifier
+                            .width(120.dp)
+                            .height(20.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .shimmerEffect()
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box(
+                        modifier = Modifier
+                            .width(180.dp)
+                            .height(16.dp)
+                            .clip(RoundedCornerShape(4.dp))
+                            .shimmerEffect()
+                    )
+                } else {
+                    Text(
+                        text = username,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = email,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            if (!isDataLoading) {
+                Icon(
+                    Icons.Default.Settings,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-            Spacer(Modifier.weight(1f))
-            Icon(
-                Icons.Default.Settings,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }
