@@ -3,7 +3,9 @@ package com.flowintent.data.db.repository
 import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.util.RequiredForInit
 import com.flowintent.core.util.Resource
+import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import io.github.jan.supabase.postgrest.Postgrest
@@ -15,6 +17,8 @@ import javax.inject.Inject
 internal class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val db: FirebaseFirestore,
+    @RequiredForInit(reason = "Required Provider initialization")
+    private val appCheck: FirebaseAppCheck,
     private val postgrest: Postgrest,
     private val encryptedProtoRepository: EncryptedProtoRepository
 ): AuthRepository {
