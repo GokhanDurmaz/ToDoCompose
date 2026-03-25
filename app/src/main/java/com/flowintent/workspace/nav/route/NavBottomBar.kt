@@ -8,13 +8,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.flowintent.navigation.NavigationDispatcher
@@ -56,12 +54,6 @@ fun BottomNavigationBar(
                         Icon(
                             imageVector = item.icon,
                             contentDescription = stringResource(item.contentDescriptionRes)
-                        )
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(item.labelRes),
-                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp)
                         )
                     }
                 )
