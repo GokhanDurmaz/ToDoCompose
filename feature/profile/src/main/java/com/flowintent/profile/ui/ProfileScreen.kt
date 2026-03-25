@@ -67,11 +67,13 @@ import coil.request.ImageRequest
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.nav.ProfileNavigation
 import com.flowintent.profile.ui.vm.ProfileViewModel
+import com.flowintent.uikit.anim.shimmerEffect
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
 import com.flowintent.uikit.util.VAL_24
 import com.flowintent.uikit.util.VAL_32
+import com.flowintent.uikit.util.VAL_4
 import com.flowintent.uikit.util.VAL_8
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -157,7 +159,14 @@ fun ProfileScreen(
 
             StatsSection()
 
-            ProfileInfoSection(userProfile?.name ?: "User", userProfile?.email ?: "email@flow.com")
+            if (userProfile == null) {
+                ProfileInfoShimmer()
+            } else {
+                ProfileInfoSection(
+                    username = userProfile?.name ?: "User",
+                    email = userProfile?.email ?: "email@flow.com"
+                )
+            }
 
             ActionSection(onActionClick = { destination ->
                 profileViewModel.onNavigateTo(destination)
@@ -170,13 +179,15 @@ fun ProfileScreen(
 
 @Composable
 private fun ProfileLargeHeader(
-    username: String,
-    email: String,
+    username: String?,
+    email: String?,
     profileImageUrl: String?,
     localBitmap: Bitmap?,
     onImageClick: () -> Unit,
     isLoading: Boolean
 ) {
+    val isDataLoading = username == null || email == null
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(vertical = VAL_24.dp)
@@ -185,8 +196,11 @@ private fun ProfileLargeHeader(
             modifier = Modifier
                 .size(120.dp)
                 .clip(CircleShape)
-                .background(Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)))
-                .clickable(enabled = !isLoading) { onImageClick() }, // Yükleme varken tıklamayı kapat
+                .then(
+                    if (isDataLoading) Modifier.shimmerEffect()
+                    else Modifier.background(Brush.linearGradient(listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)))
+                )
+                .clickable(enabled = !isLoading && !isDataLoading) { onImageClick() },
             contentAlignment = Alignment.Center
         ) {
             if (localBitmap != null) {
@@ -206,7 +220,7 @@ private fun ProfileLargeHeader(
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-            } else {
+            } else if (!isDataLoading) {
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
@@ -217,23 +231,41 @@ private fun ProfileLargeHeader(
 
             if (isLoading) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.4f)),
+                    modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(32.dp),
-                        color = Color.White,
-                        strokeWidth = 3.dp
-                    )
+                    CircularProgressIndicator(modifier = Modifier.size(32.dp), color = Color.White, strokeWidth = 3.dp)
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(VAL_16.dp))
-        Text(text = username, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-        Text(text = email, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        if (isDataLoading) {
+            Box(
+                modifier = Modifier
+                    .width(140.dp)
+                    .height(28.dp)
+                    .clip(RoundedCornerShape(VAL_8.dp))
+                    .shimmerEffect()
+            )
+        } else {
+            Text(text = username, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+        }
+
+        Spacer(modifier = Modifier.height(VAL_8.dp))
+
+        if (isDataLoading) {
+            Box(
+                modifier = Modifier
+                    .width(180.dp)
+                    .height(20.dp)
+                    .clip(RoundedCornerShape(VAL_4.dp))
+                    .shimmerEffect()
+            )
+        } else {
+            Text(text = email, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
     }
 }
 
@@ -291,6 +323,33 @@ private fun ProfileInfoSection(username: String, email: String) {
         InfoRow(label = "Username", value = username, icon = Icons.Default.Person)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
         InfoRow(label = "Email", value = email, icon = Icons.Default.Email)
+    }
+}
+
+@Composable
+private fun ProfileInfoShimmer() {
+    ProfileContentSection(title = "Account Details") {
+        Column {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.size(20.dp).clip(CircleShape).shimmerEffect())
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Box(modifier = Modifier.width(80.dp).height(12.dp).clip(RoundedCornerShape(4.dp)).shimmerEffect())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box(modifier = Modifier.width(150.dp).height(18.dp).clip(RoundedCornerShape(4.dp)).shimmerEffect())
+                }
+            }
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.size(20.dp).clip(CircleShape).shimmerEffect())
+                Spacer(modifier = Modifier.width(12.dp))
+                Column {
+                    Box(modifier = Modifier.width(60.dp).height(12.dp).clip(RoundedCornerShape(4.dp)).shimmerEffect())
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Box(modifier = Modifier.width(200.dp).height(18.dp).clip(RoundedCornerShape(4.dp)).shimmerEffect())
+                }
+            }
+        }
     }
 }
 
