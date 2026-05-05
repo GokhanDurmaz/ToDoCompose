@@ -10,16 +10,16 @@ kotlin {
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
-    id("com.google.protobuf") version "0.9.6"
+    id("com.google.protobuf") version "0.10.0"
 }
 
 dependencies {
-    api("com.google.protobuf:protobuf-javalite:3.25.1")
+    api("com.google.protobuf:protobuf-javalite:4.34.1")
 }
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:3.25.1"
+        artifact = "com.google.protobuf:protoc:4.34.1"
     }
     generateProtoTasks {
         all().forEach { task ->
