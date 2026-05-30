@@ -4,11 +4,11 @@ import android.content.Context
 import com.flowintent.core.db.auth.ChangePasswordUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
+import com.flowintent.core.db.profile.GetLocalAvatarUseCase
 import com.flowintent.core.db.profile.ObserveUserProfileUseCase
 import com.flowintent.core.db.profile.UploadProfileUseCase
 import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.EncryptedProtoRepository
-import com.flowintent.core.db.repository.SupaBaseRepository
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.profile.ui.vm.ProfileViewModel
@@ -44,7 +44,7 @@ class ProfileViewModelTest {
     @Mock
     private lateinit var downloadAndSaveUseCase: DownloadAndSaveUseCase
     @Mock
-    private lateinit var supaBaseRepository: SupaBaseRepository
+    private lateinit var getLocalAvatarUseCase: GetLocalAvatarUseCase
     @Mock
     private lateinit var observeUserProfileUseCase: ObserveUserProfileUseCase
     @Mock
@@ -66,8 +66,8 @@ class ProfileViewModelTest {
             getUserProfileUseCase,
             uploadProfileUseCase,
             downloadAndSaveUseCase,
+            getLocalAvatarUseCase,
             observeUserProfileUseCase,
-            supaBaseRepository,
             encryptedProtoRepository
         )
     }
@@ -86,8 +86,8 @@ class ProfileViewModelTest {
             getUserProfileUseCase,
             uploadProfileUseCase,
             downloadAndSaveUseCase,
+            getLocalAvatarUseCase,
             observeUserProfileUseCase,
-            supaBaseRepository,
             encryptedProtoRepository
         )
 

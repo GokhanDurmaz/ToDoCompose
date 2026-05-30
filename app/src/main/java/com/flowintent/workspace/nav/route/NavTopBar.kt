@@ -1,9 +1,14 @@
 package com.flowintent.workspace.nav.route
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
@@ -28,11 +33,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.MainNavigation
+import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.workspace.ui.vm.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,6 +52,7 @@ fun ToDoNavTopBar(
     state: TopBarState,
     onSearchToggle: () -> Unit,
     viewModel: TaskViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel(),
     navigationDispatcher: NavigationDispatcher? = null,
     bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
@@ -70,7 +82,7 @@ fun ToDoNavTopBar(
                             Icon(Icons.Default.Close, contentDescription = "Cancel")
                         }
                     } else if (state.showProfileIcon) {
-                        ProfileIcon(navigationDispatcher)
+                        ProfileIcon(profileViewModel, navigationDispatcher)
                     }
                 },
                 actions = {
@@ -135,11 +147,42 @@ private fun TopBarMenu(
 }
 
 @Composable
-private fun ProfileIcon(navigationDispatcher: NavigationDispatcher?) {
-    IconButton(onClick = { 
-        navigationDispatcher?.navigateTo(MainNavigation.PENDING.route) 
+private fun ProfileIcon(
+    profileViewModel: ProfileViewModel,
+    navigationDispatcher: NavigationDispatcher?
+) {
+    val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+
+    IconButton(onClick = {
+        navigationDispatcher?.navigateTo(MainNavigation.PENDING.route)
     }) {
-        Icon(Icons.Default.AccountCircle, contentDescription = "Pending Tasks")
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.linearGradient(
+                        listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (uiState.profileBitmap != null) {
+                Image(
+                    bitmap = uiState.profileBitmap!!.asImageBitmap(),
+                    contentDescription = "Profile",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Icon(
+                    Icons.Default.AccountCircle,
+                    contentDescription = "Pending Tasks",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
     }
 }
 

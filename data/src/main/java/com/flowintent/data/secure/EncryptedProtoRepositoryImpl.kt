@@ -34,6 +34,10 @@ internal class EncryptedProtoRepositoryImpl @Inject constructor(
         dataStore.updateData { it.toBuilder().setUid(uid).build() }
     }
 
+    override suspend fun saveProfileImageUrl(url: String) {
+        dataStore.updateData { it.toBuilder().setProfileImageUrl(url).build() }
+    }
+
     override fun uidFlow(): Flow<String?> = dataStore.data.map { it.uid.takeIf { u -> u.isNotEmpty() } }
 
     override fun nameFlow(): Flow<String?> =
@@ -41,5 +45,8 @@ internal class EncryptedProtoRepositoryImpl @Inject constructor(
 
     override fun emailFlow(): Flow<String?> =
         dataStore.data.map { store -> store.email.takeIf { it.isNotEmpty() } }
+
+    override fun profileImageUrlFlow(): Flow<String?> =
+        dataStore.data.map { store -> store.profileImageUrl.takeIf { it.isNotEmpty() } }
 
 }

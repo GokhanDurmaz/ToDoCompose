@@ -14,5 +14,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:profile"))
     implementation(project(":feature:uikit"))
+    implementation(libs.coil.compose)
 }

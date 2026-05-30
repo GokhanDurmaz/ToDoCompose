@@ -1,6 +1,7 @@
 package com.flowintent.settings.ui
 
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -44,6 +45,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,7 +54,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.os.LocaleListCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.settings.R
 import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.uikit.anim.shimmerEffect
@@ -67,14 +72,18 @@ import com.flowintent.uikit.util.VAL_8
 @Composable
 fun AdvancedSettingsScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
-    settingsViewModel: SettingsViewModel = hiltViewModel()
+    settingsViewModel: SettingsViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val username by authViewModel.userName.collectAsStateWithLifecycle()
     val email by authViewModel.userEmail.collectAsStateWithLifecycle()
+    val profileImageUrl by authViewModel.profileImageUrl.collectAsStateWithLifecycle()
+    val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         authViewModel.fetchAndSaveUserProfileIfEmpty()
+        profileViewModel.reloadProfileImageIfNull()
     }
 
     Column(
@@ -85,8 +94,10 @@ fun AdvancedSettingsScreen(
             .padding(VAL_16.dp)
     ) {
         ProfileHeader(
-            username ?: "",
-            email ?: "",
+            username,
+            email,
+            profileImageUrl,
+            profileUiState.profileBitmap,
             onProfileClick = { settingsViewModel.onProfileClicked() }
         )
 
@@ -121,9 +132,11 @@ fun AdvancedSettingsScreen(
 private fun ProfileHeader(
     username: String?,
     email: String?,
+    profileImageUrl: String?,
+    localBitmap: android.graphics.Bitmap?,
     onProfileClick: () -> Unit
 ) {
-    val isDataLoading = username == null || email == null
+    val isDataLoading = username.isNullOrEmpty() || email.isNullOrEmpty()
 
     Card(
         onClick = { if (!isDataLoading) onProfileClick() },
@@ -150,12 +163,28 @@ private fun ProfileHeader(
                 contentAlignment = Alignment.Center
             ) {
                 if (!isDataLoading) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onPrimary,
-                        modifier = Modifier.size(VAL_32.dp)
-                    )
+                    if (localBitmap != null) {
+                        Image(
+                            bitmap = localBitmap.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else if (!profileImageUrl.isNullOrEmpty()) {
+                        AsyncImage(
+                            model = profileImageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimary,
+                            modifier = Modifier.size(VAL_32.dp)
+                        )
+                    }
                 }
             }
 

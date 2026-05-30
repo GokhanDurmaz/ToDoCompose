@@ -10,6 +10,7 @@ message SecurePrefs {
   string userId = 4;
   string token = 5;
   string refresh = 6;
+  string profileImageUrl = 7;
 }
 
 

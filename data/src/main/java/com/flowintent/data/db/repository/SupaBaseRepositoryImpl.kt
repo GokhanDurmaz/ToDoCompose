@@ -60,27 +60,6 @@ class SupaBaseRepositoryImpl @Inject constructor(
         val localFile = File(context.filesDir, "avatars/$fileName")
 
         try {
-            if (localFile.exists()) {
-                Log.d("BITMAP_DEBUG", "File path: ${localFile.absolutePath}")
-                Log.d("BITMAP_DEBUG", "File length: ${localFile.length()} bytes")
-                Log.d("BITMAP_DEBUG", "isReadable: ${localFile.canRead()}")
-
-                if (localFile.length() == 0L) {
-                    Log.e("BITMAP_DEBUG", "Err: File is empty(0 byte)! Failed to download the file.")
-                    localFile.delete()
-                    return@withContext null
-                }
-
-                val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-
-                if (bitmap == null) {
-                    Log.e("BITMAP_DEBUG", "Err: BitmapFactory failed to decode file. File format might be disrupted.")
-                } else {
-                    Log.d("BITMAP_DEBUG", "Successful: Bitmap created. Width: ${bitmap.width}")
-                }
-                return@withContext bitmap
-            }
-
             val bucket = supabase.storage.from("avatars")
             val bytes = bucket.downloadPublic(fileName)
 
@@ -89,19 +68,41 @@ class SupaBaseRepositoryImpl @Inject constructor(
 
             BitmapFactory.decodeFile(localFile.absolutePath)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("SupaBaseRepositoryImpl", "Error downloading avatar (will try local): ${e.message}")
+            getLocalAvatar(userId)
+        }
+    }
+
+    override suspend fun getLocalAvatar(userId: String): Bitmap? = withContext(Dispatchers.IO) {
+        val fileName = "avatar_$userId.jpg"
+        val localFile = File(context.filesDir, "avatars/$fileName")
+        if (localFile.exists()) {
+            val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+            if (bitmap == null) {
+                Log.e("SupaBaseRepositoryImpl", "Local file exists but failed to decode: ${localFile.absolutePath}")
+            }
+            bitmap
+        } else {
             null
         }
     }
 
-    override fun uploadProfileImage(imageBytes: ByteArray): Flow<Resource<String>> = flow {
+    override fun uploadProfileImage(imageBytes: ByteArray, onUpdateAuth: (String) -> Flow<Resource<Unit>>): Flow<Resource<String>> = flow {
         emit(Resource.Loading)
         try {
             val userId = auth.currentUser?.uid ?: throw Exception("Auth user not found")
 
+            // 1. Save locally FIRST so it persists immediately even if upload fails
+            val fileName = "avatar_$userId.jpg"
+            val localFile = File(context.filesDir, "avatars/$fileName")
+            localFile.parentFile?.mkdirs()
+            localFile.writeBytes(imageBytes)
+
+            // 2. Upload to Remote (Supabase)
             val downloadUrl = uploadAvatar(userId, imageBytes)
                 ?: throw Exception("Storage upload failed")
 
+            // 3. Update PostgreSQL (Postgrest)
             postgrest.from("users").update(
                 {
                     set("profileImageUrl", downloadUrl)
@@ -112,7 +113,12 @@ class SupaBaseRepositoryImpl @Inject constructor(
                 }
             }
 
-            clearLocalAvatar(userId)
+            // 4. Update Firestore via callback
+            onUpdateAuth(downloadUrl).collect { result ->
+                if (result is Resource.Error) {
+                    throw Exception(result.message)
+                }
+            }
 
             emit(Resource.Success(downloadUrl))
         } catch (e: Exception) {
@@ -151,7 +157,7 @@ class SupaBaseRepositoryImpl @Inject constructor(
     }
 
     override fun clearLocalAvatar(userId: String) {
-        val file = File(context.filesDir, "private_avatars/avatar_$userId.jpg")
+        val file = File(context.filesDir, "avatars/avatar_$userId.jpg")
         if (file.exists()) file.delete()
     }
 }
