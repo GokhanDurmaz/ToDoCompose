@@ -146,19 +146,22 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileLargeHeader(
-                username = uiState.userProfile?.name ?: "User",
-                email = uiState.userProfile?.email ?: "email@flow.com",
+                username = uiState.userProfile?.name,
+                email = uiState.userProfile?.email,
                 profileImageUrl = uiState.userProfile?.profileImageUrl,
                 localBitmap = uiState.profileBitmap,
                 onImageClick = { imagePickerLauncher.launch("image/*") },
-                isLoading = uiState.uploadState is Resource.Loading
+                isLoading = uiState.uploadState is Resource.Loading,
+                isDataLoading = uiState.isProfileLoading
             )
 
             Spacer(modifier = Modifier.height(VAL_20.dp))
 
-            StatsSection()
+            StatsSection(onPendingClick = {
+                profileViewModel.onNavigateTo(ProfileNavigation.PENDING_TASKS)
+            })
 
-            if (uiState.userProfile == null) {
+            if (uiState.isProfileLoading) {
                 ProfileInfoShimmer()
             } else {
                 ProfileInfoSection(
@@ -183,9 +186,9 @@ private fun ProfileLargeHeader(
     profileImageUrl: String?,
     localBitmap: Bitmap?,
     onImageClick: () -> Unit,
-    isLoading: Boolean
+    isLoading: Boolean,
+    isDataLoading: Boolean
 ) {
-    val isDataLoading = username == null || email == null
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -249,7 +252,7 @@ private fun ProfileLargeHeader(
                     .shimmerEffect()
             )
         } else {
-            Text(text = username, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text(text = username ?: "User", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(VAL_8.dp))
@@ -263,27 +266,27 @@ private fun ProfileLargeHeader(
                     .shimmerEffect()
             )
         } else {
-            Text(text = email, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(text = email ?: "email@flow.com", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
 
 @Composable
-private fun StatsSection() {
+private fun StatsSection(onPendingClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(VAL_8.dp)
     ) {
-        StatCard(Modifier.weight(1f), "Pending", "5", Icons.AutoMirrored.Filled.List)
+        StatCard(Modifier.weight(1f), "Pending", "5", Icons.AutoMirrored.Filled.List, onClick = onPendingClick)
         StatCard(Modifier.weight(1f), "Done", "12", Icons.Default.CheckCircle)
         StatCard(Modifier.weight(1f), "Success", "70%", Icons.Default.Speed)
     }
 }
 
 @Composable
-private fun StatCard(modifier: Modifier, title: String, value: String, icon: ImageVector) {
+private fun StatCard(modifier: Modifier, title: String, value: String, icon: ImageVector, onClick: () -> Unit = {}) {
     Card(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick() },
         shape = RoundedCornerShape(VAL_16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)

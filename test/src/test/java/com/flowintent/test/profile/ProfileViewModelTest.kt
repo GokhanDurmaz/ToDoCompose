@@ -2,8 +2,11 @@ package com.flowintent.test.profile
 
 import android.content.Context
 import com.flowintent.core.db.auth.ChangePasswordUseCase
+import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
+import com.flowintent.core.db.profile.ObserveUserProfileUseCase
 import com.flowintent.core.db.profile.UploadProfileUseCase
+import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.db.repository.SupaBaseRepository
 import com.flowintent.core.util.Resource
@@ -35,11 +38,15 @@ class ProfileViewModelTest {
     @Mock
     private lateinit var changePasswordUseCase: ChangePasswordUseCase
     @Mock
+    private lateinit var getUserProfileUseCase: GetUserProfileUseCase
+    @Mock
     private lateinit var uploadProfileUseCase: UploadProfileUseCase
     @Mock
     private lateinit var downloadAndSaveUseCase: DownloadAndSaveUseCase
     @Mock
     private lateinit var supaBaseRepository: SupaBaseRepository
+    @Mock
+    private lateinit var observeUserProfileUseCase: ObserveUserProfileUseCase
     @Mock
     private lateinit var encryptedProtoRepository: EncryptedProtoRepository
 
@@ -49,16 +56,43 @@ class ProfileViewModelTest {
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         whenever(encryptedProtoRepository.uidFlow()).thenReturn(flowOf("uid-123"))
+        whenever(observeUserProfileUseCase()).thenReturn(flowOf(Resource.Loading))
+        whenever(getUserProfileUseCase()).thenReturn(flowOf(Resource.Loading))
         
         viewModel = ProfileViewModel(
             context,
             navigationDispatcher,
             changePasswordUseCase,
+            getUserProfileUseCase,
             uploadProfileUseCase,
             downloadAndSaveUseCase,
+            observeUserProfileUseCase,
             supaBaseRepository,
             encryptedProtoRepository
         )
+    }
+
+    @Test
+    fun `observeUserProfile updates uiState with user profile and stops loading`() = runTest {
+        val userProfile = UserProfile(name = "John", surname = "Doe", email = "john@example.com")
+        whenever(observeUserProfileUseCase()).thenReturn(UseCaseScenarios.success(userProfile))
+        whenever(getUserProfileUseCase()).thenReturn(flowOf(Resource.Loading))
+
+        // Create a new ViewModel to trigger init block with the success flow
+        viewModel = ProfileViewModel(
+            context,
+            navigationDispatcher,
+            changePasswordUseCase,
+            getUserProfileUseCase,
+            uploadProfileUseCase,
+            downloadAndSaveUseCase,
+            observeUserProfileUseCase,
+            supaBaseRepository,
+            encryptedProtoRepository
+        )
+
+        assertEquals(userProfile, viewModel.uiState.value.userProfile)
+        assertEquals(false, viewModel.uiState.value.isProfileLoading)
     }
 
     @Test

@@ -17,4 +17,6 @@ dependencies {
     implementation(project(":feature:uikit"))
 
     implementation(libs.coil.compose)
+    implementation(libs.androidx.paging.compose)
+    implementation(libs.androidx.paging.runtime)
 }

@@ -6,9 +6,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.auth.ChangePasswordUseCase
-import com.flowintent.core.db.profile.UploadProfileUseCase
-import com.flowintent.core.db.model.UserProfile
+import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
+import com.flowintent.core.db.profile.ObserveUserProfileUseCase
+import com.flowintent.core.db.profile.UploadProfileUseCase
 import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.db.repository.SupaBaseRepository
 import com.flowintent.core.util.Resource
@@ -33,8 +34,10 @@ class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val navigationDispatcher: NavigationDispatcher,
     private val changePasswordUseCase: ChangePasswordUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
     private val uploadProfileUseCase: UploadProfileUseCase,
     private val downloadAndSaveUseCase: DownloadAndSaveUseCase,
+    private val observeUserProfileUseCase: ObserveUserProfileUseCase,
     private val supaBaseRepository: SupaBaseRepository,
     private val encryptedProtoRepository: EncryptedProtoRepository
 ): ViewModel() {
@@ -44,6 +47,8 @@ class ProfileViewModel @Inject constructor(
 
     init {
         observeUid()
+        fetchUserProfile()
+        observeUserProfile()
         observeBitmapLoading()
     }
 
@@ -51,6 +56,34 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             encryptedProtoRepository.uidFlow().collect { uid ->
                 _uiState.update { it.copy(userUid = uid) }
+            }
+        }
+    }
+
+    private fun fetchUserProfile() {
+        viewModelScope.launch {
+            getUserProfileUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _uiState.update { it.copy(userProfile = result.data, isProfileLoading = false) }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update { it.copy(isProfileLoading = false) }
+                    }
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isProfileLoading = true) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeUserProfile() {
+        viewModelScope.launch {
+            observeUserProfileUseCase().collect { result ->
+                if (result is Resource.Success) {
+                    _uiState.update { it.copy(userProfile = result.data, isProfileLoading = false) }
+                }
             }
         }
     }

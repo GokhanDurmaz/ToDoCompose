@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.navigation.nav.MainNavigation
 import com.flowintent.workspace.ui.vm.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,6 +41,7 @@ fun ToDoNavTopBar(
     state: TopBarState,
     onSearchToggle: () -> Unit,
     viewModel: TaskViewModel = hiltViewModel(),
+    navigationDispatcher: NavigationDispatcher? = null,
     bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
@@ -67,7 +70,7 @@ fun ToDoNavTopBar(
                             Icon(Icons.Default.Close, contentDescription = "Cancel")
                         }
                     } else if (state.showProfileIcon) {
-                        ProfileIcon()
+                        ProfileIcon(navigationDispatcher)
                     }
                 },
                 actions = {
@@ -132,9 +135,11 @@ private fun TopBarMenu(
 }
 
 @Composable
-private fun ProfileIcon() {
-    IconButton(onClick = { }) {
-        Icon(Icons.Default.AccountCircle, contentDescription = "Profile")
+private fun ProfileIcon(navigationDispatcher: NavigationDispatcher?) {
+    IconButton(onClick = { 
+        navigationDispatcher?.navigateTo(MainNavigation.PENDING.route) 
+    }) {
+        Icon(Icons.Default.AccountCircle, contentDescription = "Pending Tasks")
     }
 }
 

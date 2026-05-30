@@ -14,7 +14,7 @@
     <string name="language_label">Language</string>
     <string name="version_text">Version 1.0.0</string>
     <string name="home_label">Home</string>
-    <string name="reminder_label">Reminder</string>
+    <string name="pending_label">Pending</string>
     <string name="todo_list_label">ToDo List</string>
     <string name="settings_label">Settings</string>
     <string name="task_details_title">Task Details</string>

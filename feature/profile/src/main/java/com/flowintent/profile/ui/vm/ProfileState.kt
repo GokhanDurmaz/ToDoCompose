@@ -14,5 +14,6 @@ data class ProfileUiState(
     val oldPassword: String = "",
     val newPassword: String = "",
     val confirmPassword: String = "",
-    val selectedImageUri: Uri? = null
+    val selectedImageUri: Uri? = null,
+    val isProfileLoading: Boolean = true
 )

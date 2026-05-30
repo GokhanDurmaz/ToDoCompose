@@ -132,15 +132,20 @@ class SupaBaseRepositoryImpl @Inject constructor(
         }
 
         val job = launch {
-            postgrest.from("users")
-                .selectAsFlow(
-                    primaryKey = UserProfile::uid,
-                    filter = FilterOperation("uid", FilterOperator.EQ, userId)
-                ).collect { list ->
-                    if (list.isNotEmpty()) {
-                        trySend(Resource.Success(list.first()))
+            try {
+                postgrest.from("users")
+                    .selectAsFlow(
+                        primaryKey = UserProfile::uid,
+                        filter = FilterOperation("uid", FilterOperator.EQ, userId)
+                    ).collect { list ->
+                        if (list.isNotEmpty()) {
+                            trySend(Resource.Success(list.first()))
+                        }
                     }
-                }
+            } catch (e: Exception) {
+                trySend(Resource.Error(e.localizedMessage ?: "Network error occurred"))
+                Log.e("SupaBaseRepositoryImpl", "Error observing user profile: ${e.message}")
+            }
         }
         awaitClose { job.cancel() }
     }
