@@ -82,9 +82,7 @@ import com.flowintent.uikit.util.VAL_8
 fun ProfileScreen(
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val userProfile by profileViewModel.userProfile.collectAsStateWithLifecycle()
-    val uploadState by profileViewModel.uploadState.collectAsStateWithLifecycle()
-    val profileBitmap by profileViewModel.profileBitmap.collectAsStateWithLifecycle()
+    val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         profileViewModel.reloadProfileImageIfNull()
@@ -96,13 +94,13 @@ fun ProfileScreen(
         uri?.let { profileViewModel.uploadImage(it) }
     }
 
-    LaunchedEffect(uploadState) {
-        when (uploadState) {
+    LaunchedEffect(uiState.uploadState) {
+        when (uiState.uploadState) {
             is Resource.Success -> {
                 profileViewModel.clearUploadState()
             }
             is Resource.Error -> {
-                println("Upload Err: ${(uploadState as Resource.Error).message}")
+                println("Upload Err: ${(uiState.uploadState as Resource.Error).message}")
             }
             else -> {}
         }
@@ -148,24 +146,24 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileLargeHeader(
-                username = userProfile?.name ?: "User",
-                email = userProfile?.email ?: "email@flow.com",
-                profileImageUrl = userProfile?.profileImageUrl,
-                localBitmap = profileBitmap,
+                username = uiState.userProfile?.name ?: "User",
+                email = uiState.userProfile?.email ?: "email@flow.com",
+                profileImageUrl = uiState.userProfile?.profileImageUrl,
+                localBitmap = uiState.profileBitmap,
                 onImageClick = { imagePickerLauncher.launch("image/*") },
-                isLoading = uploadState is Resource.Loading
+                isLoading = uiState.uploadState is Resource.Loading
             )
 
             Spacer(modifier = Modifier.height(VAL_20.dp))
 
             StatsSection()
 
-            if (userProfile == null) {
+            if (uiState.userProfile == null) {
                 ProfileInfoShimmer()
             } else {
                 ProfileInfoSection(
-                    username = userProfile?.name ?: "User",
-                    email = userProfile?.email ?: "email@flow.com"
+                    username = uiState.userProfile?.name ?: "User",
+                    email = uiState.userProfile?.email ?: "email@flow.com"
                 )
             }
 

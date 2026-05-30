@@ -1,6 +1,5 @@
 package com.flowintent.auth.ui.vm
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.navigation.nav.AuthNavigation
@@ -26,6 +25,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,6 +37,16 @@ class AuthViewModel @Inject constructor(
     private val forgetPasswordUseCase: ForgetPasswordUseCase,
     private val navigationDispatcher: NavigationDispatcher
 ) : ViewModel()  {
+
+    private val _signInUiState = MutableStateFlow(SignInUiState())
+    val signInUiState = _signInUiState.asStateFlow()
+
+    private val _signUpUiState = MutableStateFlow(SignUpUiState())
+    val signUpUiState = _signUpUiState.asStateFlow()
+
+    private val _forgotPasswordUiState = MutableStateFlow(ForgotPasswordUiState())
+    val forgotPasswordUiState = _forgotPasswordUiState.asStateFlow()
+
     val token: StateFlow<String?> = repo.tokenFlow()
         .stateIn(
             scope = viewModelScope,
@@ -44,22 +54,33 @@ class AuthViewModel @Inject constructor(
             initialValue = null
         )
 
-    var emailInput = MutableStateFlow("")
-        private set
-    var passwordInput = MutableStateFlow("")
-        private set
+    fun onSignInEmailChange(newValue: String) {
+        _signInUiState.update { it.copy(email = newValue.trim(), errorMessage = null) }
+    }
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    fun onSignInPasswordChange(newValue: String) {
+        _signInUiState.update { it.copy(password = newValue, errorMessage = null) }
+    }
 
-    val isSubmitEnabled: StateFlow<Boolean> = combine(
-        emailInput,
-        passwordInput,
-        _isLoading
-    ) { email, pass, loading ->
-        val isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches()
-        email.isNotBlank() && pass.isNotBlank() && isEmailValid && !loading
-    }.stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), false)
+    fun onSignUpFirstNameChange(newValue: String) {
+        _signUpUiState.update { it.copy(firstName = newValue, errorMessage = null) }
+    }
+
+    fun onSignUpLastNameChange(newValue: String) {
+        _signUpUiState.update { it.copy(lastName = newValue, errorMessage = null) }
+    }
+
+    fun onSignUpEmailChange(newValue: String) {
+        _signUpUiState.update { it.copy(email = newValue.trim(), errorMessage = null) }
+    }
+
+    fun onSignUpPasswordChange(newValue: String) {
+        _signUpUiState.update { it.copy(password = newValue, errorMessage = null) }
+    }
+
+    fun onForgotPasswordEmailChange(newValue: String) {
+        _forgotPasswordUiState.update { it.copy(email = newValue.trim(), statusMessage = null) }
+    }
 
     val userName: StateFlow<String?> = repo.nameFlow()
         .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), "")
@@ -87,22 +108,69 @@ class AuthViewModel @Inject constructor(
         repo.clear()
     }
 
-    fun registerUser(name: String, surname: String, email: String, password: String): Flow<Resource<Unit>> =
-        signUpUseCase(name, surname, email, password)
-
-    fun onEmailChange(newValue: String) {
-        emailInput.value = newValue.trim()
-    }
-
-    fun onPasswordChange(newValue: String) {
-        passwordInput.value = newValue
-    }
-
-    fun loginUserWithState(): Flow<Resource<String>> {
-        _isLoading.value = true
-        return signInUseCase(emailInput.value, passwordInput.value).onEach {
-            if (it !is Resource.Loading) _isLoading.value = false
+    fun registerUser() {
+        val state = _signUpUiState.value
+        viewModelScope.launch {
+            signUpUseCase(state.firstName, state.lastName, state.email, state.password).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> _signUpUiState.update { it.copy(isLoading = true, errorMessage = null) }
+                    is Resource.Success -> {
+                        _signUpUiState.update { it.copy(isLoading = false) }
+                        saveUser(state.firstName, state.lastName, state.email)
+                        onNavigateBack()
+                    }
+                    is Resource.Error -> _signUpUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
+                }
+            }
         }
+    }
+
+    fun loginUser() {
+        val state = _signInUiState.value
+        viewModelScope.launch {
+            signInUseCase(state.email, state.password).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> _signInUiState.update { it.copy(isLoading = true, errorMessage = null) }
+                    is Resource.Success -> {
+                        _signInUiState.update { it.copy(isLoading = false) }
+                        if (resource.data.isNotEmpty()) {
+                            saveToken(resource.data)
+                            onLoginSuccess()
+                        }
+                    }
+                    is Resource.Error -> _signInUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
+                }
+            }
+        }
+    }
+
+    fun resetPassword() {
+        val email = _forgotPasswordUiState.value.email
+        viewModelScope.launch {
+            forgetPasswordUseCase(email).collect { resource ->
+                when (resource) {
+                    is Resource.Loading -> _forgotPasswordUiState.update { it.copy(isLoading = true, statusMessage = null) }
+                    is Resource.Success -> {
+                        _forgotPasswordUiState.update { it.copy(isLoading = false, statusMessage = "Reset link sent! Check your inbox." to false) }
+                        delay(2000)
+                        onNavigateBack()
+                    }
+                    is Resource.Error -> _forgotPasswordUiState.update { it.copy(isLoading = false, statusMessage = resource.message to true) }
+                }
+            }
+        }
+    }
+
+    fun setSignInError(message: String?) {
+        _signInUiState.update { it.copy(errorMessage = message) }
+    }
+
+    fun setSignUpError(message: String?) {
+        _signUpUiState.update { it.copy(errorMessage = message) }
+    }
+
+    fun setForgotPasswordStatus(status: Pair<String, Boolean>?) {
+        _forgotPasswordUiState.update { it.copy(statusMessage = status) }
     }
 
     fun saveUser(firstName: String, lastName: String, email: String) = viewModelScope.launch {
@@ -132,8 +200,6 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
-
-    fun forgetPassword(email: String): Flow<Resource<Unit>> = forgetPasswordUseCase(email)
 
     fun onSignUpClicked() {
         navigationDispatcher.navigateTo(AuthNavigation.SIGN_UP.route)

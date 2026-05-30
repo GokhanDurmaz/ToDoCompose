@@ -25,22 +25,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.auth.R
 import com.flowintent.auth.ui.vm.AuthViewModel
-import com.flowintent.core.db.model.SignUpState
-import com.flowintent.core.util.Resource
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -48,16 +45,12 @@ import com.flowintent.uikit.util.VAL_32
 import com.flowintent.uikit.util.VAL_40
 import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.VAL_8
-import kotlinx.coroutines.launch
 
 @Composable
 fun SignUpScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    var signUpState by remember { mutableStateOf(SignUpState()) }
-    var isLoading by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    val scope = rememberCoroutineScope()
+    val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -70,31 +63,31 @@ fun SignUpScreen(
         SignUpHeader()
 
         SignUpForm(
-            state = signUpState,
-            onStateChange = { signUpState = it }
+            firstName = uiState.firstName,
+            lastName = uiState.lastName,
+            email = uiState.email,
+            password = uiState.password,
+            onFirstNameChange = viewModel::onSignUpFirstNameChange,
+            onLastNameChange = viewModel::onSignUpLastNameChange,
+            onEmailChange = viewModel::onSignUpEmailChange,
+            onPasswordChange = viewModel::onSignUpPasswordChange
         )
 
-        ErrorMessage(errorMessage)
+        ErrorMessage(uiState.errorMessage)
 
         Spacer(modifier = Modifier.height(VAL_32.dp))
 
         SignUpButton(
-            isLoading = isLoading,
+            isLoading = uiState.isLoading,
+            isEnabled = uiState.isSubmitEnabled,
             onClick = {
-                scope.launch {
-                    handleRegistration(
-                        viewModel = viewModel,
-                        state = signUpState,
-                        onError = { errorMessage = it },
-                        onLoading = { isLoading = it }
-                    )
-                }
+                viewModel.registerUser()
             }
         )
 
         TextButton(onClick = viewModel::onNavigateBack) {
             Text(
-                "Already have an account? Sign In",
+                stringResource(R.string.already_have_account_sign_in),
                 color = MaterialTheme.colorScheme.secondary
             )
         }
@@ -105,13 +98,13 @@ fun SignUpScreen(
 private fun SignUpHeader() {
     Spacer(modifier = Modifier.height(VAL_40.dp))
     Text(
-        "Create New Account",
+        stringResource(R.string.create_new_account),
         style = MaterialTheme.typography.headlineMedium,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground
     )
     Text(
-        "Join us and start your journey",
+        stringResource(R.string.sign_up_subtitle),
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
     Spacer(modifier = Modifier.height(VAL_40.dp))
@@ -119,8 +112,14 @@ private fun SignUpHeader() {
 
 @Composable
 private fun SignUpForm(
-    state: SignUpState,
-    onStateChange: (SignUpState) -> Unit
+    firstName: String,
+    lastName: String,
+    email: String,
+    password: String,
+    onFirstNameChange: (String) -> Unit,
+    onLastNameChange: (String) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(VAL_20.dp),
@@ -132,28 +131,28 @@ private fun SignUpForm(
         Column(modifier = Modifier.padding(VAL_16.dp), verticalArrangement = Arrangement.spacedBy(VAL_16.dp)) {
             Row(horizontalArrangement = Arrangement.spacedBy(VAL_8.dp)) {
                 CustomTextField(
-                    value = state.firstName,
-                    onValueChange = { onStateChange(state.copy(firstName = it)) },
-                    label = "First Name",
+                    value = firstName,
+                    onValueChange = onFirstNameChange,
+                    label = stringResource(R.string.first_name),
                     Modifier.weight(1f)
                 )
                 CustomTextField(
-                    value = state.lastName,
-                    onValueChange = { onStateChange(state.copy(lastName = it)) },
-                    label = "Last Name",
+                    value = lastName,
+                    onValueChange = onLastNameChange,
+                    label = stringResource(R.string.last_name),
                     Modifier.weight(1f)
                 )
             }
             CustomTextField(
-                value = state.email,
-                onValueChange = { onStateChange(state.copy(email = it)) },
-                label = "Email Address",
+                value = email,
+                onValueChange = onEmailChange,
+                label = stringResource(R.string.email_address),
                 Modifier.fillMaxWidth()
             )
             CustomTextField(
-                value = state.password,
-                onValueChange = { onStateChange(state.copy(password = it)) },
-                label = "Password",
+                value = password,
+                onValueChange = onPasswordChange,
+                label = stringResource(R.string.password),
                 Modifier.fillMaxWidth(),
                 isPassword = true
             )
@@ -162,7 +161,7 @@ private fun SignUpForm(
 }
 
 @Composable
-private fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
+private fun SignUpButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> Unit) {
     val gradient = Brush.linearGradient(
         listOf(
             MaterialTheme.colorScheme.primary,
@@ -172,12 +171,12 @@ private fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
 
     Button(
         onClick = onClick,
-        enabled = !isLoading,
+        enabled = isEnabled,
         modifier = Modifier
             .fillMaxWidth()
             .height(VAL_60.dp)
             .clip(RoundedCornerShape(VAL_12.dp))
-            .background(if (!isLoading) gradient else Brush.linearGradient(listOf(Color.Gray, Color.LightGray))),
+            .background(if (isEnabled) gradient else Brush.linearGradient(listOf(Color.Gray, Color.LightGray))),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
     ) {
         if (isLoading) {
@@ -188,7 +187,7 @@ private fun SignUpButton(isLoading: Boolean, onClick: () -> Unit) {
             )
         } else {
             Text(
-                "Sign Up",
+                stringResource(R.string.sign_up),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -254,30 +253,5 @@ private fun ErrorMessage(message: String?) {
             modifier = Modifier.padding(top = 8.dp),
             style = MaterialTheme.typography.bodySmall
         )
-    }
-}
-
-private suspend fun handleRegistration(
-    viewModel: AuthViewModel,
-    state: SignUpState,
-    onLoading: (Boolean) -> Unit,
-    onError: (String?) -> Unit
-) {
-    viewModel.registerUser(state.firstName, state.lastName, state.email, state.password).collect { resource ->
-        when (resource) {
-            is Resource.Loading -> {
-                onLoading(true)
-                onError(null)
-            }
-            is Resource.Success -> {
-                onLoading(false)
-                viewModel.saveUser(state.firstName, state.lastName, state.email)
-                viewModel.onNavigateBack()
-            }
-            is Resource.Error -> {
-                onLoading(false)
-                onError(resource.message)
-            }
-        }
     }
 }

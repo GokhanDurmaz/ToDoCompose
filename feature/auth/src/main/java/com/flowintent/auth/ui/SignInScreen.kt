@@ -22,22 +22,20 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.auth.R
 import com.flowintent.auth.ui.vm.AuthViewModel
-import com.flowintent.core.util.Resource
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -45,18 +43,13 @@ import com.flowintent.uikit.util.VAL_32
 import com.flowintent.uikit.util.VAL_40
 import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.isValidEmail
-import kotlinx.coroutines.launch
 
 @Composable
 fun SignInScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val email by viewModel.emailInput.collectAsStateWithLifecycle()
-    val password by viewModel.passwordInput.collectAsStateWithLifecycle()
-    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
-    val isSubmitEnabled by viewModel.isSubmitEnabled.collectAsStateWithLifecycle()
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val uiState by viewModel.signInUiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -69,27 +62,25 @@ fun SignInScreen(
         SignInHeader()
 
         SignInForm(
-            email = email,
-            password = password,
-            onEmailChange = viewModel::onEmailChange,
-            onPasswordChange = viewModel::onPasswordChange,
+            email = uiState.email,
+            password = uiState.password,
+            onEmailChange = viewModel::onSignInEmailChange,
+            onPasswordChange = viewModel::onSignInPasswordChange,
             onForgotClick = viewModel::onForgotPasswordClicked
         )
 
-        ErrorMessage(errorMessage)
+        ErrorMessage(uiState.errorMessage)
 
         Spacer(modifier = Modifier.height(VAL_32.dp))
 
         SignInButton(
-            isLoading = isLoading,
-            isEnabled = isSubmitEnabled,
+            isLoading = uiState.isLoading,
+            isEnabled = uiState.isSubmitEnabled,
             onClick = {
-                if (!email.isValidEmail()) {
-                    errorMessage = "Please enter a valid email address"
+                if (!uiState.email.isValidEmail()) {
+                    viewModel.setSignInError(context.getString(R.string.error_invalid_email))
                 } else {
-                    scope.launch {
-                        handleLogin(viewModel) { errorMessage = it }
-                    }
+                    viewModel.loginUser()
                 }
             }
         )
@@ -101,13 +92,13 @@ fun SignInScreen(
 private fun SignInHeader() {
     Spacer(modifier = Modifier.height(VAL_60.dp))
     Text(
-        "Welcome Back",
+        stringResource(R.string.welcome_back),
         style = MaterialTheme.typography.headlineMedium,
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.onBackground
     )
     Text(
-        "Please sign in to continue",
+        stringResource(R.string.sign_in_subtitle),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant
     )
@@ -133,13 +124,13 @@ private fun SignInForm(
             CustomTextField(
                 value = email,
                 onValueChange = onEmailChange,
-                label = "Email Address",
+                label = stringResource(R.string.email_address),
                 modifier = Modifier.fillMaxWidth()
             )
             CustomTextField(
                 value = password,
                 onValueChange = onPasswordChange,
-                label = "Password",
+                label = stringResource(R.string.password),
                 modifier = Modifier.fillMaxWidth(),
                 isPassword = true
             )
@@ -148,7 +139,7 @@ private fun SignInForm(
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text(
-                    "Forgot Password?",
+                    stringResource(R.string.forgot_password),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.labelMedium
                 )
@@ -184,7 +175,7 @@ private fun SignInButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> 
             )
         } else {
             Text(
-                "Sign In",
+                stringResource(R.string.sign_in),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -210,27 +201,9 @@ private fun SignUpFooter(onNavigate: () -> Unit) {
     Spacer(modifier = Modifier.height(VAL_16.dp))
     TextButton(onClick = onNavigate) {
         Text(
-            "Don't have an account? Sign Up",
+            stringResource(R.string.dont_have_account_sign_up),
             color = MaterialTheme.colorScheme.secondary,
             style = MaterialTheme.typography.bodyMedium
         )
-    }
-}
-
-private suspend fun handleLogin(
-    viewModel: AuthViewModel,
-    onError: (String?) -> Unit
-) {
-    viewModel.loginUserWithState().collect { resource ->
-        when (resource) {
-            is Resource.Loading -> onError(null)
-            is Resource.Success -> {
-                if (resource.data.isNotEmpty()) {
-                    viewModel.saveToken(resource.data)
-                    viewModel.onLoginSuccess()
-                }
-            }
-            is Resource.Error -> onError(resource.message)
-        }
     }
 }
