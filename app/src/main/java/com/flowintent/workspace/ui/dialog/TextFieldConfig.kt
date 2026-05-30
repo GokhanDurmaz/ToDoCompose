@@ -30,9 +30,9 @@ fun OpenTaskDialog(
     onDismiss: () -> Unit,
     isUpdate: Boolean = false
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val toDoLabel = remember { mutableStateOf("") }
     val toDoContent = remember { mutableStateOf("") }
-    val updateTaskId by viewModel.updateTaskId.collectAsStateWithLifecycle()
     val colorPicker = remember { ColorPicker(ColorProvider.getShuffledColors()) }
 
     Dialog(onDismissRequest = onDismiss) {
@@ -48,7 +48,7 @@ fun OpenTaskDialog(
                             title = toDoLabel.value,
                             content = toDoContent.value,
                             isUpdate = isUpdate,
-                            updateTaskId = updateTaskId,
+                            updateTaskId = uiState.updateTaskId,
                             colorPicker = colorPicker
                         )
                         viewModel.handleTaskConfirm(input, onDismiss)

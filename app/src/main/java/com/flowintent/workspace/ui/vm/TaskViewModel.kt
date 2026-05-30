@@ -1,6 +1,5 @@
 package com.flowintent.workspace.ui.vm
 
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -9,7 +8,6 @@ import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
 import com.flowintent.core.db.model.TaskType
 import com.flowintent.core.db.repository.TaskRepository
-import com.flowintent.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
