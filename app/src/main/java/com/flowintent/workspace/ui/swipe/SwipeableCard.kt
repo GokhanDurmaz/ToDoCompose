@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.model.Task
 import com.flowintent.uikit.util.VAL_0
 import com.flowintent.uikit.util.VAL_0_0
@@ -55,7 +56,8 @@ fun SwipeableCard(
     viewModel: TaskViewModel = hiltViewModel(),
     content: @Composable () -> Unit
 ) {
-    val isExpanded = viewModel.expandedMap[task.uid] ?: false
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isExpanded = uiState.expandedTasks[task.uid] ?: false
     var isShowing by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val offsetX = remember { Animatable(VAL_0_0) }

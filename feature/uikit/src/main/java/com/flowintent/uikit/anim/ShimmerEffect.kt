@@ -4,9 +4,9 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 
 fun Modifier.shimmerEffect(): Modifier = composed {
@@ -22,9 +22,9 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     )
 
     val shimmerColors = listOf(
-        Color.LightGray.copy(alpha = 0.9f), // Darker
-        Color.White.copy(alpha = 0.5f),      // Shimmer point
-        Color.LightGray.copy(alpha = 0.9f), // Darker
+        Color.LightGray.copy(alpha = 0.9f),
+        Color.White.copy(alpha = 0.5f),
+        Color.LightGray.copy(alpha = 0.9f),
     )
 
     val brush = Brush.linearGradient(
@@ -33,5 +33,5 @@ fun Modifier.shimmerEffect(): Modifier = composed {
         end = Offset(x = translateAnim, y = translateAnim)
     )
 
-    return@composed this.background(brush)
+    background(brush)
 }
