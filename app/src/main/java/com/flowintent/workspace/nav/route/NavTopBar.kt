@@ -42,8 +42,9 @@ fun ToDoNavTopBar(
     bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val isSelectionMode by viewModel.isSelectionMode.collectAsStateWithLifecycle()
-    val selectedCount = viewModel.selectedCount
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isSelectionMode = uiState.isSelectionMode
+    val selectedCount = uiState.selectedCount
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(

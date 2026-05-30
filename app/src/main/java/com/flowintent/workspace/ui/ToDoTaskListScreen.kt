@@ -138,6 +138,13 @@ fun TaskInputBar(
     }
 }
 
+data class TaskActions(
+    val onSearch: (String) -> Unit,
+    val onTypeSelected: (TaskType?) -> Unit,
+    val onTaskLongPress: (Int) -> Unit,
+    val onTaskTap: (Int) -> Unit
+)
+
 @Composable
 fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
     val focusManager = LocalFocusManager.current
@@ -148,6 +155,21 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let { println("Selected File URI: $it") }
+    }
+
+    val actions = remember(viewModel) {
+        TaskActions(
+            onSearch = viewModel::onSearch,
+            onTypeSelected = viewModel::onTypeSelected,
+            onTaskLongPress = viewModel::toggleSelection,
+            onTaskTap = { uid ->
+                if (viewModel.uiState.value.selectedTasks.any { it.value }) {
+                    viewModel.toggleSelection(uid)
+                } else {
+                    viewModel.toggleExpanded(uid)
+                }
+            }
+        )
     }
 
     ToDoNavTopBar(
@@ -166,39 +188,45 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) { focusManager.clearFocus() }
-        ) {
-            ListCardContent(
-                pagingTasks = viewModel.tasks.collectAsLazyPagingItems(),
-                searchQuery = uiState.searchQuery,
-                selectedType = uiState.selectedType,
-                isSearchBarVisible = isSearchBarVisible,
-                onSearch = viewModel::onSearch,
-                onTypeSelected = viewModel::onTypeSelected,
-                selectedTasks = uiState.selectedTasks,
-                expandedTasks = uiState.expandedTasks,
-                onTaskLongPress = viewModel::toggleSelection,
-                onTaskTap = { uid ->
-                    if (uiState.selectedTasks.any { it.value }) {
-                        viewModel.toggleSelection(uid)
-                    } else {
-                        viewModel.toggleExpanded(uid)
-                    }
-                }
-            )
+        ToDoListContent(
+            paddingValues = paddingValues,
+            viewModel = viewModel,
+            uiState = uiState,
+            isSearchBarVisible = isSearchBarVisible,
+            actions = actions
+        )
+    }
+}
 
-            SmartTaskStateOverlay(
-                state = uiState.smartTaskState,
-                onClearState = { viewModel.clearSmartTaskState() }
-            )
-        }
+@Composable
+private fun ToDoListContent(
+    paddingValues: androidx.compose.foundation.layout.PaddingValues,
+    viewModel: TaskViewModel,
+    uiState: com.flowintent.workspace.ui.vm.TaskUiState,
+    isSearchBarVisible: Boolean,
+    actions: TaskActions
+) {
+    val focusManager = LocalFocusManager.current
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) { focusManager.clearFocus() }
+    ) {
+        ListCardContent(
+            pagingTasks = viewModel.tasks.collectAsLazyPagingItems(),
+            uiState = uiState,
+            isSearchBarVisible = isSearchBarVisible,
+            actions = actions
+        )
+
+        SmartTaskStateOverlay(
+            state = uiState.smartTaskState,
+            onClearState = { viewModel.clearSmartTaskState() }
+        )
     }
 }
 
@@ -232,28 +260,22 @@ private fun SmartTaskStateOverlay(
 @Composable
 fun ListCardContent(
     pagingTasks: LazyPagingItems<Task>,
-    searchQuery: String,
-    selectedType: TaskType?,
+    uiState: com.flowintent.workspace.ui.vm.TaskUiState,
     isSearchBarVisible: Boolean,
-    onSearch: (String) -> Unit,
-    onTypeSelected: (TaskType?) -> Unit,
-    selectedTasks: Map<Int, Boolean>,
-    expandedTasks: Map<Int, Boolean>,
-    onTaskLongPress: (Int) -> Unit,
-    onTaskTap: (Int) -> Unit
+    actions: TaskActions
 ) {
     Column {
         if (isSearchBarVisible) {
             TaskSearchBar(
-                query = searchQuery,
-                onQueryChange = onSearch
+                query = uiState.searchQuery,
+                onQueryChange = actions.onSearch
             )
         }
 
         CategoryChipsRow(
-            selectedType = selectedType,
+            selectedType = uiState.selectedType,
             onTypeSelected = { type ->
-                onTypeSelected(if (selectedType == type) null else type)
+                actions.onTypeSelected(if (uiState.selectedType == type) null else type)
             }
         )
 
@@ -262,10 +284,10 @@ fun ListCardContent(
         } else {
             TaskLazyList(
                 pagingTasks = pagingTasks,
-                selectedTasks = selectedTasks,
-                expandedTasks = expandedTasks,
-                onTaskLongPress = onTaskLongPress,
-                onTaskTap = onTaskTap
+                selectedTasks = uiState.selectedTasks,
+                expandedTasks = uiState.expandedTasks,
+                onTaskLongPress = actions.onTaskLongPress,
+                onTaskTap = actions.onTaskTap
             )
         }
     }
