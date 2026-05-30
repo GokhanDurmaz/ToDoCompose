@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,6 +31,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationDispatcher
@@ -141,7 +141,7 @@ fun HomeScreen(
     featureApi: Set<FeatureApi>
 ) {
     ToDoTheme {
-        val isReady by viewModel.isReady.collectAsState()
+        val isReady by viewModel.isReady.collectAsStateWithLifecycle()
 
         Crossfade(targetState = isReady, label = "splash_transition") { ready ->
             if (ready) {
