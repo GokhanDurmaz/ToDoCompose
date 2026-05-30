@@ -39,7 +39,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.MainNavigation
@@ -50,14 +49,12 @@ import com.flowintent.workspace.ui.vm.TaskViewModel
 @Composable
 fun ToDoNavTopBar(
     state: TopBarState,
-    onSearchToggle: () -> Unit,
-    viewModel: TaskViewModel = hiltViewModel(),
-    profileViewModel: ProfileViewModel = hiltViewModel(),
-    navigationDispatcher: NavigationDispatcher? = null,
+    actions: NavTopBarActions,
+    viewModels: NavTopBarViewModels,
     bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModels.taskViewModel.uiState.collectAsStateWithLifecycle()
     val isSelectionMode = uiState.isSelectionMode
     val selectedCount = uiState.selectedCount
     var expanded by remember { mutableStateOf(false) }
@@ -76,20 +73,20 @@ fun ToDoNavTopBar(
                 navigationIcon = {
                     if (isSelectionMode) {
                         IconButton(onClick = {
-                            viewModel.setSelectionMode(false)
-                            viewModel.unselectAll()
+                            viewModels.taskViewModel.setSelectionMode(false)
+                            viewModels.taskViewModel.unselectAll()
                         }) {
                             Icon(Icons.Default.Close, contentDescription = "Cancel")
                         }
                     } else if (state.showProfileIcon) {
-                        ProfileIcon(profileViewModel, navigationDispatcher)
+                        ProfileIcon(viewModels.profileViewModel, actions.navigationDispatcher)
                     }
                 },
                 actions = {
                     if (isSelectionMode) {
                         IconButton(onClick = {
-                            viewModel.deleteSelectedTasks()
-                            viewModel.setSelectionMode(false)
+                            viewModels.taskViewModel.deleteSelectedTasks()
+                            viewModels.taskViewModel.setSelectionMode(false)
                         }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
@@ -98,7 +95,7 @@ fun ToDoNavTopBar(
                             expanded = expanded,
                             onExpandedChange = { expanded = it },
                             isSearchBarVisible = state.isSearchBarVisible,
-                            onSearchToggle = onSearchToggle
+                            onSearchToggle = actions.onSearchToggle
                         )
                     }
                 },
@@ -152,6 +149,7 @@ private fun ProfileIcon(
     navigationDispatcher: NavigationDispatcher?
 ) {
     val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+    val bitmap = uiState.profileBitmap
 
     IconButton(onClick = {
         navigationDispatcher?.navigateTo(MainNavigation.PENDING.route)
@@ -167,9 +165,9 @@ private fun ProfileIcon(
                 ),
             contentAlignment = Alignment.Center
         ) {
-            if (uiState.profileBitmap != null) {
+            if (bitmap != null) {
                 Image(
-                    bitmap = uiState.profileBitmap!!.asImageBitmap(),
+                    bitmap = bitmap.asImageBitmap(),
                     contentDescription = "Profile",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -191,4 +189,14 @@ data class TopBarState(
     val showProfileIcon: Boolean = true,
     val showMenu: Boolean = true,
     val isSearchBarVisible: Boolean = false
+)
+
+data class NavTopBarActions(
+    val onSearchToggle: () -> Unit,
+    val navigationDispatcher: NavigationDispatcher? = null
+)
+
+data class NavTopBarViewModels(
+    val taskViewModel: TaskViewModel,
+    val profileViewModel: ProfileViewModel
 )

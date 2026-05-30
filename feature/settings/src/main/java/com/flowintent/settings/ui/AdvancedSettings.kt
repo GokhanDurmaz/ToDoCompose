@@ -24,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -31,10 +32,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -60,12 +63,10 @@ import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.settings.R
 import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.uikit.anim.shimmerEffect
-import com.flowintent.uikit.util.VAL_0_5
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
 import com.flowintent.uikit.util.VAL_32
-import com.flowintent.uikit.util.VAL_40
 import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.VAL_8
 
@@ -80,6 +81,29 @@ fun AdvancedSettingsScreen(
     val profileImageUrl by authViewModel.profileImageUrl.collectAsStateWithLifecycle()
     val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+
+    var showLogoutDialog by remember { mutableStateOf(false) }
+
+    if (showLogoutDialog) {
+        AlertDialog(
+            onDismissRequest = { showLogoutDialog = false },
+            title = { Text("Logout") },
+            text = { Text("Are you sure you want to log out?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showLogoutDialog = false
+                    authViewModel.onLogoutClicked()
+                }) {
+                    Text("Logout", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLogoutDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
 
     LaunchedEffect(Unit) {
         authViewModel.fetchAndSaveUserProfileIfEmpty()
@@ -98,7 +122,8 @@ fun AdvancedSettingsScreen(
             email,
             profileImageUrl,
             profileUiState.profileBitmap,
-            onProfileClick = { settingsViewModel.onProfileClicked() }
+            onProfileClick = { settingsViewModel.onProfileClicked() },
+            onLogout = { showLogoutDialog = true }
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -119,12 +144,6 @@ fun AdvancedSettingsScreen(
         )
 
         AboutSection()
-
-        Spacer(Modifier.height(VAL_40.dp))
-
-        LogoutButton(onLogout = {
-            authViewModel.onLogoutClicked()
-        })
     }
 }
 
@@ -134,7 +153,8 @@ private fun ProfileHeader(
     email: String?,
     profileImageUrl: String?,
     localBitmap: android.graphics.Bitmap?,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    onLogout: () -> Unit
 ) {
     val isDataLoading = username.isNullOrEmpty() || email.isNullOrEmpty()
 
@@ -223,11 +243,20 @@ private fun ProfileHeader(
             }
 
             if (!isDataLoading) {
-                Icon(
-                    Icons.Default.Settings,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onLogout) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Logout",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                    Icon(
+                        Icons.Default.Settings,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
@@ -337,20 +366,6 @@ private fun AboutSection() {
                 modifier = Modifier.padding(vertical = 4.dp)
             )
         }
-    }
-}
-
-@Composable
-private fun LogoutButton(onLogout: () -> Unit) {
-    Button(
-        onClick = onLogout,
-        modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-        shape = RoundedCornerShape(VAL_12.dp)
-    ) {
-        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = null, tint = MaterialTheme.colorScheme.onError)
-        Spacer(Modifier.width(VAL_8.dp))
-        Text(stringResource(R.string.logout), color = MaterialTheme.colorScheme.onError)
     }
 }
 

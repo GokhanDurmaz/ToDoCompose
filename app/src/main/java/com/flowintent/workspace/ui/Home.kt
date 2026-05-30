@@ -46,6 +46,8 @@ import com.flowintent.core.util.Resource
 import com.flowintent.uikit.util.IconManager
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.workspace.R
+import com.flowintent.workspace.nav.route.NavTopBarActions
+import com.flowintent.workspace.nav.route.NavTopBarViewModels
 import com.flowintent.workspace.nav.route.ToDoNavTopBar
 import com.flowintent.workspace.nav.route.TopBarState
 import com.flowintent.workspace.ui.vm.TaskCategoryViewModel
@@ -68,8 +70,14 @@ fun ToDoHomeScreen(
 
     ToDoNavTopBar(
         state = topBarState,
-        navigationDispatcher = navigationDispatcher,
-        onSearchToggle = { isSearchBarVisible = !isSearchBarVisible }
+        actions = NavTopBarActions(
+            onSearchToggle = { isSearchBarVisible = !isSearchBarVisible },
+            navigationDispatcher = navigationDispatcher
+        ),
+        viewModels = NavTopBarViewModels(
+            taskViewModel = hiltViewModel(),
+            profileViewModel = hiltViewModel()
+        )
     ) { paddingValues ->
         Column(
             modifier = Modifier
