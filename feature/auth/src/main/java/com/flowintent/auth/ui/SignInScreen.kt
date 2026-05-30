@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,8 +47,8 @@ import com.flowintent.uikit.util.isValidEmail
 fun SignInScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val uiState by viewModel.signInUiState.collectAsStateWithLifecycle()
+    val errorInvalidEmail = stringResource(R.string.error_invalid_email)
 
     Column(
         modifier = Modifier
@@ -78,7 +77,7 @@ fun SignInScreen(
             isEnabled = uiState.isSubmitEnabled,
             onClick = {
                 if (!uiState.email.isValidEmail()) {
-                    viewModel.setSignInError(context.getString(R.string.error_invalid_email))
+                    viewModel.setSignInError(errorInvalidEmail)
                 } else {
                     viewModel.loginUser()
                 }
