@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationDispatcher
@@ -141,7 +142,7 @@ fun HomeScreen(
     featureApi: Set<FeatureApi>
 ) {
     ToDoTheme {
-        val isReady by viewModel.isReady.collectAsState()
+        val isReady by viewModel.isReady.collectAsStateWithLifecycle()
 
         Crossfade(targetState = isReady, label = "splash_transition") { ready ->
             if (ready) {

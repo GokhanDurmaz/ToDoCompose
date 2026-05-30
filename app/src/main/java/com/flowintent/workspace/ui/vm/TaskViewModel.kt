@@ -17,10 +17,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,21 +31,16 @@ class TaskViewModel @Inject constructor(
     private val repository: TaskRepository
 ) : ViewModel() {
 
-    private val _searchQuery = MutableStateFlow("")
-    val searchQuery = _searchQuery.asStateFlow()
-
-    private val _selectedType = MutableStateFlow<TaskType?>(null)
-    val selectedType = _selectedType.asStateFlow()
+    private val _uiState = MutableStateFlow(TaskUiState())
+    val uiState = _uiState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
-    val tasks: StateFlow<PagingData<Task>> = combine(
-        _searchQuery.debounce(300),
-        _selectedType
-    ) { query, type ->
-        query to type
-    }.flatMapLatest { (query, type) ->
-        repository.getTasks(query, type)
-    }.cachedIn(viewModelScope)
+    val tasks: StateFlow<PagingData<Task>> = _uiState
+        .map { it.searchQuery to it.selectedType }
+        .debounce(300)
+        .flatMapLatest { (query, type) ->
+            repository.getTasks(query, type)
+        }.cachedIn(viewModelScope)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -51,44 +48,24 @@ class TaskViewModel @Inject constructor(
         )
 
     fun onTypeSelected(type: TaskType?) {
-        _selectedType.value = type
+        _uiState.update { it.copy(selectedType = type) }
     }
 
     fun onSearch(query: String) {
-        _searchQuery.value = query
+        _uiState.update { it.copy(searchQuery = query) }
     }
 
     fun deleteSelectedTasks() {
         viewModelScope.launch {
-            val idsToDelete = selectedTasks.filter { it.value }.keys.toList()
+            val idsToDelete = _uiState.value.selectedTasks.filter { it.value }.keys.toList()
 
             idsToDelete.forEach { id ->
                 repository.deleteTaskById(id)
             }
 
-            selectedTasks.clear()
-            setSelectionMode(false)
+            _uiState.update { it.copy(selectedTasks = emptyMap(), isSelectionMode = false) }
         }
     }
-
-    private val _updateTaskId = MutableStateFlow<Int?>(null)
-    val updateTaskId: StateFlow<Int?> = _updateTaskId.asStateFlow()
-
-    private val _expandedMap = mutableStateMapOf<Int, Boolean>()
-    val expandedMap: Map<Int, Boolean> get() = _expandedMap
-
-
-    private var _isSelectionMode = MutableStateFlow(false)
-    val isSelectionMode: StateFlow<Boolean> = _isSelectionMode.asStateFlow()
-
-    val selectedTasks = mutableStateMapOf<Int, Boolean>()
-
-    val selectedCount: Int
-        get() = selectedTasks.count { it.value }
-
-
-    private val _smartTaskState = MutableStateFlow<Resource<Unit>?>(null)
-    val smartTaskState: StateFlow<Resource<Unit>?> = _smartTaskState.asStateFlow()
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
@@ -101,13 +78,13 @@ class TaskViewModel @Inject constructor(
 
         viewModelScope.launch {
             repository.insertSmartTask(userInput).collect { resource ->
-                _smartTaskState.value = resource
+                _uiState.update { it.copy(smartTaskState = resource) }
             }
         }
     }
 
     fun clearSmartTaskState() {
-        _smartTaskState.value = null
+        _uiState.update { it.copy(smartTaskState = null) }
     }
 
     fun updateTask(id: Int, title: String, content: TaskRes) {
@@ -117,26 +94,36 @@ class TaskViewModel @Inject constructor(
     }
 
     fun setSelectionMode(enabled: Boolean) {
-        _isSelectionMode.value = enabled
-        if (!enabled) {
-            selectedTasks.clear()
+        _uiState.update { 
+            it.copy(isSelectionMode = enabled, selectedTasks = if (enabled) it.selectedTasks else emptyMap())
         }
     }
 
     fun toggleExpanded(id: Int) {
-        _expandedMap[id] = !(_expandedMap[id] ?: false)
+        _uiState.update { 
+            val newMap = it.expandedTasks.toMutableMap()
+            newMap[id] = !(newMap[id] ?: false)
+            it.copy(expandedTasks = newMap)
+        }
     }
 
     fun toggleSelection(uid: Int) {
-        val isSelected = !(selectedTasks[uid] ?: false)
-        selectedTasks[uid] = isSelected
-
-        if (isSelected && !_isSelectionMode.value) {
-            _isSelectionMode.value = true
+        _uiState.update { 
+            val newMap = it.selectedTasks.toMutableMap()
+            val isSelected = !(newMap[uid] ?: false)
+            newMap[uid] = isSelected
+            
+            it.copy(
+                selectedTasks = newMap,
+                isSelectionMode = it.isSelectionMode || isSelected
+            )
         }
     }
 
     fun unselectAll() {
-        selectedTasks.keys.forEach { selectedTasks[it] = false }
+        _uiState.update { 
+            val newMap = it.selectedTasks.mapValues { false }
+            it.copy(selectedTasks = newMap)
+        }
     }
 }

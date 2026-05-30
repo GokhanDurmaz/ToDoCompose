@@ -57,6 +57,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import com.flowintent.core.db.model.Task
+import com.flowintent.core.db.model.TaskType
 import com.flowintent.core.db.model.toDisplayContent
 import com.flowintent.core.util.Resource
 import com.flowintent.core.util.toReadableDateTime
@@ -140,8 +141,8 @@ fun TaskInputBar(
 @Composable
 fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
     val focusManager = LocalFocusManager.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isSearchBarVisible by remember { mutableStateOf(false) }
-    val smartTaskState by viewModel.smartTaskState.collectAsStateWithLifecycle()
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -175,12 +176,26 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
                 ) { focusManager.clearFocus() }
         ) {
             ListCardContent(
-                viewModel = viewModel,
-                isSearchBarVisible = isSearchBarVisible
+                pagingTasks = viewModel.tasks.collectAsLazyPagingItems(),
+                searchQuery = uiState.searchQuery,
+                selectedType = uiState.selectedType,
+                isSearchBarVisible = isSearchBarVisible,
+                onSearch = viewModel::onSearch,
+                onTypeSelected = viewModel::onTypeSelected,
+                selectedTasks = uiState.selectedTasks,
+                expandedTasks = uiState.expandedTasks,
+                onTaskLongPress = viewModel::toggleSelection,
+                onTaskTap = { uid ->
+                    if (uiState.selectedTasks.any { it.value }) {
+                        viewModel.toggleSelection(uid)
+                    } else {
+                        viewModel.toggleExpanded(uid)
+                    }
+                }
             )
 
             SmartTaskStateOverlay(
-                state = smartTaskState,
+                state = uiState.smartTaskState,
                 onClearState = { viewModel.clearSmartTaskState() }
             )
         }
@@ -216,25 +231,29 @@ private fun SmartTaskStateOverlay(
 
 @Composable
 fun ListCardContent(
-    viewModel: TaskViewModel,
-    isSearchBarVisible: Boolean
+    pagingTasks: LazyPagingItems<Task>,
+    searchQuery: String,
+    selectedType: TaskType?,
+    isSearchBarVisible: Boolean,
+    onSearch: (String) -> Unit,
+    onTypeSelected: (TaskType?) -> Unit,
+    selectedTasks: Map<Int, Boolean>,
+    expandedTasks: Map<Int, Boolean>,
+    onTaskLongPress: (Int) -> Unit,
+    onTaskTap: (Int) -> Unit
 ) {
-    val pagingTasks = viewModel.tasks.collectAsLazyPagingItems()
-    val searchText by viewModel.searchQuery.collectAsStateWithLifecycle()
-    val selectedType by viewModel.selectedType.collectAsStateWithLifecycle()
-
     Column {
         if (isSearchBarVisible) {
             TaskSearchBar(
-                query = searchText,
-                onQueryChange = { viewModel.onSearch(it) }
+                query = searchQuery,
+                onQueryChange = onSearch
             )
         }
 
         CategoryChipsRow(
             selectedType = selectedType,
             onTypeSelected = { type ->
-                viewModel.onTypeSelected(if (selectedType == type) null else type)
+                onTypeSelected(if (selectedType == type) null else type)
             }
         )
 
@@ -243,7 +262,10 @@ fun ListCardContent(
         } else {
             TaskLazyList(
                 pagingTasks = pagingTasks,
-                viewModel = viewModel
+                selectedTasks = selectedTasks,
+                expandedTasks = expandedTasks,
+                onTaskLongPress = onTaskLongPress,
+                onTaskTap = onTaskTap
             )
         }
     }
@@ -253,7 +275,10 @@ fun ListCardContent(
 @Composable
 private fun TaskLazyList(
     pagingTasks: LazyPagingItems<Task>,
-    viewModel: TaskViewModel
+    selectedTasks: Map<Int, Boolean>,
+    expandedTasks: Map<Int, Boolean>,
+    onTaskLongPress: (Int) -> Unit,
+    onTaskTap: (Int) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -267,7 +292,10 @@ private fun TaskLazyList(
             if (task != null) {
                 TaskItemContainer(
                     task = task,
-                    viewModel = viewModel
+                    isSelected = selectedTasks[task.uid] ?: false,
+                    isExpanded = expandedTasks[task.uid] ?: false,
+                    onLongPress = { onTaskLongPress(task.uid) },
+                    onTap = { onTaskTap(task.uid) }
                 )
             }
         }
@@ -277,10 +305,12 @@ private fun TaskLazyList(
 @Composable
 private fun TaskItemContainer(
     task: Task,
-    viewModel: TaskViewModel,
+    isSelected: Boolean,
+    isExpanded: Boolean,
+    onLongPress: () -> Unit,
+    onTap: () -> Unit
 ) {
     val haptic = LocalHapticFeedback.current
-    val isSelected = viewModel.selectedTasks[task.uid] == true
 
     val backgroundColor = if (isSelected) {
         MaterialTheme.colorScheme.primaryContainer
@@ -296,15 +326,9 @@ private fun TaskItemContainer(
                 detectTapGestures(
                     onLongPress = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.toggleSelection(task.uid)
+                        onLongPress()
                     },
-                    onTap = {
-                        if (viewModel.selectedTasks.any { it.value }) {
-                            viewModel.toggleSelection(task.uid)
-                        } else {
-                            viewModel.toggleExpanded(task.uid)
-                        }
-                    }
+                    onTap = { onTap() }
                 )
             }
             .graphicsLayer {
@@ -319,15 +343,13 @@ private fun TaskItemContainer(
         colors = CardDefaults.elevatedCardColors(containerColor = backgroundColor)
     ) {
         Row(modifier = Modifier.padding(16.dp)) {
-            TaskCardTextContent(task, viewModel)
+            TaskCardTextContent(task, isExpanded)
         }
     }
 }
 
 @Composable
-fun TaskCardTextContent(task: Task, viewModel: TaskViewModel) {
-    val isExpanded = viewModel.expandedMap[task.uid] ?: false
-
+fun TaskCardTextContent(task: Task, isExpanded: Boolean) {
     val displayText = task.content.toDisplayContent()
 
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {

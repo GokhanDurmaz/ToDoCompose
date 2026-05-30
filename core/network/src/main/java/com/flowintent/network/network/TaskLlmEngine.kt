@@ -29,10 +29,6 @@ class TaskLlmEngine @Inject constructor(
     private val apiKey = "Bearer ${NativeConfig.getGroqApiKey()}"
     private var cachedRules: JSONObject? = null
 
-    init {
-        loadRuleset()
-    }
-
     private fun loadRuleset() {
         try {
             val jsonString = context.assets.open("ruleset.json").bufferedReader().use { it.readText() }
@@ -47,6 +43,9 @@ class TaskLlmEngine @Inject constructor(
         languageCode: String,
         onResult: (title: String, timeText: String?, category: TaskType, action: ActionType) -> Unit
     ) = withContext(Dispatchers.IO) {
+        if (cachedRules == null) {
+            loadRuleset()
+        }
 
         val langCode = languageCode.take(2).lowercase()
         val langRule = cachedRules?.optJSONObject(langCode) ?: cachedRules?.optJSONObject("en")
