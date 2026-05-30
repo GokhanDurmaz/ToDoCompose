@@ -9,7 +9,7 @@ import com.flowintent.core.db.security.SecurePrefsRepository
 import com.google.crypto.tink.Aead
 import kotlinx.coroutines.flow.first
 
-// DataStore tanımı
+// DataStore definition
 internal val Context.securePrefs by preferencesDataStore(name = "secure_prefs")
 
 internal object SecureKeys {
@@ -17,7 +17,7 @@ internal object SecureKeys {
     val REFRESH = stringPreferencesKey("refresh")
 }
 
-// Yardımcılar
+// Helpers
 private fun encryptToBase64(aead: Aead, plain: ByteArray, ad: ByteArray? = null): String {
     val ct = aead.encrypt(plain, ad ?: ByteArray(0))
     return Base64.encodeToString(ct, Base64.NO_WRAP)

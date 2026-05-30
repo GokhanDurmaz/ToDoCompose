@@ -22,10 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,26 +33,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
-import com.flowintent.core.util.Resource
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
-import com.flowintent.uikit.util.VAL_2000L
 import com.flowintent.uikit.util.VAL_32
 import com.flowintent.uikit.util.VAL_40
 import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.isValidEmail
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun ForgotPasswordScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    val email by viewModel.emailInput.collectAsStateWithLifecycle()
-    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
-    var statusMessage by remember { mutableStateOf<Pair<String, Boolean>?>(null) }
-    val scope = rememberCoroutineScope()
+    val uiState by viewModel.forgotPasswordUiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -69,24 +58,22 @@ fun ForgotPasswordScreen(
         HeaderSection(onBack = viewModel::onNavigateBack)
 
         PasswordResetForm(
-            email = email,
-            onEmailChange = viewModel::onEmailChange
+            email = uiState.email,
+            onEmailChange = viewModel::onForgotPasswordEmailChange
         )
 
-        StatusIndicator(statusMessage)
+        StatusIndicator(uiState.statusMessage)
 
         Spacer(modifier = Modifier.height(VAL_32.dp))
 
         ResetButton(
-            isLoading = isLoading,
-            isEnabled = email.isNotEmpty(),
+            isLoading = uiState.isLoading,
+            isEnabled = uiState.email.isNotEmpty(),
             onClick = {
-                if (!email.isValidEmail()) {
-                    statusMessage = "Please enter a valid email address" to true
+                if (!uiState.email.isValidEmail()) {
+                    viewModel.setForgotPasswordStatus("Please enter a valid email address" to true)
                 } else {
-                    scope.launch {
-                        handlePasswordReset(viewModel, email) { statusMessage = it }
-                    }
+                    viewModel.resetPassword()
                 }
             }
         )
@@ -187,26 +174,6 @@ private fun HeaderSection(onBack: () -> Unit) {
             color = MaterialTheme.colorScheme.onBackground
         )
         Spacer(modifier = Modifier.height(VAL_40.dp))
-    }
-}
-
-private suspend fun handlePasswordReset(
-    authViewModel: AuthViewModel,
-    email: String,
-    onResult: (Pair<String, Boolean>) -> Unit
-) {
-    authViewModel.apply {
-        forgetPassword(email).collect { resource ->
-            when (resource) {
-                is Resource.Success -> {
-                    onResult("Reset link sent! Check your inbox." to false)
-                    delay(VAL_2000L)
-                    authViewModel.onNavigateBack()
-                }
-                is Resource.Error -> onResult(resource.message to true)
-                else -> Unit
-            }
-        }
     }
 }
 

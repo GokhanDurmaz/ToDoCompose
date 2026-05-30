@@ -1,0 +1,76 @@
+package com.flowintent.test.profile
+
+import android.content.Context
+import com.flowintent.core.db.auth.ChangePasswordUseCase
+import com.flowintent.core.db.profile.DownloadAndSaveUseCase
+import com.flowintent.core.db.profile.UploadProfileUseCase
+import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.db.repository.SupaBaseRepository
+import com.flowintent.core.util.Resource
+import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.profile.ui.vm.ProfileViewModel
+import com.flowintent.test.rules.MainDispatcherRule
+import com.flowintent.test.scenarios.UseCaseScenarios
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.whenever
+
+@ExperimentalCoroutinesApi
+class ProfileViewModelTest {
+
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    @Mock
+    private lateinit var context: Context
+    @Mock
+    private lateinit var navigationDispatcher: NavigationDispatcher
+    @Mock
+    private lateinit var changePasswordUseCase: ChangePasswordUseCase
+    @Mock
+    private lateinit var uploadProfileUseCase: UploadProfileUseCase
+    @Mock
+    private lateinit var downloadAndSaveUseCase: DownloadAndSaveUseCase
+    @Mock
+    private lateinit var supaBaseRepository: SupaBaseRepository
+    @Mock
+    private lateinit var encryptedProtoRepository: EncryptedProtoRepository
+
+    private lateinit var viewModel: ProfileViewModel
+
+    @Before
+    fun setUp() {
+        MockitoAnnotations.openMocks(this)
+        whenever(encryptedProtoRepository.uidFlow()).thenReturn(flowOf("uid-123"))
+        
+        viewModel = ProfileViewModel(
+            context,
+            navigationDispatcher,
+            changePasswordUseCase,
+            uploadProfileUseCase,
+            downloadAndSaveUseCase,
+            supaBaseRepository,
+            encryptedProtoRepository
+        )
+    }
+
+    @Test
+    fun `changePassword updates state to success`() = runTest {
+        viewModel.onOldPasswordChange("old")
+        viewModel.onNewPasswordChange("new")
+        
+        whenever(changePasswordUseCase("old", "new"))
+            .thenReturn(UseCaseScenarios.success(Unit))
+
+        viewModel.changePassword()
+
+        assertEquals(Resource.Success(Unit), viewModel.uiState.value.changePasswordState)
+    }
+}

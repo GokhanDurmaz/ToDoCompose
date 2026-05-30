@@ -37,7 +37,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -72,10 +71,7 @@ fun AdvancedSettingsScreen(
 ) {
     val username by authViewModel.userName.collectAsStateWithLifecycle()
     val email by authViewModel.userEmail.collectAsStateWithLifecycle()
-    var theme by remember { mutableStateOf("Dark") }
-    var doNotDisturb by remember { mutableStateOf(false) }
-    var sliderValue by remember { mutableFloatStateOf(VAL_0_5) }
-    val currentLocale = AppCompatDelegate.getApplicationLocales().toLanguageTags()
+    val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         authViewModel.fetchAndSaveUserProfileIfEmpty()
@@ -96,18 +92,19 @@ fun AdvancedSettingsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        LanguageSelection(currentLanguage = currentLocale) { selectedLocale ->
+        LanguageSelection(currentLanguage = settingsUiState.currentLocale) { selectedLocale ->
+            settingsViewModel.onLocaleChange(selectedLocale)
             val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(selectedLocale)
             AppCompatDelegate.setApplicationLocales(appLocale)
         }
 
-        ThemeSelection(currentTheme = theme, onThemeChange = { theme = it })
+        ThemeSelection(currentTheme = settingsUiState.theme, onThemeChange = { settingsViewModel.onThemeChange(it) })
 
         DndSection(
-            doNotDisturb = doNotDisturb,
-            onDndChange = { doNotDisturb = it },
-            sliderValue = sliderValue,
-            onSliderChange = { sliderValue = it }
+            doNotDisturb = settingsUiState.doNotDisturb,
+            onDndChange = { settingsViewModel.onDndChange(it) },
+            sliderValue = settingsUiState.dndIntensity,
+            onSliderChange = { settingsViewModel.onDndIntensityChange(it) }
         )
 
         AboutSection()

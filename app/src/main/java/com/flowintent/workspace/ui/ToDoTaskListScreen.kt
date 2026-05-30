@@ -328,9 +328,7 @@ private fun TaskItemContainer(
 fun TaskCardTextContent(task: Task, viewModel: TaskViewModel) {
     val isExpanded = viewModel.expandedMap[task.uid] ?: false
 
-    val displayText = remember(task.content) {
-        task.content.toDisplayContent()
-    }
+    val displayText = task.content.toDisplayContent()
 
     Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)) {
         Row(

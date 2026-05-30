@@ -28,7 +28,6 @@ import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -54,16 +53,12 @@ import com.flowintent.uikit.util.VAL_32
 fun EditProfileImageScreen(
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
-    val userProfile by viewModel.userProfile.collectAsStateWithLifecycle()
-    val uploadState by viewModel.uploadState.collectAsStateWithLifecycle()
-
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let {
-            selectedImageUri = it
             viewModel.uploadImage(it)
         }
     }
@@ -96,8 +91,8 @@ fun EditProfileImageScreen(
                         .background(MaterialTheme.colorScheme.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
-                    val profileUrl = userProfile?.profileImageUrl
-                    val displayImage: Any? = selectedImageUri ?: profileUrl
+                    val profileUrl = uiState.userProfile?.profileImageUrl
+                    val displayImage: Any? = uiState.selectedImageUri ?: profileUrl
 
                     if (displayImage != null) {
                         AsyncImage(
@@ -124,7 +119,7 @@ fun EditProfileImageScreen(
                         )
                     }
 
-                    if (uploadState is Resource.Loading) {
+                    if (uiState.uploadState is Resource.Loading) {
                         Box(
                             modifier = Modifier.fillMaxSize().background(Color.Black.copy(0.3f)),
                             contentAlignment = Alignment.Center
@@ -155,9 +150,9 @@ fun EditProfileImageScreen(
 
             Spacer(modifier = Modifier.height(VAL_24.dp))
 
-            if (uploadState is Resource.Error) {
+            if (uiState.uploadState is Resource.Error) {
                 Text(
-                    text = (uploadState as Resource.Error).message ?: "Error uploading image",
+                    text = (uiState.uploadState as Resource.Error).message ?: "Error uploading image",
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.labelMedium
                 )

@@ -1,4 +1,4 @@
-package com.flowintent.test
+package com.flowintent.test.fakes
 
 import androidx.paging.PagingData
 import com.flowintent.core.db.model.Task

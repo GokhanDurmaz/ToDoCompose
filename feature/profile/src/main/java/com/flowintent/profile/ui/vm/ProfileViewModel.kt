@@ -1,7 +1,6 @@
 package com.flowintent.profile.ui.vm
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -23,7 +22,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,79 +39,74 @@ class ProfileViewModel @Inject constructor(
     private val encryptedProtoRepository: EncryptedProtoRepository
 ): ViewModel() {
 
-    private val _changePasswordState = MutableStateFlow<Resource<Unit>?>(null)
-    val changePasswordState = _changePasswordState.asStateFlow()
-
-    private val _uploadState = MutableStateFlow<Resource<String>?>(null)
-    val uploadState = _uploadState.asStateFlow()
-
-    private val _userProfile = MutableStateFlow<UserProfile?>(null)
-    val userProfile = _userProfile.asStateFlow()
-
-    private val _profileBitmap = MutableStateFlow<Bitmap?>(null)
-    val profileBitmap = _profileBitmap.asStateFlow()
-
-    val userUid: StateFlow<String?> = encryptedProtoRepository.uidFlow()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(3000),
-            initialValue = null
-        )
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState = _uiState.asStateFlow()
 
     init {
+        observeUid()
         observeBitmapLoading()
+    }
+
+    private fun observeUid() {
+        viewModelScope.launch {
+            encryptedProtoRepository.uidFlow().collect { uid ->
+                _uiState.update { it.copy(userUid = uid) }
+            }
+        }
     }
 
     private fun observeBitmapLoading() {
         viewModelScope.launch {
-            userUid.collectLatest { uid ->
+            _uiState.map { it.userUid }.collectLatest { uid ->
                 if (uid != null) {
                     val bitmap = downloadAndSaveUseCase(uid)
-                    _profileBitmap.value = bitmap
+                    _uiState.update { it.copy(profileBitmap = bitmap) }
                 }
             }
         }
     }
 
     fun reloadProfileImageIfNull() {
-        if (_profileBitmap.value == null) {
+        if (_uiState.value.profileBitmap == null) {
             viewModelScope.launch {
-                val uid = userUid.value ?: encryptedProtoRepository.uidFlow().first()
+                val uid = _uiState.value.userUid ?: encryptedProtoRepository.uidFlow().first()
                 uid?.let {
                     val bitmap = downloadAndSaveUseCase(it)
-                    _profileBitmap.value = bitmap
+                    _uiState.update { it.copy(profileBitmap = bitmap) }
                 }
             }
         }
     }
 
     fun uploadImage(uri: Uri) {
+        _uiState.update { it.copy(selectedImageUri = uri) }
         viewModelScope.launch {
-            val currentUid = userUid.value ?: encryptedProtoRepository.uidFlow().first { it != null }
+            val currentUid = _uiState.value.userUid ?: encryptedProtoRepository.uidFlow().first { it != null }
 
             if (currentUid == null) {
-                _uploadState.value = Resource.Error("Couldn't find userId.")
+                _uiState.update { it.copy(uploadState = Resource.Error("Couldn't find userId.")) }
                 return@launch
             }
 
-            _uploadState.value = Resource.Loading
+            _uiState.update { it.copy(uploadState = Resource.Loading) }
             val imageBytes = uriToByteArray(uri)
 
             if (imageBytes != null) {
                 uploadProfileUseCase(imageBytes).collect { result ->
-                    _uploadState.value = result
+                    _uiState.update { it.copy(uploadState = result) }
 
                     if (result is Resource.Success) {
                         supaBaseRepository.clearLocalAvatar(currentUid)
 
                         val newBitmap = downloadAndSaveUseCase(currentUid)
-                        _profileBitmap.value = newBitmap
-                        Log.d("UI_DEBUG", "Bitmap updated: ${newBitmap != null}")
-                        _userProfile.value = _userProfile.value?.copy(profileImageUrl = result.data)
+                        _uiState.update { it.copy(
+                            profileBitmap = newBitmap,
+                            userProfile = it.userProfile?.copy(profileImageUrl = result.data)
+                        ) }
                     }
                 }
             } else {
-                _uploadState.value = Resource.Error("Failed to upload image file.")
+                _uiState.update { it.copy(uploadState = Resource.Error("Failed to upload image file.")) }
             }
         }
     }
@@ -127,19 +123,32 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun clearUploadState() {
-        _uploadState.value = null
+        _uiState.update { it.copy(uploadState = null) }
     }
 
-    fun changePassword(currentPw: String, newPw: String) {
+    fun changePassword() {
+        val state = _uiState.value
         viewModelScope.launch {
-            changePasswordUseCase(currentPw, newPw).collect { result ->
-                _changePasswordState.value = result
+            changePasswordUseCase(state.oldPassword, state.newPassword).collect { result ->
+                _uiState.update { it.copy(changePasswordState = result) }
             }
         }
     }
 
+    fun onOldPasswordChange(newValue: String) {
+        _uiState.update { it.copy(oldPassword = newValue) }
+    }
+
+    fun onNewPasswordChange(newValue: String) {
+        _uiState.update { it.copy(newPassword = newValue) }
+    }
+
+    fun onConfirmPasswordChange(newValue: String) {
+        _uiState.update { it.copy(confirmPassword = newValue) }
+    }
+
     fun clearChangePasswordState() {
-        _changePasswordState.value = null
+        _uiState.update { it.copy(changePasswordState = null, oldPassword = "", newPassword = "", confirmPassword = "") }
     }
     fun onBackClicked() {
         navigationDispatcher.navigateBack()
