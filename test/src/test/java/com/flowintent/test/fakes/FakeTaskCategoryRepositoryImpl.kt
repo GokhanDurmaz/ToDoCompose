@@ -1,4 +1,4 @@
-package com.flowintent.test
+package com.flowintent.test.fakes
 
 import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.core.db.source.LocalTaskDataProvider

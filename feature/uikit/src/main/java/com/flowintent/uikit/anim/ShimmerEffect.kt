@@ -22,9 +22,9 @@ fun Modifier.shimmerEffect(): Modifier = composed {
     )
 
     val shimmerColors = listOf(
-        Color.LightGray.copy(alpha = 0.9f), // Daha koyu
-        Color.White.copy(alpha = 0.5f),      // Parlama noktası
-        Color.LightGray.copy(alpha = 0.9f), // Daha koyu
+        Color.LightGray.copy(alpha = 0.9f), // Darker
+        Color.White.copy(alpha = 0.5f),      // Shimmer point
+        Color.LightGray.copy(alpha = 0.9f), // Darker
     )
 
     val brush = Brush.linearGradient(

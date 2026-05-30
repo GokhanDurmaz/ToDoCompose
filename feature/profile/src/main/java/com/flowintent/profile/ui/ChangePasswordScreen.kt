@@ -31,7 +31,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -51,22 +50,18 @@ import com.flowintent.uikit.util.VAL_16
 fun ChangePasswordScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    var oldPassword by remember { mutableStateOf("") }
-    var newPassword by remember { mutableStateOf("") }
-    var confirmPassword by remember { mutableStateOf("") }
-
-    val changeState by viewModel.changePasswordState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    LaunchedEffect(changeState) {
-        when (changeState) {
+    LaunchedEffect(uiState.changePasswordState) {
+        when (uiState.changePasswordState) {
             is Resource.Success -> {
                 viewModel.clearChangePasswordState()
                 viewModel.onBackClicked()
             }
             is Resource.Error -> {
                 snackbarHostState.showSnackbar(
-                    message = (changeState as Resource.Error).message ?: "An error occurred",
+                    message = (uiState.changePasswordState as Resource.Error).message ?: "An error occurred",
                     duration = SnackbarDuration.Short
                 )
                 viewModel.clearChangePasswordState()
@@ -117,28 +112,28 @@ fun ChangePasswordScreen(
                     Spacer(modifier = Modifier.height(VAL_16.dp))
 
                     PasswordTextField(
-                        value = oldPassword,
-                        onValueChange = { oldPassword = it },
+                        value = uiState.oldPassword,
+                        onValueChange = viewModel::onOldPasswordChange,
                         label = "Current Password",
-                        enabled = changeState !is Resource.Loading
+                        enabled = uiState.changePasswordState !is Resource.Loading
                     )
 
                     Spacer(modifier = Modifier.height(VAL_12.dp))
 
                     PasswordTextField(
-                        value = newPassword,
-                        onValueChange = { newPassword = it },
+                        value = uiState.newPassword,
+                        onValueChange = viewModel::onNewPasswordChange,
                         label = "New Password",
-                        enabled = changeState !is Resource.Loading
+                        enabled = uiState.changePasswordState !is Resource.Loading
                     )
 
                     Spacer(modifier = Modifier.height(VAL_12.dp))
 
                     PasswordTextField(
-                        value = confirmPassword,
-                        onValueChange = { confirmPassword = it },
+                        value = uiState.confirmPassword,
+                        onValueChange = viewModel::onConfirmPasswordChange,
                         label = "Confirm New Password",
-                        enabled = changeState !is Resource.Loading
+                        enabled = uiState.changePasswordState !is Resource.Loading
                     )
                 }
             }
@@ -146,17 +141,17 @@ fun ChangePasswordScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { viewModel.changePassword(oldPassword, newPassword) },
+                onClick = { viewModel.changePassword() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(VAL_12.dp),
-                enabled = changeState !is Resource.Loading &&
-                        newPassword.isNotEmpty() &&
-                        newPassword == confirmPassword,
+                enabled = uiState.changePasswordState !is Resource.Loading &&
+                        uiState.newPassword.isNotEmpty() &&
+                        uiState.newPassword == uiState.confirmPassword,
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
-                if (changeState is Resource.Loading) {
+                if (uiState.changePasswordState is Resource.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(24.dp),
                         color = MaterialTheme.colorScheme.onPrimary,

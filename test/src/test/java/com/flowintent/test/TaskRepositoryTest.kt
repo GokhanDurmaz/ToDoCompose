@@ -2,6 +2,7 @@ package com.flowintent.test
 
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
+import com.flowintent.test.fakes.FakeTaskRepositoryImpl
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
