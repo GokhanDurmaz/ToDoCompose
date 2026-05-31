@@ -16,6 +16,7 @@
     <string name="version_text">Version 1.0.0</string>
     <string name="home_label">Home</string>
     <string name="reminder_label">Erinnerung</string>
+    <string name="pending_label">Ausstehend</string>
     <string name="todo_list_label">ToDo-Liste</string>
     <string name="settings_label">Einstellungen</string>
     <string name="task_details_title">Aufgabendetails</string>
