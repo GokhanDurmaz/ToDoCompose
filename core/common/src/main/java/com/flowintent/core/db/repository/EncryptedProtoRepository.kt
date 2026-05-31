@@ -12,6 +12,8 @@ interface EncryptedProtoRepository {
 
     suspend fun updateUid(uid: String)
 
+    suspend fun saveProfileImageUrl(url: String)
+
     fun uidFlow(): Flow<String?>
 
     fun tokenFlow(): Flow<String?>
@@ -19,4 +21,6 @@ interface EncryptedProtoRepository {
     fun nameFlow(): Flow<String?>
 
     fun emailFlow(): Flow<String?>
+
+    fun profileImageUrlFlow(): Flow<String?>
 }

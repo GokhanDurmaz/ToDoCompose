@@ -16,6 +16,7 @@
     <string name="version_text">バージョン 1.0.0</string>
     <string name="home_label">ホーム</string>
     <string name="reminder_label">リマインダー</string>
+    <string name="pending_label">保留中</string>
     <string name="todo_list_label">ToDoリスト</string>
     <string name="settings_label">設定</string>
     <string name="task_details_title">タスクの詳細</string>

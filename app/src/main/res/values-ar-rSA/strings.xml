@@ -16,6 +16,7 @@
     <string name="version_text">الإصدار 1.0.0</string>
     <string name="home_label">الرئيسية</string>
     <string name="reminder_label">تذكير</string>
+    <string name="pending_label">معلّق</string>
     <string name="todo_list_label">قائمة المهام</string>
     <string name="settings_label">الإعدادات</string>
     <string name="task_details_title">تفاصيل المهمة</string>

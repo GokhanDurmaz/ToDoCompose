@@ -1,29 +1,28 @@
 package com.flowintent.profile.ui.vm
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.auth.ChangePasswordUseCase
-import com.flowintent.core.db.profile.UploadProfileUseCase
-import com.flowintent.core.db.model.UserProfile
+import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
+import com.flowintent.core.db.profile.GetLocalAvatarUseCase
+import com.flowintent.core.db.profile.ObserveUserProfileUseCase
+import com.flowintent.core.db.profile.UploadProfileUseCase
 import com.flowintent.core.db.repository.EncryptedProtoRepository
-import com.flowintent.core.db.repository.SupaBaseRepository
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.ProfileNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,9 +32,11 @@ class ProfileViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val navigationDispatcher: NavigationDispatcher,
     private val changePasswordUseCase: ChangePasswordUseCase,
+    private val getUserProfileUseCase: GetUserProfileUseCase,
     private val uploadProfileUseCase: UploadProfileUseCase,
     private val downloadAndSaveUseCase: DownloadAndSaveUseCase,
-    private val supaBaseRepository: SupaBaseRepository,
+    private val getLocalAvatarUseCase: GetLocalAvatarUseCase,
+    private val observeUserProfileUseCase: ObserveUserProfileUseCase,
     private val encryptedProtoRepository: EncryptedProtoRepository
 ): ViewModel() {
 
@@ -44,6 +45,8 @@ class ProfileViewModel @Inject constructor(
 
     init {
         observeUid()
+        fetchUserProfile()
+        observeUserProfile()
         observeBitmapLoading()
     }
 
@@ -55,12 +58,54 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private fun fetchUserProfile() {
+        viewModelScope.launch {
+            getUserProfileUseCase().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        _uiState.update { it.copy(userProfile = result.data, isProfileLoading = false) }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update { it.copy(isProfileLoading = false) }
+                    }
+                    is Resource.Loading -> {
+                        _uiState.update { it.copy(isProfileLoading = true) }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeUserProfile() {
+        viewModelScope.launch {
+            observeUserProfileUseCase().collect { result ->
+                if (result is Resource.Success) {
+                    _uiState.update { it.copy(userProfile = result.data, isProfileLoading = false) }
+                }
+            }
+        }
+    }
+
     private fun observeBitmapLoading() {
         viewModelScope.launch {
             _uiState.map { it.userUid }.collectLatest { uid ->
                 if (uid != null) {
-                    val bitmap = downloadAndSaveUseCase(uid)
-                    _uiState.update { it.copy(profileBitmap = bitmap) }
+                    println("ProfileViewModel: UID changed to $uid, checking local storage...")
+                    
+                    // Always try to load local bitmap whenever UID is available/changed
+                    val localBitmap = getLocalAvatarUseCase(uid)
+                    if (localBitmap != null) {
+                        println("ProfileViewModel: Local bitmap load successful for $uid")
+                        _uiState.update { it.copy(profileBitmap = localBitmap) }
+                    } else {
+                        println("ProfileViewModel: No local bitmap found for $uid, attempting download...")
+                        // Only download if local is not found
+                        val bitmap = downloadAndSaveUseCase(uid)
+                        if (bitmap != null) {
+                            println("ProfileViewModel: Download success for $uid")
+                            _uiState.update { it.copy(profileBitmap = bitmap) }
+                        }
+                    }
                 }
             }
         }
@@ -92,12 +137,15 @@ class ProfileViewModel @Inject constructor(
             val imageBytes = uriToByteArray(uri)
 
             if (imageBytes != null) {
+                // Update local bitmap immediately for better UX
+                val tempBitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                _uiState.update { it.copy(profileBitmap = tempBitmap, uploadState = Resource.Loading) }
+
                 uploadProfileUseCase(imageBytes).collect { result ->
                     _uiState.update { it.copy(uploadState = result) }
 
                     if (result is Resource.Success) {
-                        supaBaseRepository.clearLocalAvatar(currentUid)
-
+                        encryptedProtoRepository.saveProfileImageUrl(result.data)
                         val newBitmap = downloadAndSaveUseCase(currentUid)
                         _uiState.update { it.copy(
                             profileBitmap = newBitmap,
@@ -117,7 +165,7 @@ class ProfileViewModel @Inject constructor(
                 inputStream.readBytes()
             }
         } catch (e: Exception) {
-            Log.e("ProfileViewModel", e.message.toString())
+            println("ProfileViewModel Error: ${e.message}")
             null
         }
     }

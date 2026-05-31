@@ -5,6 +5,7 @@ import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
 import com.flowintent.core.db.profile.ObserveUserProfileUseCase
 import com.flowintent.core.db.profile.UploadProfileUseCase
+import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.db.repository.SupaBaseRepository
 import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.flowOf
@@ -14,12 +15,16 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
 import org.mockito.kotlin.whenever
 
 class ProfileUseCaseTest {
 
     @Mock
     private lateinit var supaBaseRepository: SupaBaseRepository
+
+    @Mock
+    private lateinit var authRepository: AuthRepository
 
     @Mock
     private lateinit var mockBitmap: Bitmap
@@ -31,7 +36,7 @@ class ProfileUseCaseTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        uploadProfileUseCase = UploadProfileUseCase(supaBaseRepository)
+        uploadProfileUseCase = UploadProfileUseCase(supaBaseRepository, authRepository)
         downloadAndSaveUseCase = DownloadAndSaveUseCase(supaBaseRepository)
         observeUserProfileUseCase = ObserveUserProfileUseCase(supaBaseRepository)
     }
@@ -40,7 +45,7 @@ class ProfileUseCaseTest {
     fun `UploadProfileUseCase returns image url when repository succeeds`() = runTest {
         val bytes = byteArrayOf(1, 2, 3)
         val expected = Resource.Success("http://image.url")
-        whenever(supaBaseRepository.uploadProfileImage(bytes))
+        whenever(supaBaseRepository.uploadProfileImage(any(), any()))
             .thenReturn(flowOf(expected))
 
         uploadProfileUseCase(bytes).collect { result ->

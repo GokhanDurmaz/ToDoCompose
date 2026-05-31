@@ -83,10 +83,13 @@ class AuthViewModel @Inject constructor(
     }
 
     val userName: StateFlow<String?> = repo.nameFlow()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), "")
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
 
     val userEmail: StateFlow<String?> = repo.emailFlow()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), "")
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
+
+    val profileImageUrl: StateFlow<String?> = repo.profileImageUrlFlow()
+        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
 
     val isReady: StateFlow<Boolean> = repo.tokenFlow()
         .map { true }
@@ -180,8 +183,9 @@ class AuthViewModel @Inject constructor(
     fun fetchAndSaveUserProfileIfEmpty() = viewModelScope.launch {
         val currentName = repo.nameFlow().firstOrNull()
         val currentEmail = repo.emailFlow().firstOrNull()
+        val currentUid = repo.uidFlow().firstOrNull()
 
-        if (currentName.isNullOrBlank() || currentEmail.isNullOrBlank()) {
+        if (currentName.isNullOrBlank() || currentEmail.isNullOrBlank() || currentUid.isNullOrBlank()) {
             getUserProfileUseCase().collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
@@ -191,6 +195,7 @@ class AuthViewModel @Inject constructor(
                             lastName = profile.surname,
                             email = profile.email
                         )
+                        repo.updateUid(profile.uid)
                     }
                     is Resource.Error -> {
                     }

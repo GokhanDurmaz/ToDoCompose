@@ -7,6 +7,7 @@ import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.nav.ProfileNavigation
 import com.flowintent.profile.ui.ChangePasswordScreen
 import com.flowintent.profile.ui.EditProfileImageScreen
+import com.flowintent.profile.ui.PendingTasksScreen
 import com.flowintent.profile.ui.ProfileScreen
 import javax.inject.Inject
 
@@ -17,6 +18,10 @@ class ProfileRouteImpl @Inject constructor(): FeatureApi {
     ) {
         navGraphBuilder.composable(ProfileNavigation.PROFILE_MAIN.route) {
             ProfileScreen()
+        }
+
+        navGraphBuilder.composable(ProfileNavigation.PENDING_TASKS.route) {
+            PendingTasksScreen()
         }
 
         navGraphBuilder.composable(ProfileNavigation.EDIT_PROFILE.route) {

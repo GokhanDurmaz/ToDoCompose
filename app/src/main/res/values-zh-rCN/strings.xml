@@ -16,6 +16,7 @@
     <string name="version_text">版本 1.0.0</string>
     <string name="home_label">主页</string>
     <string name="reminder_label">提醒</string>
+    <string name="pending_label">待定</string>
     <string name="todo_list_label">待办列表</string>
     <string name="settings_label">设置</string>
     <string name="task_details_title">任务详情</string>

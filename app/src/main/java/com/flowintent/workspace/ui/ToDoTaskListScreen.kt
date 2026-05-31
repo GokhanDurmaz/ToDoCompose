@@ -65,6 +65,8 @@ import com.flowintent.uikit.util.VAL_0_0
 import com.flowintent.uikit.util.VAL_1_0
 import com.flowintent.uikit.util.VAL_1_0_2
 import com.flowintent.workspace.R
+import com.flowintent.workspace.nav.route.NavTopBarActions
+import com.flowintent.workspace.nav.route.NavTopBarViewModels
 import com.flowintent.workspace.nav.route.ToDoNavTopBar
 import com.flowintent.workspace.nav.route.TopBarState
 import com.flowintent.workspace.ui.card.CategoryChipsRow
@@ -173,14 +175,19 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
     }
 
     ToDoNavTopBar(
-        viewModel = viewModel,
         state = TopBarState(
             title = stringResource(R.string.task_details_title),
             showProfileIcon = false,
             showMenu = isSearchBarVisible,
             isSearchBarVisible = isSearchBarVisible
         ),
-        onSearchToggle = { isSearchBarVisible = !isSearchBarVisible },
+        actions = NavTopBarActions(
+            onSearchToggle = { isSearchBarVisible = !isSearchBarVisible }
+        ),
+        viewModels = NavTopBarViewModels(
+            taskViewModel = viewModel,
+            profileViewModel = hiltViewModel()
+        ),
         bottomBar = {
             TaskInputBar(
                 onSendMessage = { viewModel.insertSmartTask(it) },
