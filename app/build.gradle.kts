@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
@@ -64,15 +63,16 @@ android {
         }
     }
 
-    applicationVariants.configureEach {
-        val variantName = name
-        outputs.configureEach {
-            val output = this as BaseVariantOutputImpl
-            val gitHash = gitHashProvider.get()
-            val verName = versionNameProvider.get().replace(".", "_")
-            val verCode = versionCodeProvider.get()
-
-            output.outputFileName = "todo_app_${verName}_${verCode}_${gitHash}_${variantName}.apk"
+    androidComponents {
+        onVariants { variant ->
+            variant.outputs.forEach { output ->
+                val gitHash = gitHashProvider.get()
+                val verName = versionNameProvider.get().replace(".", "_")
+                val verCode = versionCodeProvider.get()
+                val variantName = variant.name
+                
+                output.outputFileName.set("todo_app_${verName}_${verCode}_${gitHash}_${variantName}.apk")
+            }
         }
     }
 
@@ -91,6 +91,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
 }

@@ -15,7 +15,7 @@ dependencies {
     implementation(libs.findLibrary("kotlin-gradle-plugin").get())
     implementation(libs.findLibrary("detekt-gradle-plugin").get())
 
-    compileOnly(libs.findLibrary("hilt.android.gradle.plugin").get())
+    compileOnly("com.android.tools.build:gradle-api:${libs.findVersion("agp").get()}")
     compileOnly(libs.findLibrary("com.google.devtools.ksp.gradle.plugin").get())
 }
 

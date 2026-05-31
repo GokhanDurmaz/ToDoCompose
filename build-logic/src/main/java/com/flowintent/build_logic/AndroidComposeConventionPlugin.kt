@@ -1,11 +1,12 @@
 package com.flowintent.build_logic
 
-import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
 
 class AndroidComposeConventionPlugin : Plugin<Project> {
@@ -15,13 +16,7 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
 
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
-            val configureCompose = {
-                extensions.findByType<CommonExtension<*, *, *, *, *, *>>()?.apply {
-                    buildFeatures {
-                        compose = true
-                    }
-                }
-
+            val configureDependencies = {
                 dependencies {
                     "implementation"(libs.findLibrary("androidx-runtime").get())
                     "implementation"(libs.findLibrary("ui").get())
@@ -37,8 +32,22 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
                 }
             }
 
-            pluginManager.withPlugin("com.android.application") { configureCompose() }
-            pluginManager.withPlugin("com.android.library") { configureCompose() }
+            pluginManager.withPlugin("com.android.application") {
+                extensions.configure<ApplicationExtension> {
+                    buildFeatures {
+                        compose = true
+                    }
+                }
+                configureDependencies()
+            }
+            pluginManager.withPlugin("com.android.library") {
+                extensions.configure<LibraryExtension> {
+                    buildFeatures {
+                        compose = true
+                    }
+                }
+                configureDependencies()
+            }
         }
     }
 }
