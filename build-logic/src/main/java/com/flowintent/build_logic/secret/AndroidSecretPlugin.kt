@@ -1,6 +1,6 @@
 package com.flowintent.build_logic.secret
 
-import com.android.build.gradle.LibraryExtension
+import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -68,6 +68,8 @@ class AndroidSecretPlugin: Plugin<Project> {
 
                         val linkedLibsString = linkedLibsProvider.get().joinToString(" ") { "\${$it-lib}" }
                         appendLine("target_link_libraries(${libNameProvider.get()} $linkedLibsString)")
+                        appendLine("")
+                        appendLine("target_link_options(${libNameProvider.get()} PRIVATE \"-Wl,-z,max-page-size=16384\")")
                     }.toString()
 
                     cmakeFile.parentFile.mkdirs()

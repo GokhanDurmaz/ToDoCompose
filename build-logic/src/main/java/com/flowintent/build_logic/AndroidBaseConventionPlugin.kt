@@ -1,12 +1,12 @@
 package com.flowintent.build_logic
 
 import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.api.dsl.CommonExtension
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -14,7 +14,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 class AndroidBaseConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply("org.jetbrains.kotlin.android")
             pluginManager.apply("kotlinx-serialization")
 
             tasks.withType<KotlinCompile>().configureEach {
@@ -26,51 +25,57 @@ class AndroidBaseConventionPlugin : Plugin<Project> {
 
             pluginManager.withPlugin("com.android.application") {
                 extensions.configure<ApplicationExtension> {
-                    configureSharedAndroidOptions(this)
+                    compileSdk = 36
+                    defaultConfig {
+                        minSdk = 24
+                        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                    }
+                    compileOptions {
+                        sourceCompatibility = JavaVersion.VERSION_17
+                        targetCompatibility = JavaVersion.VERSION_17
+                        isCoreLibraryDesugaringEnabled = true
+                    }
+                    buildTypes {
+                        getByName("release") {
+                            isMinifyEnabled = false
+                            proguardFiles(
+                                getDefaultProguardFile("proguard-android-optimize.txt"),
+                                "proguard-rules.pro"
+                            )
+                        }
+                    }
+                    dependencies.add("coreLibraryDesugaring", "com.android.tools:desugar_jdk_libs:2.1.5")
                 }
             }
             pluginManager.withPlugin("com.android.library") {
                 extensions.configure<LibraryExtension> {
-                    configureSharedAndroidOptions(this)
+                    compileSdk = 36
+                    defaultConfig {
+                        minSdk = 24
+                        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+                    }
+                    compileOptions {
+                        sourceCompatibility = JavaVersion.VERSION_17
+                        targetCompatibility = JavaVersion.VERSION_17
+                        isCoreLibraryDesugaringEnabled = true
+                    }
+                    buildTypes {
+                        getByName("release") {
+                            isMinifyEnabled = false
+                            proguardFiles(
+                                getDefaultProguardFile("proguard-android-optimize.txt"),
+                                "proguard-rules.pro"
+                            )
+                        }
+                    }
+                    defaultConfig {
+                        if (file("consumer-rules.pro").exists()) {
+                            consumerProguardFiles("consumer-rules.pro")
+                        }
+                    }
+                    dependencies.add("coreLibraryDesugaring", "com.android.tools:desugar_jdk_libs:2.1.5")
                 }
             }
-        }
-    }
-
-    private fun Project.configureSharedAndroidOptions(
-        commonExtension: CommonExtension<*, *, *, *, *, *>
-    ) {
-        commonExtension.apply {
-            compileSdk = 36
-
-            defaultConfig {
-                minSdk = 24
-                testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-            }
-
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_17
-                targetCompatibility = JavaVersion.VERSION_17
-                isCoreLibraryDesugaringEnabled = true
-            }
-
-            buildTypes {
-                getByName("release") {
-                    isMinifyEnabled = false
-                    proguardFiles(
-                        getDefaultProguardFile("proguard-android-optimize.txt"),
-                        "proguard-rules.pro"
-                    )
-                }
-            }
-
-            extensions.findByType(LibraryExtension::class.java)?.apply {
-                defaultConfig {
-                    consumerProguardFiles("consumer-rules.pro")
-                }
-            }
-
-            dependencies.add("coreLibraryDesugaring", "com.android.tools:desugar_jdk_libs:2.0.4")
         }
     }
 }
