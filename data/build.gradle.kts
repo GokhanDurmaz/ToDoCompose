@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
 
+    implementation(platform(libs.supabase.bom))
     implementation(libs.supabase.storage.kt)
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.supabase.realtime.kt)
