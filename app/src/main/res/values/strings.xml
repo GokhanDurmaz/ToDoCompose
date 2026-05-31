@@ -35,4 +35,5 @@
     <string name="check_updates">Check for Updates</string>
     <string name="logout">Logout</string>
     <string name="ai_thinking">AI is thinking…</string>
+    <string name="reminder_label">Reminder</string>
 </resources>
