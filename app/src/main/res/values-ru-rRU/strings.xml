@@ -16,6 +16,7 @@
     <string name="version_text">Версия 1.0.0</string>
     <string name="home_label">Главная</string>
     <string name="reminder_label">Напоминание</string>
+    <string name="pending_label">В ожидании</string>
     <string name="todo_list_label">Список дел</string>
     <string name="settings_label">Настройки</string>
     <string name="task_details_title">Детали задачи</string>

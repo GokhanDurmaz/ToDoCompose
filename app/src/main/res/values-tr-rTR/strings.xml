@@ -16,6 +16,7 @@
     <string name="version_text">Sürüm 1.0.0</string>
     <string name="home_label">Ana Sayfa</string>
     <string name="reminder_label">Hatırlatıcı</string>
+    <string name="pending_label">Beklemede</string>
     <string name="todo_list_label">Yapılacaklar</string>
     <string name="settings_label">Ayarlar</string>
     <string name="task_details_title">Görev Detayları</string>

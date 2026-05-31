@@ -1,9 +1,14 @@
 package com.flowintent.workspace.nav.route
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
@@ -28,21 +33,28 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.navigation.nav.MainNavigation
+import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.workspace.ui.vm.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ToDoNavTopBar(
     state: TopBarState,
-    onSearchToggle: () -> Unit,
-    viewModel: TaskViewModel = hiltViewModel(),
+    actions: NavTopBarActions,
+    viewModels: NavTopBarViewModels,
     bottomBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModels.taskViewModel.uiState.collectAsStateWithLifecycle()
     val isSelectionMode = uiState.isSelectionMode
     val selectedCount = uiState.selectedCount
     var expanded by remember { mutableStateOf(false) }
@@ -61,20 +73,20 @@ fun ToDoNavTopBar(
                 navigationIcon = {
                     if (isSelectionMode) {
                         IconButton(onClick = {
-                            viewModel.setSelectionMode(false)
-                            viewModel.unselectAll()
+                            viewModels.taskViewModel.setSelectionMode(false)
+                            viewModels.taskViewModel.unselectAll()
                         }) {
                             Icon(Icons.Default.Close, contentDescription = "Cancel")
                         }
                     } else if (state.showProfileIcon) {
-                        ProfileIcon()
+                        ProfileIcon(viewModels.profileViewModel, actions.navigationDispatcher)
                     }
                 },
                 actions = {
                     if (isSelectionMode) {
                         IconButton(onClick = {
-                            viewModel.deleteSelectedTasks()
-                            viewModel.setSelectionMode(false)
+                            viewModels.taskViewModel.deleteSelectedTasks()
+                            viewModels.taskViewModel.setSelectionMode(false)
                         }) {
                             Icon(Icons.Default.Delete, contentDescription = "Delete")
                         }
@@ -83,7 +95,7 @@ fun ToDoNavTopBar(
                             expanded = expanded,
                             onExpandedChange = { expanded = it },
                             isSearchBarVisible = state.isSearchBarVisible,
-                            onSearchToggle = onSearchToggle
+                            onSearchToggle = actions.onSearchToggle
                         )
                     }
                 },
@@ -132,9 +144,43 @@ private fun TopBarMenu(
 }
 
 @Composable
-private fun ProfileIcon() {
-    IconButton(onClick = { }) {
-        Icon(Icons.Default.AccountCircle, contentDescription = "Profile")
+private fun ProfileIcon(
+    profileViewModel: ProfileViewModel,
+    navigationDispatcher: NavigationDispatcher?
+) {
+    val uiState by profileViewModel.uiState.collectAsStateWithLifecycle()
+    val bitmap = uiState.profileBitmap
+
+    IconButton(onClick = {
+        navigationDispatcher?.navigateTo(MainNavigation.PENDING.route)
+    }) {
+        Box(
+            modifier = Modifier
+                .size(32.dp)
+                .clip(CircleShape)
+                .background(
+                    Brush.linearGradient(
+                        listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.tertiary)
+                    )
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (bitmap != null) {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = "Profile",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Icon(
+                    Icons.Default.AccountCircle,
+                    contentDescription = "Pending Tasks",
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
     }
 }
 
@@ -143,4 +189,14 @@ data class TopBarState(
     val showProfileIcon: Boolean = true,
     val showMenu: Boolean = true,
     val isSearchBarVisible: Boolean = false
+)
+
+data class NavTopBarActions(
+    val onSearchToggle: () -> Unit,
+    val navigationDispatcher: NavigationDispatcher? = null
+)
+
+data class NavTopBarViewModels(
+    val taskViewModel: TaskViewModel,
+    val profileViewModel: ProfileViewModel
 )

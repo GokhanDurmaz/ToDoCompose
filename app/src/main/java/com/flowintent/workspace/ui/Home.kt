@@ -44,7 +44,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.core.util.Resource
 import com.flowintent.uikit.util.IconManager
+import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.workspace.R
+import com.flowintent.workspace.nav.route.NavTopBarActions
+import com.flowintent.workspace.nav.route.NavTopBarViewModels
 import com.flowintent.workspace.nav.route.ToDoNavTopBar
 import com.flowintent.workspace.nav.route.TopBarState
 import com.flowintent.workspace.ui.vm.TaskCategoryViewModel
@@ -52,21 +55,29 @@ import com.flowintent.workspace.ui.vm.TaskCategoryViewModel
 @Composable
 fun ToDoHomeScreen(
     onCategoryClick: (TaskCategory) -> Unit = {},
-    viewModel: TaskCategoryViewModel = hiltViewModel()
+    viewModel: TaskCategoryViewModel = hiltViewModel(),
+    navigationDispatcher: NavigationDispatcher? = null
 ) {
     var isSearchBarVisible by remember { mutableStateOf(false) }
     val allCategoriesState by viewModel.allCategories.collectAsStateWithLifecycle()
 
     val topBarState = TopBarState(
         title = stringResource(R.string.home_label),
-        showProfileIcon = false,
+        showProfileIcon = true,
         showMenu = false,
         isSearchBarVisible = isSearchBarVisible
     )
 
     ToDoNavTopBar(
         state = topBarState,
-        onSearchToggle = { isSearchBarVisible = !isSearchBarVisible }
+        actions = NavTopBarActions(
+            onSearchToggle = { isSearchBarVisible = !isSearchBarVisible },
+            navigationDispatcher = navigationDispatcher
+        ),
+        viewModels = NavTopBarViewModels(
+            taskViewModel = hiltViewModel(),
+            profileViewModel = hiltViewModel()
+        )
     ) { paddingValues ->
         Column(
             modifier = Modifier

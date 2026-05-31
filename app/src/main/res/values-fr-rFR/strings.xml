@@ -16,6 +16,7 @@
     <string name="version_text">Version 1.0.0</string>
     <string name="home_label">Accueil</string>
     <string name="reminder_label">Rappel</string>
+    <string name="pending_label">En attente</string>
     <string name="todo_list_label">Liste de tâches</string>
     <string name="settings_label">Paramètres</string>
     <string name="task_details_title">Détails de la tâche</string>

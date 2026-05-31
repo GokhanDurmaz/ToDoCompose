@@ -51,6 +51,9 @@ internal class AuthRepositoryImpl @Inject constructor(
 
             val userProfile = document.toObject(UserProfile::class.java)
             if (userProfile != null) {
+                userProfile.profileImageUrl?.let {
+                    encryptedProtoRepository.saveProfileImageUrl(it)
+                }
                 emit(Resource.Success(userProfile))
             } else {
                 emit(Resource.Error("Failed to get user info"))
@@ -106,6 +109,17 @@ internal class AuthRepositoryImpl @Inject constructor(
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Failed to change password"))
+        }
+    }
+
+    override fun updateProfileImageUrl(imageUrl: String): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading)
+        try {
+            val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
+            db.collection("users").document(userId).update("profileImageUrl", imageUrl).await()
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Failed to update profile image in Firestore"))
         }
     }
 }

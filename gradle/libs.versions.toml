@@ -34,6 +34,7 @@ mockitoKotlin = "6.3.0"
 navigationCompose = "2.9.7"
 material3Android = "1.4.0"
 pagingCompose = "3.4.2"
+pagingRuntime = "3.5.0"
 postgrestKt = "3.4.1"
 protobufJavalite = "4.34.1"
 retrofit = "3.0.0"
@@ -52,6 +53,7 @@ navigationRuntimeKtx = "2.9.7"
 runtimeVersion = "1.10.4"
 ui = "1.10.5"
 foundationLayout = "1.10.5"
+foundation = "1.7.8"
 firebaseStorageKtx = "22.0.1"
 supabase = "3.4.1"
 
@@ -72,6 +74,7 @@ androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragme
 androidx-navigation-testing = { module = "androidx.navigation:navigation-testing", version.ref = "navigationCompose" }
 androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationCompose" }
 androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
+androidx-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "pagingRuntime" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -129,6 +132,7 @@ androidx-navigation-common-ktx = { group = "androidx.navigation", name = "naviga
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
+androidx-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version.ref = "supabase" }
 supabase-storage-kt = { group = "io.github.jan-tennert.supabase", name = "storage-kt" }
 supabase-realtime-kt = { group = "io.github.jan-tennert.supabase", name = "realtime-kt" }
