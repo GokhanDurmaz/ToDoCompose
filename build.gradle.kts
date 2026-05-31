@@ -5,7 +5,7 @@ plugins {
     id(libs.plugins.kotlin.android.get().pluginId) version libs.versions.kotlin.get() apply false
     id(libs.plugins.compose.compiler.get().pluginId) version libs.versions.kotlin.get() apply false
 
-    kotlin("plugin.serialization") version "2.0.21" apply false
+    kotlin("plugin.serialization") version libs.versions.kotlin.get() apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.hilt.android) version libs.versions.hilt apply false
     alias(libs.plugins.google.services) version libs.versions.googleService apply false
@@ -30,42 +30,18 @@ tasks.register("runAllTests") {
 
 tasks.register("buildAppDebug") {
     group = "build"
-    description = "Builds both app and core modules"
+    description = "Builds the app and its dependencies with verification"
     dependsOn(tasks.named("runAllTests"))
     dependsOn(":app:detekt")
-
-    subprojects.forEach { subproject ->
-        if (subproject.path.startsWith(":core:")) {
-            dependsOn("${subproject.path}:assembleDebug")
-        }
-    }
-
-    dependsOn(":data:assembleDebug")
     dependsOn(":app:assembleDebug")
 }
 
 tasks.register("buildAppRelease") {
     group = "build"
-    description = "Builds both app and core modules"
+    description = "Builds the app and its dependencies for release"
     dependsOn(tasks.named("runAllTests"))
-
-    val detektTask = tasks.getByPath(":app:detekt")
-    dependsOn(detektTask)
-
-    subprojects.forEach { subproject ->
-        if (subproject.path.startsWith(":core:")) {
-            dependsOn("${subproject.path}:assembleRelease")
-        }
-    }
-
-    val assembleTasks = listOf(
-        ":app:assembleRelease",
-        ":data:assembleRelease"
-    )
-    assembleTasks.forEach { taskPath ->
-        dependsOn(taskPath)
-        tasks.getByPath(taskPath).mustRunAfter(detektTask)
-    }
+    dependsOn(":app:detekt")
+    dependsOn(":app:assembleRelease")
 }
 
 subprojects {
