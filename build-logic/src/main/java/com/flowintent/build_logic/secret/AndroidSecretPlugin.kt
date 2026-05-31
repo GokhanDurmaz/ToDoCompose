@@ -68,6 +68,8 @@ class AndroidSecretPlugin: Plugin<Project> {
 
                         val linkedLibsString = linkedLibsProvider.get().joinToString(" ") { "\${$it-lib}" }
                         appendLine("target_link_libraries(${libNameProvider.get()} $linkedLibsString)")
+                        appendLine("")
+                        appendLine("target_link_options(${libNameProvider.get()} PRIVATE \"-Wl,-z,max-page-size=16384\")")
                     }.toString()
 
                     cmakeFile.parentFile.mkdirs()
