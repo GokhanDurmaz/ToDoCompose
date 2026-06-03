@@ -8,5 +8,8 @@ enum class MainNavigation(val route: String) {
     HOME("home"),
     LIST_TODO("list_todo"),
     PENDING("pending"),
-    SETTINGS("settings")
+    SETTINGS("settings"),
+    GYM("gym"),
+    ART("art"),
+    HEALTH("health")
 }

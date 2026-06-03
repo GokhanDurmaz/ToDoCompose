@@ -74,7 +74,7 @@ fun ToDoNavigationBar(
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .padding(horizontal = 24.dp, vertical = 8.dp)
+                        .padding(vertical = 8.dp)
                 ) {
                     BottomNavigationBar(
                         currentDestination = navBackStackEntry?.destination,
@@ -84,7 +84,7 @@ fun ToDoNavigationBar(
                                 shape = RoundedCornerShape(50.dp)
                                 clip = true
                             }
-                            .shadow(8.dp, RoundedCornerShape(50.dp))
+                            .shadow(0.dp, RoundedCornerShape(50.dp))
                     )
                 }
             }
