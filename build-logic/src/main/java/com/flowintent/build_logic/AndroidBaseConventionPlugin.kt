@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.build_logic
 
 import com.android.build.api.dsl.ApplicationExtension
@@ -21,6 +25,10 @@ class AndroidBaseConventionPlugin : Plugin<Project> {
                     jvmTarget.set(JvmTarget.JVM_17)
                     freeCompilerArgs.add("-Xannotation-default-target=param-property")
                 }
+            }
+
+            tasks.withType<org.gradle.api.tasks.testing.Test>().configureEach {
+                jvmArgs("-Xshare:off")
             }
 
             pluginManager.withPlugin("com.android.application") {

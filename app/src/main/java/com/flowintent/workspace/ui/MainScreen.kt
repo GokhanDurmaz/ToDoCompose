@@ -1,3 +1,7 @@
+ /**
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.workspace.ui
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass

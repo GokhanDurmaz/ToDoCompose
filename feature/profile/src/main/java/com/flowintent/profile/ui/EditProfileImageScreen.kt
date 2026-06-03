@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.profile.ui
 
 import android.net.Uri
@@ -152,7 +156,7 @@ fun EditProfileImageScreen(
 
             if (uiState.uploadState is Resource.Error) {
                 Text(
-                    text = (uiState.uploadState as Resource.Error).message ?: "Error uploading image",
+                    text = (uiState.uploadState as Resource.Error).message,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.labelMedium
                 )

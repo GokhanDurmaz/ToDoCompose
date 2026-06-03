@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.auth.di
 
 import com.flowintent.auth.nav.route.repository.AuthRouteImpl

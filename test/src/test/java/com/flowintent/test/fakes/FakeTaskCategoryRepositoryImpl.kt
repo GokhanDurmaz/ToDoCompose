@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.test.fakes
 
 import com.flowintent.core.db.model.TaskCategory

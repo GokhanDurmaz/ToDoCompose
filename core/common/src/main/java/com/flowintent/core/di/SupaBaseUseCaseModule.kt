@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.core.di
 
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
