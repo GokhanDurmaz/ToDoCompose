@@ -4,8 +4,8 @@
 
 package com.flowintent.data.di
 
-import com.flowintent.network.network.services.AnalyticsService
 import com.flowintent.data.db.remote.AnalyticsServiceImpl
+import com.flowintent.network.network.services.AnalyticsService
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

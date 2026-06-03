@@ -35,13 +35,13 @@ class HomeRouteImpl @Inject constructor() : FeatureApi {
             )
         }
         navGraphBuilder.composable(MainNavigation.GYM.route) {
-            GymScreen()
+            GymScreen(onBack = { navController.popBackStack() })
         }
         navGraphBuilder.composable(MainNavigation.ART.route) {
-            ArtScreen()
+            ArtScreen(onBack = { navController.popBackStack() })
         }
         navGraphBuilder.composable(MainNavigation.HEALTH.route) {
-            HealthScreen()
+            HealthScreen(onBack = { navController.popBackStack() })
         }
     }
 }

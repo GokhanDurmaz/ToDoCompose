@@ -6,7 +6,6 @@ package com.flowintent.auth.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flowintent.navigation.nav.AuthNavigation
 import com.flowintent.core.db.auth.ForgetPasswordUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.auth.SignInUseCase
@@ -14,6 +13,7 @@ import com.flowintent.core.db.auth.SignUpUseCase
 import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.navigation.nav.AuthNavigation
 import com.flowintent.navigation.nav.MainNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -21,17 +21,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
+ @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val repo: EncryptedProtoRepository,
     private val signUpUseCase: SignUpUseCase,
@@ -49,6 +47,9 @@ class AuthViewModel @Inject constructor(
 
     private val _forgotPasswordUiState = MutableStateFlow(ForgotPasswordUiState())
     val forgotPasswordUiState = _forgotPasswordUiState.asStateFlow()
+
+    private val _twoFactorUiState = MutableStateFlow(TwoFactorUiState())
+    val twoFactorUiState = _twoFactorUiState.asStateFlow()
 
     val token: StateFlow<String?> = repo.tokenFlow()
         .stateIn(
@@ -83,6 +84,10 @@ class AuthViewModel @Inject constructor(
 
     fun onForgotPasswordEmailChange(newValue: String) {
         _forgotPasswordUiState.update { it.copy(email = newValue.trim(), statusMessage = null) }
+    }
+
+    fun onTwoFactorCodeChange(newValue: String) {
+        _twoFactorUiState.update { it.copy(code = newValue, errorMessage = null) }
     }
 
     val userName: StateFlow<String?> = repo.nameFlow()
@@ -235,6 +240,22 @@ class AuthViewModel @Inject constructor(
                     inclusive = true
                 }
             }
+        }
+    }
+
+    fun verifyTwoFactor() {
+        viewModelScope.launch {
+            _twoFactorUiState.update { it.copy(isLoading = true, errorMessage = null) }
+            delay(1500)
+            _twoFactorUiState.update { it.copy(isLoading = false) }
+            onNavigateBack()
+        }
+    }
+
+    fun resendTwoFactorCode() {
+        viewModelScope.launch {
+            delay(1000)
+            _twoFactorUiState.update { it.copy(errorMessage = "Code resent successfully!") }
         }
     }
 }

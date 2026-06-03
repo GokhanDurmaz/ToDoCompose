@@ -7,11 +7,11 @@ package com.flowintent.test.profile
 import android.content.Context
 import com.flowintent.core.db.auth.ChangePasswordUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
 import com.flowintent.core.db.profile.GetLocalAvatarUseCase
 import com.flowintent.core.db.profile.ObserveUserProfileUseCase
 import com.flowintent.core.db.profile.UploadProfileUseCase
-import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
