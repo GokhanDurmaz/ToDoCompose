@@ -290,7 +290,6 @@ fun ModernPendingTaskCard(task: Task) {
 
 private fun getTaskTypeIcon(type: TaskType): ImageVector {
     return when (type) {
-        TaskType.HEALTH -> Icons.Default.FitnessCenter
         TaskType.SOCIAL -> Icons.Default.Groups
         TaskType.DAILY -> Icons.Default.Schedule
         TaskType.WORK -> Icons.Default.Work

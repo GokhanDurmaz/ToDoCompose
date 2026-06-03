@@ -108,6 +108,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:home"))
     implementation(project(":feature:profile"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:uikit"))

@@ -6,6 +6,7 @@ package com.flowintent.workspace.nav.route
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,11 +31,12 @@ fun BottomNavigationBar(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.height(64.dp),
+        modifier = modifier
+            .padding(bottom = 20.dp, start = 16.dp, end = 16.dp)
+            .height(64.dp),
         shape = RoundedCornerShape(50.dp),
         color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 4.dp,
-        shadowElevation = 8.dp
+        tonalElevation = 4.dp
     ) {
         NavigationBar(
             containerColor = Color.Transparent,
