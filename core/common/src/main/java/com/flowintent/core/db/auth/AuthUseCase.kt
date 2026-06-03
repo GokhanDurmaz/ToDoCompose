@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.core.db.auth
 
 import com.flowintent.core.db.model.UserProfile

@@ -1,8 +1,12 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.workspace.ui.bottombar
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.PendingActions
 import androidx.compose.material.icons.filled.Settings
 import com.flowintent.navigation.nav.MainNavigation
@@ -18,7 +22,7 @@ val bottomNavItems = listOf(
     BottomNavItem(
         MainNavigation.LIST_TODO,
         R.string.todo_list_label,
-        Icons.Default.List,
+        Icons.AutoMirrored.Filled.List,
         R.string.todo_list_label
     ),
     BottomNavItem(

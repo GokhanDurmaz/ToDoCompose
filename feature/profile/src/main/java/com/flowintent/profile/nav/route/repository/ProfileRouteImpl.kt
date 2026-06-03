@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.profile.nav.route.repository
 
 import androidx.navigation.NavGraphBuilder

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.test.settings
 
 import androidx.compose.ui.test.assertIsDisplayed

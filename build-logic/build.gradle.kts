@@ -29,7 +29,7 @@ gradlePlugin {
     plugins {
         register("detekt") {
             id = "flowintent.detekt"
-            implementationClass = "DetektConventionPlugin"
+            implementationClass = "com.flowintent.build_logic.DetektConventionPlugin"
         }
     }
 }
