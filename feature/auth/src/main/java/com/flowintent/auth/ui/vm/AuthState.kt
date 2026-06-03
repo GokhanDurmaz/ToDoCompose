@@ -33,3 +33,11 @@ data class ForgotPasswordUiState(
     val isLoading: Boolean = false,
     val statusMessage: Pair<String, Boolean>? = null
 )
+
+data class TwoFactorUiState(
+    val code: String = "",
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
+) {
+    val isSubmitEnabled: Boolean = code.length == 6 && !isLoading
+}

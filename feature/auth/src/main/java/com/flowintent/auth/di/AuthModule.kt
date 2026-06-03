@@ -5,7 +5,6 @@
 package com.flowintent.auth.di
 
 import com.flowintent.auth.nav.route.repository.AuthRouteImpl
-import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.navigation.FeatureApi
 import dagger.Binds
 import dagger.Module

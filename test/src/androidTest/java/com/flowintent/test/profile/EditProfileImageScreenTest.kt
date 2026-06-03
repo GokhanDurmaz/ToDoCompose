@@ -8,8 +8,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.flowintent.profile.ui.EditProfileImageScreen
-import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.profile.ui.vm.ProfileUiState
+import com.flowintent.profile.ui.vm.ProfileViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule

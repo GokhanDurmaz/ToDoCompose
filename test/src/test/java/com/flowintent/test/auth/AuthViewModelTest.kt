@@ -10,7 +10,6 @@ import com.flowintent.core.db.auth.GetUserProfileUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
 import com.flowintent.core.db.repository.EncryptedProtoRepository
-import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.test.rules.MainDispatcherRule
 import com.flowintent.test.scenarios.UseCaseScenarios
@@ -19,7 +18,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test

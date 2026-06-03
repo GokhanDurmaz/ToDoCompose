@@ -25,15 +25,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.flowintent.navigation.nav.AuthNavigation
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationCommand
 import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.navigation.nav.AuthNavigation
 import com.flowintent.navigation.nav.MainNavigation
 import com.flowintent.workspace.nav.route.BottomNavigationBar
 
-@Composable
+ @Composable
 fun ToDoNavigationBar(
     authViewModel: AuthViewModel = hiltViewModel(),
     navigationDispatcher: NavigationDispatcher,

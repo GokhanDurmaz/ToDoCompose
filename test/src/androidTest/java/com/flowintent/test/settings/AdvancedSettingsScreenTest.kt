@@ -9,8 +9,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.settings.ui.AdvancedSettingsScreen
-import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.settings.ui.vm.SettingsUiState
+import com.flowintent.settings.ui.vm.SettingsViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule
