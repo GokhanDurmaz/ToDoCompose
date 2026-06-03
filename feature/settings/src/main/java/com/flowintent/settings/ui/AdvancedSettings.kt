@@ -26,21 +26,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ColorLens
+import androidx.compose.material.icons.filled.DarkMode
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.SystemUpdate
+import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -51,7 +62,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -74,7 +87,8 @@ import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.VAL_8
 import com.flowintent.uikit.util.VAL_80
 
- @Composable
+ @OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun AdvancedSettingsScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel(),
@@ -114,40 +128,53 @@ fun AdvancedSettingsScreen(
         profileViewModel.reloadProfileImageIfNull()
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .padding(start = VAL_16.dp, top = VAL_16.dp, end = VAL_16.dp, bottom = VAL_80.dp)
-    ) {
-        ProfileHeader(
-            username,
-            email,
-            profileImageUrl,
-            profileUiState.profileBitmap,
-            onProfileClick = { settingsViewModel.onProfileClicked() },
-            onLogout = { showLogoutDialog = true }
-        )
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        stringResource(R.string.settings_label),
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = VAL_16.dp)
+        ) {
+            ProfileHeader(
+                username,
+                email,
+                profileImageUrl,
+                profileUiState.profileBitmap,
+                onProfileClick = { settingsViewModel.onProfileClicked() },
+                onLogout = { showLogoutDialog = true }
+            )
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(VAL_20.dp))
 
-        LanguageSelection(currentLanguage = settingsUiState.currentLocale) { selectedLocale ->
-            settingsViewModel.onLocaleChange(selectedLocale)
-            val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(selectedLocale)
-            AppCompatDelegate.setApplicationLocales(appLocale)
+            LanguageSelection(currentLanguage = settingsUiState.currentLocale) { selectedLocale ->
+                settingsViewModel.onLocaleChange(selectedLocale)
+                val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(selectedLocale)
+                AppCompatDelegate.setApplicationLocales(appLocale)
+            }
+
+            ThemeSelection(currentTheme = settingsUiState.theme, onThemeChange = { settingsViewModel.onThemeChange(it) })
+
+            AboutSection()
+            
+            Spacer(modifier = Modifier.height(VAL_80.dp))
         }
-
-        ThemeSelection(currentTheme = settingsUiState.theme, onThemeChange = { settingsViewModel.onThemeChange(it) })
-
-        DndSection(
-            doNotDisturb = settingsUiState.doNotDisturb,
-            onDndChange = { settingsViewModel.onDndChange(it) },
-            sliderValue = settingsUiState.dndIntensity,
-            onSliderChange = { settingsViewModel.onDndIntensityChange(it) }
-        )
-
-        AboutSection()
     }
 }
 
@@ -256,9 +283,10 @@ private fun ProfileHeader(
                         )
                     }
                     Icon(
-                        Icons.Default.Settings,
+                        Icons.Default.Edit,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(VAL_20.dp)
                     )
                 }
             }
@@ -275,7 +303,7 @@ private fun LanguageSelection(currentLanguage: String, onLanguageChange: (String
         codes.zip(names)
     }
 
-    SettingsSection(title = stringResource(R.string.language_label)) {
+    SettingsSection(title = stringResource(R.string.language_label), icon = Icons.Default.Language) {
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp),
@@ -289,18 +317,14 @@ private fun LanguageSelection(currentLanguage: String, onLanguageChange: (String
                     label = {
                         Text(
                             text = name,
-                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.labelLarge
                         )
                     },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                    ),
-                    border = FilterChipDefaults.filterChipBorder(
-                        borderColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
-                        borderWidth = 1.dp,
-                        enabled = true,
-                        selected = isSelected
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             }
@@ -310,22 +334,32 @@ private fun LanguageSelection(currentLanguage: String, onLanguageChange: (String
 
 @Composable
 private fun ThemeSelection(currentTheme: String, onThemeChange: (String) -> Unit) {
-    SettingsSection(title = stringResource(R.string.theme_label)) {
+    SettingsSection(title = stringResource(R.string.theme_label), icon = Icons.Default.ColorLens) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            listOf("Light", "Dark", "Amoled").forEach { option ->
+            listOf("Light" to Icons.Default.LightMode, "Dark" to Icons.Default.DarkMode).forEach { (option, icon) ->
                 val isSelected = currentTheme == option
                 FilterChip(
                     selected = isSelected,
                     onClick = { onThemeChange(option) },
+                    leadingIcon = {
+                        Icon(
+                            icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(FilterChipDefaults.IconSize)
+                        )
+                    },
                     label = {
                         Text(
                             text = option,
-                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                            style = MaterialTheme.typography.labelLarge
                         )
                     },
                     colors = FilterChipDefaults.filterChipColors(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedLeadingIconColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 )
             }
@@ -334,47 +368,72 @@ private fun ThemeSelection(currentTheme: String, onThemeChange: (String) -> Unit
 }
 
 @Composable
-private fun DndSection(
-    doNotDisturb: Boolean,
-    onDndChange: (Boolean) -> Unit,
-    sliderValue: Float,
-    onSliderChange: (Float) -> Unit
-) {
-    SettingsSection(title = stringResource(R.string.dnd_label)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(stringResource(R.string.enable_dnd), color = MaterialTheme.colorScheme.onSurface)
-            Spacer(Modifier.weight(1f))
-            Switch(checked = doNotDisturb, onCheckedChange = onDndChange)
-        }
-        Spacer(Modifier.height(12.dp))
-        Text(stringResource(R.string.intensity), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Slider(value = sliderValue, onValueChange = onSliderChange, valueRange = 0f..1f)
-    }
-}
-
-@Composable
 private fun AboutSection() {
-    SettingsSection(title = stringResource(R.string.about_label)) {
-        Text(stringResource(R.string.version_label), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.height(8.dp))
-        val aboutItems = listOf(
-            stringResource(R.string.privacy_policy),
-            stringResource(R.string.terms_service),
-            stringResource(R.string.check_updates),
-            "Github"
-        )
-        aboutItems.forEach { item ->
-            Text(
-                item,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(vertical = 4.dp)
+    SettingsSection(title = stringResource(R.string.about_label), icon = Icons.Default.Info) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            ActionRow(
+                label = stringResource(R.string.version_label) + " 1.0.0",
+                icon = Icons.Default.SystemUpdate
+            )
+            ActionRow(
+                label = stringResource(R.string.privacy_policy),
+                icon = Icons.Default.PrivacyTip
+            )
+            ActionRow(
+                label = stringResource(R.string.terms_service),
+                icon = Icons.Default.Terminal
+            )
+            ActionRow(
+                label = "Github",
+                icon = Icons.Default.Terminal
             )
         }
     }
 }
 
 @Composable
-fun SettingsSection(title: String, content: @Composable ColumnScope.() -> Unit) {
+private fun ActionRow(
+    label: String,
+    icon: ImageVector,
+    onClick: () -> Unit = {}
+) {
+    Surface(
+        onClick = onClick,
+        color = Color.Transparent,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 12.dp)
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.weight(1f)
+            )
+            Icon(
+                Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.outline
+            )
+        }
+    }
+}
+
+@Composable
+fun SettingsSection(
+    title: String,
+    icon: ImageVector,
+    content: @Composable ColumnScope.() -> Unit
+) {
     Card(
         shape = RoundedCornerShape(VAL_16.dp),
         modifier = Modifier
@@ -383,12 +442,21 @@ fun SettingsSection(title: String, content: @Composable ColumnScope.() -> Unit) 
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
     ) {
         Column(modifier = Modifier.padding(VAL_16.dp)) {
-            Text(
-                title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    icon,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(VAL_20.dp)
+                )
+                Spacer(modifier = Modifier.width(VAL_8.dp))
+                Text(
+                    title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             Spacer(modifier = Modifier.height(VAL_12.dp))
             content()
         }

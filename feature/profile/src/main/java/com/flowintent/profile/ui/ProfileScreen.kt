@@ -370,7 +370,7 @@ private fun ActionSection(onActionClick: (ProfileNavigation) -> Unit) {
         ActionRow(
             label = "Two-Factor Auth",
             icon = Icons.Default.VerifiedUser,
-            onClick = { onActionClick(ProfileNavigation.SECURITY_SETTINGS) }
+            onClick = { onActionClick(ProfileNavigation.TWO_FACTOR_AUTH) }
         )
     }
 }

@@ -7,6 +7,7 @@
     <string name="enable_dnd">Enable DND</string>
     <string name="intensity">Intensity</string>
     <string name="about_label">About</string>
+    <string name="settings_label">Settings</string>
     <string name="version_label">Version 1.0.0</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms_service">Terms of Service</string>

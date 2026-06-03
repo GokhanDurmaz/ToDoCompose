@@ -13,7 +13,6 @@ import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.util.Resource
 import com.flowintent.test.scenarios.UseCaseScenarios
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before

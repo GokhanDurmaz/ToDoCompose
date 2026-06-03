@@ -4,70 +4,239 @@
 
 package com.flowintent.home.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArtTrack
+import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.home.ui.vm.HomeViewModel
 import com.flowintent.uikit.theme.ToDoTheme
+import com.flowintent.uikit.util.VAL_12
+import com.flowintent.uikit.util.VAL_16
+import com.flowintent.uikit.util.VAL_20
+import com.flowintent.uikit.util.VAL_24
+import com.flowintent.uikit.util.VAL_36
+import com.flowintent.uikit.util.VAL_50
+import com.flowintent.uikit.util.VAL_8
+import com.flowintent.uikit.util.VAL_80
+import java.util.Calendar
 
 /**
- * Main Home screen listing categories.
+ * Main Home screen listing categories with an improved dashboard design.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onCategoryClick: (String) -> Unit,
-    viewModel: HomeViewModel = hiltViewModel()
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
+    val username by homeViewModel.userName.collectAsStateWithLifecycle()
 
     ToDoTheme {
-        Scaffold { padding ->
-            LazyColumn(
+        Scaffold(
+            topBar = {
+                HomeTopBar()
+            },
+            containerColor = MaterialTheme.colorScheme.background
+        ) { padding ->
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(16.dp)
             ) {
-                items(uiState.categories) { category ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                            .clickable { onCategoryClick(category.title) },
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(category.cardColor)
+                WelcomeHeader(username)
+                
+                Text(
+                    text = "Categories",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = VAL_20.dp, vertical = VAL_12.dp)
+                )
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(horizontal = VAL_16.dp, vertical = VAL_8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(VAL_16.dp),
+                    verticalArrangement = Arrangement.spacedBy(VAL_16.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    items(uiState.categories) { category ->
+                        HomeCategoryCard(
+                            category = category,
+                            onClick = { onCategoryClick(category.title) }
                         )
-                    ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text(
-                                text = category.title,
-                                style = MaterialTheme.typography.titleLarge,
-                                color = Color(category.textColor)
-                            )
-                            Text(
-                                text = category.content.text,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color(category.textColor).copy(alpha = 0.7f)
-                            )
-                        }
                     }
                 }
+                
+                Spacer(modifier = Modifier.height(VAL_80.dp))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun HomeTopBar() {
+    TopAppBar(
+        title = {},
+        actions = {
+            IconButton(onClick = { /* TODO: Search */ }) {
+                Icon(Icons.Default.Search, contentDescription = "Search")
+            }
+            IconButton(onClick = { /* TODO: Notifications */ }) {
+                Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+            }
+            Box(
+                modifier = Modifier
+                    .padding(end = VAL_12.dp)
+                    .size(VAL_36.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = "Profile",
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.Transparent
+        )
+    )
+}
+
+@Composable
+private fun WelcomeHeader(username: String?) {
+    val greeting = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
+        in 0..11 -> "Good Morning"
+        in 12..16 -> "Good Afternoon"
+        else -> "Good Evening"
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = VAL_20.dp, vertical = VAL_8.dp)
+    ) {
+        Text(
+            text = "$greeting,",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = username ?: "User",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.ExtraBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+private fun HomeCategoryCard(
+    category: TaskCategory,
+    onClick: () -> Unit
+) {
+    val icon = when (category.title) {
+        "Gym" -> Icons.Default.FitnessCenter
+        "Art" -> Icons.Default.Brush
+        "Health" -> Icons.Default.Favorite
+        else -> Icons.Default.ArtTrack
+    }
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(0.9f)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(VAL_24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(category.cardColor).copy(alpha = 0.9f)
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .padding(VAL_20.dp)
+                    .align(Alignment.TopStart)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(VAL_50.dp)
+                        .clip(RoundedCornerShape(VAL_12.dp))
+                        .background(Color.White.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = Color(category.iconColor),
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(VAL_16.dp))
+                
+                Text(
+                    text = category.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(category.textColor)
+                )
+                
+                Text(
+                    text = category.content.text,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color(category.textColor).copy(alpha = 0.7f),
+                    maxLines = 2
+                )
             }
         }
     }

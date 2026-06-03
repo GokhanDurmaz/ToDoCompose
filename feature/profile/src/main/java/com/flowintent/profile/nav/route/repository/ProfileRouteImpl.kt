@@ -7,6 +7,7 @@ package com.flowintent.profile.nav.route.repository
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.flowintent.auth.ui.TwoFactorScreen
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.nav.ProfileNavigation
 import com.flowintent.profile.ui.ChangePasswordScreen
@@ -36,7 +37,8 @@ class ProfileRouteImpl @Inject constructor(): FeatureApi {
             ChangePasswordScreen()
         }
 
-        navGraphBuilder.composable(ProfileNavigation.SECURITY_SETTINGS.route) {
+        navGraphBuilder.composable(ProfileNavigation.TWO_FACTOR_AUTH.route) {
+            TwoFactorScreen()
         }
     }
 }

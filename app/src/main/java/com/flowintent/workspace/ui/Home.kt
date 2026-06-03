@@ -47,8 +47,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.core.util.Resource
-import com.flowintent.uikit.util.IconManager
 import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.uikit.util.IconManager
 import com.flowintent.workspace.R
 import com.flowintent.workspace.nav.route.NavTopBarActions
 import com.flowintent.workspace.nav.route.NavTopBarViewModels

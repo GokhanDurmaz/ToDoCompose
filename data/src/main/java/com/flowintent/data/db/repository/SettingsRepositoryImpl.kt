@@ -6,9 +6,9 @@ package com.flowintent.data.db.repository
 
 import com.flowintent.core.db.model.AppTheme
 import com.flowintent.core.db.model.User
-import com.flowintent.data.db.room.dao.SettingsDao
 import com.flowintent.core.db.repository.SettingsRepository
 import com.flowintent.core.db.settings.SettingsPreferences
+import com.flowintent.data.db.room.dao.SettingsDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import javax.inject.Inject
