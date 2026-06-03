@@ -72,8 +72,9 @@ import com.flowintent.uikit.util.VAL_20
 import com.flowintent.uikit.util.VAL_32
 import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.VAL_8
+import com.flowintent.uikit.util.VAL_80
 
-@Composable
+ @Composable
 fun AdvancedSettingsScreen(
     authViewModel: AuthViewModel = hiltViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel(),
@@ -118,7 +119,7 @@ fun AdvancedSettingsScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
-            .padding(VAL_16.dp)
+            .padding(start = VAL_16.dp, top = VAL_16.dp, end = VAL_16.dp, bottom = VAL_80.dp)
     ) {
         ProfileHeader(
             username,
