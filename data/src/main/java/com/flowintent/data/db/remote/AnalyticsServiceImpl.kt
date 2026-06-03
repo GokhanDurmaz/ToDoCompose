@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.data.db.remote
 
 import com.flowintent.network.network.AnalyticsType

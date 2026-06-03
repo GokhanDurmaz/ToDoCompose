@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.workspace.ui.swipe
 
 import androidx.compose.foundation.layout.Box

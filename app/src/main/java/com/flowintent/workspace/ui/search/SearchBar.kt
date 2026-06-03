@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.workspace.ui.search
 
 import androidx.compose.foundation.clickable

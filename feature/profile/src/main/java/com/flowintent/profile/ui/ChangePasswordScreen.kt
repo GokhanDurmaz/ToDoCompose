@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.profile.ui
 
 import androidx.compose.foundation.layout.Column
@@ -61,7 +65,7 @@ fun ChangePasswordScreen(
             }
             is Resource.Error -> {
                 snackbarHostState.showSnackbar(
-                    message = (uiState.changePasswordState as Resource.Error).message ?: "An error occurred",
+                    message = (uiState.changePasswordState as Resource.Error).message,
                     duration = SnackbarDuration.Short
                 )
                 viewModel.clearChangePasswordState()

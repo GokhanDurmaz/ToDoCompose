@@ -10,7 +10,10 @@ android {
     namespace = "com.flowintent.test"
 }
 
+val mockitoAgent by configurations.creating
+
 dependencies {
+    mockitoAgent(libs.mockito.core) { isTransitive = false }
     testImplementation(project(":core:common"))
     testImplementation(project(":core:navigation"))
     testImplementation(project(":data"))
@@ -43,4 +46,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.room.paging)
+}
+
+tasks.withType<Test>().configureEach {
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }

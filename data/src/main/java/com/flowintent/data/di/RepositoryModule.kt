@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.data.di
 
 import com.flowintent.core.db.repository.AuthRepository

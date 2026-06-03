@@ -1,3 +1,7 @@
+ /**
+ * Copyright (c) 2026 FlowIntent. All rights reserved.
+ */
+
 package com.flowintent.auth.ui.vm
 
 import androidx.lifecycle.ViewModel
@@ -13,7 +17,6 @@ import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.MainNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
