@@ -54,6 +54,23 @@ fun parseDateToLong(timeString: String?, existingTasks: List<Task>): Long {
     val timestamp = cleanTime.toLongOrNull()
     if (timestamp != null) return timestamp
 
+    // Simple relative time parsing
+    if (cleanTime.contains("minute", ignoreCase = true)) {
+        val minutes = cleanTime.filter { it.isDigit() }.toIntOrNull() ?: 0
+        if (minutes > 0) {
+            return System.currentTimeMillis() + (minutes * 60 * 1000)
+        }
+    }
+    if (cleanTime.contains("hour", ignoreCase = true)) {
+        val hours = cleanTime.filter { it.isDigit() }.toIntOrNull() ?: 0
+        if (hours > 0) {
+            return System.currentTimeMillis() + (hours * 60 * 60 * 1000)
+        }
+        if (cleanTime.contains("half", ignoreCase = true)) {
+            return System.currentTimeMillis() + (30 * 60 * 1000)
+        }
+    }
+
     val formats = listOf("yyyy-MM-dd HH:mm", "yyyy-MM-dd")
     var finalTime: Long? = null
 
