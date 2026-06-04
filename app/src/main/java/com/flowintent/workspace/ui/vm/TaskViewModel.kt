@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @HiltViewModel
@@ -126,5 +127,25 @@ class TaskViewModel @Inject constructor(
             val newMap = it.selectedTasks.mapValues { false }
             it.copy(selectedTasks = newMap)
         }
+    }
+
+    private var hasTriggeredPermissionDialog = false
+
+    fun onTaskInput() {
+        if (hasTriggeredPermissionDialog) return
+        hasTriggeredPermissionDialog = true
+
+        viewModelScope.launch {
+            delay(PERMISSION_DIALOG_DELAY)
+            _uiState.update { it.copy(showPermissionConsent = true) }
+        }
+    }
+
+    fun dismissPermissionConsent() {
+        _uiState.update { it.copy(showPermissionConsent = false) }
+    }
+
+    companion object {
+        private const val PERMISSION_DIALOG_DELAY = 2000L
     }
 }

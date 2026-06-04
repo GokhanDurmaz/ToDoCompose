@@ -4,7 +4,11 @@
 
 package com.flowintent.workspace.ui
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -48,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -55,6 +60,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
@@ -74,6 +80,7 @@ import com.flowintent.workspace.nav.route.NavTopBarViewModels
 import com.flowintent.workspace.nav.route.ToDoNavTopBar
 import com.flowintent.workspace.nav.route.TopBarState
 import com.flowintent.workspace.ui.card.CategoryChipsRow
+import com.flowintent.workspace.ui.dialog.PermissionConsentDialog
 import com.flowintent.workspace.ui.task.AiThinkingIndicator
 import com.flowintent.workspace.ui.task.EmptyTaskPlaceholder
 import com.flowintent.workspace.ui.task.TaskSearchBar
@@ -83,6 +90,7 @@ import com.flowintent.workspace.ui.vm.TaskViewModel
 fun TaskInputBar(
     onSendMessage: (String) -> Unit,
     onFileClick: () -> Unit,
+    onValueChange: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var text by remember { mutableStateOf("") }
@@ -92,53 +100,74 @@ fun TaskInputBar(
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
         tonalElevation = 4.dp
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                .navigationBarsPadding()
-                .imePadding(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onFileClick) {
-                Icon(
-                    imageVector = Icons.Default.AttachFile,
-                    contentDescription = stringResource(R.string.attach_file_desc),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            TextField(
-                value = text,
-                onValueChange = { text = it },
-                placeholder = {
-                    Text(
-                        stringResource(R.string.type_new_todo),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                maxLines = 4
+        TaskInputRow(
+            text = text,
+            onTextChange = {
+                text = it
+                onValueChange(it)
+            },
+            onSendMessage = {
+                onSendMessage(text)
+                text = ""
+            },
+            onFileClick = onFileClick
+        )
+    }
+}
+
+@Composable
+private fun TaskInputRow(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSendMessage: () -> Unit,
+    onFileClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            .navigationBarsPadding()
+            .imePadding(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onFileClick) {
+            Icon(
+                imageVector = Icons.Default.AttachFile,
+                contentDescription = stringResource(R.string.attach_file_desc),
+                tint = MaterialTheme.colorScheme.primary
             )
-            IconButton(
-                onClick = {
-                    if (text.isNotBlank()) {
-                        onSendMessage(text)
-                        text = ""
-                    }
-                },
-                enabled = text.isNotBlank()
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = stringResource(R.string.send_desc),
-                    tint = if (text.isNotBlank()) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
+        }
+        TextField(
+            value = text,
+            onValueChange = onTextChange,
+            placeholder = {
+                Text(
+                    stringResource(R.string.type_new_todo),
+                    style = MaterialTheme.typography.bodyMedium
                 )
+            },
+            modifier = Modifier.weight(1f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            maxLines = 4
+        )
+        IconButton(
+            onClick = onSendMessage,
+            enabled = text.isNotBlank()
+        ) {
+            val tint = if (text.isNotBlank()) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                Color.Gray.copy(alpha = 0.5f)
             }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Send,
+                contentDescription = stringResource(R.string.send_desc),
+                tint = tint
+            )
         }
     }
 }
@@ -152,15 +181,20 @@ data class TaskActions(
 
 @Composable
 fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
-    val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isSearchBarVisible by remember { mutableStateOf(false) }
+    val hasNotificationPermission = rememberPermissionState(context)
+
+    NotificationPermissionHandler(
+        showConsent = uiState.showPermissionConsent,
+        hasPermission = hasNotificationPermission,
+        onDismiss = viewModel::dismissPermissionConsent
+    )
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { println("Selected File URI: $it") }
-    }
+    ) { uri: Uri? -> uri?.let { println("Selected File URI: $it") } }
 
     val actions = remember(viewModel) {
         TaskActions(
@@ -187,13 +221,15 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
         actions = NavTopBarActions(
             onSearchToggle = { isSearchBarVisible = !isSearchBarVisible }
         ),
-        viewModels = NavTopBarViewModels(
-            taskViewModel = viewModel,
-            profileViewModel = hiltViewModel()
-        ),
+        viewModels = NavTopBarViewModels(taskViewModel = viewModel, profileViewModel = hiltViewModel()),
         bottomBar = {
             TaskInputBar(
-                onSendMessage = { viewModel.insertSmartTask(it) },
+                onSendMessage = {
+                    viewModel.insertSmartTask(it)
+                    if (it.isNotEmpty() && !hasNotificationPermission) {
+                        viewModel.onTaskInput()
+                    }
+                },
                 onFileClick = { filePickerLauncher.launch("*/*") }
             )
         }
@@ -204,6 +240,43 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
             uiState = uiState,
             isSearchBarVisible = isSearchBarVisible,
             actions = actions
+        )
+    }
+}
+
+@Composable
+private fun rememberPermissionState(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    } else {
+        true
+    }
+}
+
+@Composable
+private fun NotificationPermissionHandler(
+    showConsent: Boolean,
+    hasPermission: Boolean,
+    onDismiss: () -> Unit
+) {
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) println("Permission Granted")
+    }
+
+    if (showConsent && !hasPermission) {
+        PermissionConsentDialog(
+            onDismiss = onDismiss,
+            onConfirm = {
+                onDismiss()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
         )
     }
 }

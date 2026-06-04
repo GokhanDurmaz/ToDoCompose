@@ -14,7 +14,8 @@ data class TaskUiState(
     val selectedTasks: Map<Int, Boolean> = emptyMap(),
     val expandedTasks: Map<Int, Boolean> = emptyMap(),
     val smartTaskState: Resource<Unit>? = null,
-    val updateTaskId: Int? = null
+    val updateTaskId: Int? = null,
+    val showPermissionConsent: Boolean = false
 ) {
     val selectedCount: Int get() = selectedTasks.count { it.value }
 }

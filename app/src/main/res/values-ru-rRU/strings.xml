@@ -37,4 +37,8 @@
     <string name="check_updates">Проверить обновления</string>
     <string name="logout">Выйти</string>
     <string name="ai_thinking">ИИ думает…</string>
+    <string name="notification_consent_title">Будьте в курсе событий</string>
+    <string name="notification_consent_description">Разрешите уведомления, чтобы вовремя получать напоминания о предстоящих задачах и никогда не пропускать дедлайны.</string>
+    <string name="allow">Разрешить</string>
+    <string name="not_now">Не сейчас</string>
 </resources>

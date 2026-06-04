@@ -37,4 +37,8 @@
     <string name="check_updates">Güncellemeleri Denetle</string>
     <string name="logout">Oturumu Kapat</string>
     <string name="ai_thinking">Yapay Zeka düşünüyor…</string>
+    <string name="notification_consent_title">Güncel Kalın</string>
+    <string name="notification_consent_description">Yaklaşan görevleriniz hakkında zamanında hatırlatıcılar almak ve hiçbir son teslim tarihini kaçırmamak için bildirimlere izin verin.</string>
+    <string name="allow">İzin Ver</string>
+    <string name="not_now">Şimdi Değil</string>
 </resources>
