@@ -40,7 +40,17 @@ class DateHelperTest {
         val calendar = Calendar.getInstance().apply { timeInMillis = result }
         
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
-        assertTrue(hour >= 9 || hour == Calendar.getInstance().get(Calendar.HOUR_OF_DAY) + 1)
+        val now = Calendar.getInstance()
+        val nowHour = now.get(Calendar.HOUR_OF_DAY)
+        
+        val possibleHours = if (nowHour >= 9) {
+            setOf((nowHour + 1) % 24, (nowHour + 2) % 24)
+        } else {
+            setOf(9, 10)
+        }
+        
+        assertTrue("Hour $hour should be one of $possibleHours for nowHour $nowHour", possibleHours.contains(hour))
+        assertEquals(0, calendar.get(Calendar.MINUTE))
         assertEquals(0, calendar.get(Calendar.SECOND))
     }
 

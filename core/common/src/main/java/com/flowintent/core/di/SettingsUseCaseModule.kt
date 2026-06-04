@@ -4,9 +4,12 @@
 
 package com.flowintent.core.di
 
+import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.db.repository.SettingsRepository
 import com.flowintent.core.db.settings.GetAppVersionUseCase
+import com.flowintent.core.db.settings.GetLanguageUseCase
 import com.flowintent.core.db.settings.GetNotificationStatusUseCase
+import com.flowintent.core.db.settings.GetProtoThemeUseCase
 import com.flowintent.core.db.settings.GetThemeUseCase
 import com.flowintent.core.db.settings.GetUserUseCase
 import com.flowintent.core.db.settings.LogoutUseCase
@@ -14,6 +17,8 @@ import com.flowintent.core.db.settings.OpenPrivacyPolicyUseCase
 import com.flowintent.core.db.settings.OpenTermsOfServiceUseCase
 import com.flowintent.core.db.settings.SaveUserPreferencesUseCase
 import com.flowintent.core.db.settings.SetNotificationStatusUseCase
+import com.flowintent.core.db.settings.UpdateLanguageUseCase
+import com.flowintent.core.db.settings.UpdateProtoThemeUseCase
 import com.flowintent.core.db.settings.UpdateThemeUseCase
 import com.flowintent.core.db.settings.UpdateUserPreferencesUseCase
 import com.flowintent.core.db.settings.UpdateUsernameUseCase
@@ -85,4 +90,24 @@ object SettingsUseCaseModule {
     @Provides
     fun providesOpenTermsOfServiceUseCase(repository: SettingsRepository) =
         OpenTermsOfServiceUseCase(repository)
+
+    @Singleton
+    @Provides
+    fun providesGetLanguageUseCase(repository: EncryptedProtoRepository) =
+        GetLanguageUseCase(repository)
+
+    @Singleton
+    @Provides
+    fun providesUpdateLanguageUseCase(repository: EncryptedProtoRepository) =
+        UpdateLanguageUseCase(repository)
+
+    @Singleton
+    @Provides
+    fun providesGetProtoThemeUseCase(repository: EncryptedProtoRepository) =
+        GetProtoThemeUseCase(repository)
+
+    @Singleton
+    @Provides
+    fun providesUpdateProtoThemeUseCase(repository: EncryptedProtoRepository) =
+        UpdateProtoThemeUseCase(repository)
 }

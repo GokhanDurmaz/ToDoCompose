@@ -7,7 +7,10 @@ package com.flowintent.settings.ui.vm
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.db.settings.GetLanguageUseCase
+import com.flowintent.core.db.settings.GetProtoThemeUseCase
+import com.flowintent.core.db.settings.UpdateLanguageUseCase
+import com.flowintent.core.db.settings.UpdateProtoThemeUseCase
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.ProfileNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +24,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val navigationDispatcher: NavigationDispatcher,
-    private val repo: EncryptedProtoRepository,
+    private val getLanguageUseCase: GetLanguageUseCase,
+    private val updateLanguageUseCase: UpdateLanguageUseCase,
+    private val getProtoThemeUseCase: GetProtoThemeUseCase,
+    private val updateProtoThemeUseCase: UpdateProtoThemeUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -33,13 +39,13 @@ class SettingsViewModel @Inject constructor(
 
     private fun observeSettings() {
         viewModelScope.launch {
-            repo.languageFlow().collectLatest { language ->
+            getLanguageUseCase().collectLatest { language ->
                 val current = language ?: AppCompatDelegate.getApplicationLocales().toLanguageTags().ifEmpty { "en" }
                 _uiState.update { it.copy(currentLocale = current) }
             }
         }
         viewModelScope.launch {
-            repo.themeFlow().collectLatest { theme ->
+            getProtoThemeUseCase().collectLatest { theme ->
                 _uiState.update { it.copy(theme = theme ?: "Dark") }
                 val mode = when(theme) {
                     "Light" -> AppCompatDelegate.MODE_NIGHT_NO
@@ -56,7 +62,7 @@ class SettingsViewModel @Inject constructor(
     fun onThemeChange(newTheme: String) {
         _uiState.update { it.copy(theme = newTheme) }
         viewModelScope.launch {
-            repo.updateTheme(newTheme)
+            updateProtoThemeUseCase(newTheme)
         }
         val mode = when(newTheme) {
             "Light" -> AppCompatDelegate.MODE_NIGHT_NO
@@ -77,7 +83,7 @@ class SettingsViewModel @Inject constructor(
     fun onLocaleChange(locale: String) {
         _uiState.update { it.copy(currentLocale = locale) }
         viewModelScope.launch {
-            repo.updateLanguage(locale)
+            updateLanguageUseCase(locale)
         }
     }
 

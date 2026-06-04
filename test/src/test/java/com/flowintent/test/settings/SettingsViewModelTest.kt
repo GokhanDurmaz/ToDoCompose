@@ -5,6 +5,10 @@
 package com.flowintent.test.settings
 
 import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.db.settings.GetLanguageUseCase
+import com.flowintent.core.db.settings.GetProtoThemeUseCase
+import com.flowintent.core.db.settings.UpdateLanguageUseCase
+import com.flowintent.core.db.settings.UpdateProtoThemeUseCase
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.test.rules.MainDispatcherRule
@@ -30,14 +34,32 @@ class SettingsViewModelTest {
     @Mock
     private lateinit var repo: EncryptedProtoRepository
 
+    private lateinit var getLanguageUseCase: GetLanguageUseCase
+    private lateinit var updateLanguageUseCase: UpdateLanguageUseCase
+    private lateinit var getProtoThemeUseCase: GetProtoThemeUseCase
+    private lateinit var updateProtoThemeUseCase: UpdateProtoThemeUseCase
+
     private lateinit var viewModel: SettingsViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
+        
+        getLanguageUseCase = GetLanguageUseCase(repo)
+        updateLanguageUseCase = UpdateLanguageUseCase(repo)
+        getProtoThemeUseCase = GetProtoThemeUseCase(repo)
+        updateProtoThemeUseCase = UpdateProtoThemeUseCase(repo)
+
         `when`(repo.languageFlow()).thenReturn(flowOf("en"))
         `when`(repo.themeFlow()).thenReturn(flowOf("Dark"))
-        viewModel = SettingsViewModel(navigationDispatcher, repo)
+        
+        viewModel = SettingsViewModel(
+            navigationDispatcher,
+            getLanguageUseCase,
+            updateLanguageUseCase,
+            getProtoThemeUseCase,
+            updateProtoThemeUseCase
+        )
     }
 
     @Test
