@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">言語</string>
+    <string name="theme_label">テーマ</string>
+    <string name="logout">ログアウト</string>
+    <string name="logout_confirmation">ログアウトしてもよろしいですか？</string>
+    <string name="cancel">キャンセル</string>
+    <string name="github">Github</string>
+    <string name="theme_light">ライト</string>
+    <string name="theme_dark">ダーク</string>
+    <string name="dnd_label">おやすみモード</string>
+    <string name="enable_dnd">おやすみモードを有効にする</string>
+    <string name="intensity">強度</string>
+    <string name="about_label">詳細</string>
+    <string name="settings_label">設定</string>
+    <string name="version_label">バージョン</string>
+    <string name="privacy_policy">プライバシーポリシー</string>
+    <string name="terms_service">利用規約</string>
+    <string name="check_updates">アップデートを確認</string>
+</resources>

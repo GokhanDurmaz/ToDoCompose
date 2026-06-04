@@ -48,7 +48,7 @@ class SettingsViewModelTest {
 
     @Test
     fun `uiState updates when DND changes`() {
-        viewModel.onDndChange(true)
+        viewModel.onDndChange(enabled = true)
         assertEquals(true, viewModel.uiState.value.doNotDisturb)
     }
 }

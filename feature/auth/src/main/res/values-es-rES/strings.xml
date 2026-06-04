@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">Por favor, introduce una dirección de correo electrónico válida</string>
+    <string name="welcome_back">Bienvenido de nuevo</string>
+    <string name="sign_in_subtitle">Por favor, inicia sesión para continuar</string>
+    <string name="email_address">Dirección de correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="forgot_password">¿Has olvidado tu contraseña?</string>
+    <string name="sign_in">Iniciar sesión</string>
+    <string name="dont_have_account_sign_up">¿No tienes una cuenta? Regístrate</string>
+    <string name="create_new_account">Crear nueva cuenta</string>
+    <string name="sign_up_subtitle">Únete a nosotros y comienza tu viaje</string>
+    <string name="first_name">Nombre</string>
+    <string name="last_name">Apellido</string>
+    <string name="sign_up">Registrarse</string>
+    <string name="already_have_account_sign_in">¿Ya tienes una cuenta? Inicia sesión</string>
+    <string name="forgot_password_title">Olvidé mi contraseña</string>
+    <string name="forgot_password_instructions">Ingrese su dirección de correo electrónico y le enviaremos instrucciones para restablecer su contraseña.</string>
+    <string name="back_to_login">&lt; Volver al inicio de sesión</string>
+    <string name="send">Enviar</string>
+    <string name="reset_link_sent">¡Enlace de restablecimiento enviado! Revisa tu bandeja de entrada.</string>
+    <string name="two_factor_title">Autenticación de dos factores</string>
+    <string name="two_factor_subtitle">Introduce el código de 6 dígitos enviado a tu dispositivo</string>
+    <string name="verification_code">Código de verificación</string>
+    <string name="enter_code_hint">Ingrese el código de 6 dígitos</string>
+    <string name="verify_and_proceed">Verificar y continuar</string>
+    <string name="resend_code">Reenviar código</string>
+    <string name="code_resent_success">¡Código reenviado con éxito!</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">Sprache</string>
+    <string name="theme_label">Thema</string>
+    <string name="logout">Abmelden</string>
+    <string name="logout_confirmation">Möchten Sie sich wirklich abmelden?</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="github">Github</string>
+    <string name="theme_light">Hell</string>
+    <string name="theme_dark">Dunkel</string>
+    <string name="dnd_label">Nicht stören</string>
+    <string name="enable_dnd">Nicht stören aktivieren</string>
+    <string name="intensity">Intensität</string>
+    <string name="about_label">Über</string>
+    <string name="settings_label">Einstellungen</string>
+    <string name="version_label">Version</string>
+    <string name="privacy_policy">Datenschutz-Bestimmungen</string>
+    <string name="terms_service">Nutzungsbedingungen</string>
+    <string name="check_updates">Auf Updates prüfen</string>
+</resources>

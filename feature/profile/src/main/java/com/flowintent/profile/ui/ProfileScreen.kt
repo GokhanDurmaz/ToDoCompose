@@ -62,6 +62,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -71,6 +72,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.nav.ProfileNavigation
+import com.flowintent.profile.R
 import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.uikit.anim.shimmerEffect
 import com.flowintent.uikit.util.VAL_12
@@ -115,7 +117,7 @@ fun ProfileScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        "Profile",
+                        stringResource(R.string.profile_title),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -124,7 +126,7 @@ fun ProfileScreen(
                     IconButton(onClick = { profileViewModel.onBackClicked() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBackIosNew,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back_desc),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
                         )
@@ -169,8 +171,8 @@ fun ProfileScreen(
                 ProfileInfoShimmer()
             } else {
                 ProfileInfoSection(
-                    username = uiState.userProfile?.name ?: "User",
-                    email = uiState.userProfile?.email ?: "email@flow.com"
+                    username = uiState.userProfile?.name ?: stringResource(R.string.default_user),
+                    email = uiState.userProfile?.email ?: stringResource(R.string.default_email)
                 )
             }
 
@@ -256,7 +258,7 @@ private fun ProfileLargeHeader(
                     .shimmerEffect()
             )
         } else {
-            Text(text = username ?: "User", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text(text = username ?: stringResource(R.string.default_user), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(VAL_8.dp))
@@ -270,7 +272,7 @@ private fun ProfileLargeHeader(
                     .shimmerEffect()
             )
         } else {
-            Text(text = email ?: "email@flow.com", style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(text = email ?: stringResource(R.string.default_email), style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }
@@ -281,9 +283,9 @@ private fun StatsSection(onPendingClick: () -> Unit) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(VAL_8.dp)
     ) {
-        StatCard(Modifier.weight(1f), "Pending", "5", Icons.AutoMirrored.Filled.List, onClick = onPendingClick)
-        StatCard(Modifier.weight(1f), "Done", "12", Icons.Default.CheckCircle)
-        StatCard(Modifier.weight(1f), "Success", "70%", Icons.Default.Speed)
+        StatCard(Modifier.weight(1f), stringResource(R.string.pending_label), "5", Icons.AutoMirrored.Filled.List, onClick = onPendingClick)
+        StatCard(Modifier.weight(1f), stringResource(R.string.done_label), "12", Icons.Default.CheckCircle)
+        StatCard(Modifier.weight(1f), stringResource(R.string.success_label), "70%", Icons.Default.Speed)
     }
 }
 
@@ -325,16 +327,16 @@ private fun StatCard(modifier: Modifier, title: String, value: String, icon: Ima
 
 @Composable
 private fun ProfileInfoSection(username: String, email: String) {
-    ProfileContentSection(title = "Account Details") {
-        InfoRow(label = "Username", value = username, icon = Icons.Default.Person)
+    ProfileContentSection(title = stringResource(R.string.account_details_label)) {
+        InfoRow(label = stringResource(R.string.username_label), value = username, icon = Icons.Default.Person)
         HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), thickness = 0.5.dp, color = MaterialTheme.colorScheme.outlineVariant)
-        InfoRow(label = "Email", value = email, icon = Icons.Default.Email)
+        InfoRow(label = stringResource(R.string.email_label), value = email, icon = Icons.Default.Email)
     }
 }
 
 @Composable
 private fun ProfileInfoShimmer() {
-    ProfileContentSection(title = "Account Details") {
+    ProfileContentSection(title = stringResource(R.string.account_details_label)) {
         Column {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.size(20.dp).clip(CircleShape).shimmerEffect())
@@ -361,14 +363,14 @@ private fun ProfileInfoShimmer() {
 
 @Composable
 private fun ActionSection(onActionClick: (ProfileNavigation) -> Unit) {
-    ProfileContentSection(title = "Security") {
+    ProfileContentSection(title = stringResource(R.string.security_label)) {
         ActionRow(
-            label = "Change Password",
+            label = stringResource(R.string.change_password_label),
             icon = Icons.Default.Lock,
             onClick = { onActionClick(ProfileNavigation.CHANGE_PASSWORD) }
         )
         ActionRow(
-            label = "Two-Factor Auth",
+            label = stringResource(R.string.two_factor_auth_label),
             icon = Icons.Default.VerifiedUser,
             onClick = { onActionClick(ProfileNavigation.TWO_FACTOR_AUTH) }
         )

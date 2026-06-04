@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">اللغة</string>
+    <string name="theme_label">المظهر</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="logout_confirmation">هل أنت متأكد أنك تريد تسجيل الخروج؟</string>
+    <string name="cancel">إلغاء</string>
+    <string name="github">Github</string>
+    <string name="theme_light">فاتح</string>
+    <string name="theme_dark">داكن</string>
+    <string name="dnd_label">عدم الإزعاج</string>
+    <string name="enable_dnd">تفعيل عدم الإزعاج</string>
+    <string name="intensity">الشدة</string>
+    <string name="about_label">حول</string>
+    <string name="settings_label">الإعدادات</string>
+    <string name="version_label">الإصدار</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="terms_service">شروط الخدمة</string>
+    <string name="check_updates">التحقق من التحديثات</string>
+</resources>

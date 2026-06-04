@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_label">Категории</string>
+    <string name="good_morning">Доброе утро</string>
+    <string name="good_afternoon">Добрый день</string>
+    <string name="good_evening">Добрый вечер</string>
+    <string name="default_user">Пользователь</string>
+    <string name="search_desc">Поиск</string>
+    <string name="notifications_desc">Уведомления</string>
+    <string name="profile_desc">Профиль</string>
+    <string name="back_desc">Назад</string>
+
+    <!-- Art Screen -->
+    <string name="art_gallery_title">Художественная галерея</string>
+    <string name="your_creations_label">Ваши творения</string>
+    <string name="daily_inspiration_label">Ежедневное вдохновение</string>
+    <string name="inspiration_subtitle">Раскройте свой творческий потенциал сегодня</string>
+    <string name="sketching">Наброски</string>
+    <string name="oil_painting">Масляная живопись</string>
+    <string name="coloring">Раскрашивание</string>
+    <string name="digital_art">Цифровое искусство</string>
+
+    <!-- Gym Screen -->
+    <string name="gym_fitness_title">Спортзал и фитнес</string>
+    <string name="add_workout_desc">Добавить тренировку</string>
+    <string name="today_plan_label">План на сегодня</string>
+    <string name="weekly_goal_label">Еженедельная цель</string>
+    <string name="workouts_completed_format">Выполнено %1$d из %2$d тренировок</string>
+    <string name="morning_yoga">Утренняя йога</string>
+    <string name="weight_lifting">Поднятие тяжестей</string>
+    <string name="cardio_session">Кардио-сессия</string>
+    <string name="abs_workout">Тренировка пресса</string>
+    <string name="duration_mins_format">%1$s мин</string>
+    <string name="intensity_low">Низкая</string>
+    <string name="intensity_medium">Средняя</string>
+    <string name="intensity_high">Высокая</string>
+
+    <!-- Health Screen -->
+    <string name="health_tracker_title">Трекер здоровья</string>
+    <string name="daily_metrics_label">Ежедневные показатели</string>
+    <string name="health_score_label">Оценка здоровья</string>
+    <string name="health_positive_feedback">Вы отлично справляетесь! Так держать.</string>
+    <string name="heart_rate">Пульс</string>
+    <string name="water_intake">Потребление воды</string>
+    <string name="calories_burned">Сожженные калории</string>
+    <string name="sleep">Сон</string>
+    <string name="status_normal">Нормально</string>
+    <string name="status_in_progress">В процессе</string>
+    <string name="status_good">Хорошо</string>
+    <string name="status_optimal">Оптимально</string>
+</resources>

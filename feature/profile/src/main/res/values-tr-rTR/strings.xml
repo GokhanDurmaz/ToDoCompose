@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">Profil</string>
+    <string name="back_desc">Geri</string>
+    <string name="default_user">Kullanıcı</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">Bekleyen</string>
+    <string name="done_label">Tamamlanan</string>
+    <string name="success_label">Başarı</string>
+    <string name="account_details_label">Hesap Detayları</string>
+    <string name="username_label">Kullanıcı Adı</string>
+    <string name="email_label">E-posta</string>
+    <string name="security_label">Güvenlik</string>
+    <string name="change_password_label">Şifreyi Değiştir</string>
+    <string name="two_factor_auth_label">İki Faktörlü Doğrulama</string>
+    <string name="all_filter">HEPSİ</string>
+    <string name="pending_tasks_title">Bekleyen Görevler</string>
+    <string name="manage_schedule_subtitle">Gelecek programınızı yönetin</string>
+    <string name="alerts_desc">Uyarılar</string>
+    <string name="mark_done_desc">Tamamlandı Olarak İşaretle</string>
+    <string name="task_id_prefix">Kimlik: #%1$s</string>
+    <string name="update_security_label">Güvenliği Güncelle</string>
+    <string name="current_password_label">Mevcut Şifre</string>
+    <string name="new_password_label">Yeni Şifre</string>
+    <string name="confirm_new_password_label">Yeni Şifreyi Onayla</string>
+    <string name="update_password_btn">Şifreyi Güncelle</string>
+    <string name="profile_picture_title">Profil Resmi</string>
+    <string name="edit_desc">Düzenle</string>
+    <string name="pick_photo_instruction">Sizi FlowIntent\'te temsil eden bir fotoğraf seçin.</string>
+</resources>

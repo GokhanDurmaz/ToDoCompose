@@ -42,9 +42,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.flowintent.home.R
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -53,13 +55,20 @@ import com.flowintent.uikit.util.VAL_8
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GymScreen(onBack: () -> Unit = {}) {
+    val workoutList = listOf(
+        Workout(stringResource(R.string.morning_yoga), stringResource(R.string.duration_mins_format, "30"), stringResource(R.string.intensity_low), Color(0xFF4CAF50)),
+        Workout(stringResource(R.string.weight_lifting), stringResource(R.string.duration_mins_format, "45"), stringResource(R.string.intensity_high), Color(0xFFF44336)),
+        Workout(stringResource(R.string.cardio_session), stringResource(R.string.duration_mins_format, "20"), stringResource(R.string.intensity_medium), Color(0xFF2196F3)),
+        Workout(stringResource(R.string.abs_workout), stringResource(R.string.duration_mins_format, "15"), stringResource(R.string.intensity_medium), Color(0xFFFF9800))
+    )
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Gym & Fitness", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.gym_fitness_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Back", modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = stringResource(R.string.back_desc), modifier = Modifier.size(20.dp))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -74,7 +83,7 @@ fun GymScreen(onBack: () -> Unit = {}) {
                 contentColor = MaterialTheme.colorScheme.onPrimary,
                 shape = RoundedCornerShape(VAL_16.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Workout")
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_workout_desc))
             }
         }
     ) { padding ->
@@ -86,7 +95,7 @@ fun GymScreen(onBack: () -> Unit = {}) {
             verticalArrangement = Arrangement.spacedBy(VAL_16.dp)
         ) {
             item { WorkoutProgressCard() }
-            item { Text("Today's Plan", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
+            item { Text(stringResource(R.string.today_plan_label), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
             items(workoutList) { workout ->
                 WorkoutItem(workout)
             }
@@ -108,7 +117,7 @@ private fun WorkoutProgressCard() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.FitnessCenter, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                 Spacer(modifier = Modifier.width(VAL_8.dp))
-                Text("Weekly Goal", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.weekly_goal_label), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(VAL_12.dp))
             LinearProgressIndicator(
@@ -121,7 +130,7 @@ private fun WorkoutProgressCard() {
                 trackColor = MaterialTheme.colorScheme.surfaceVariant
             )
             Spacer(modifier = Modifier.height(VAL_8.dp))
-            Text("3 of 5 workouts completed", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.workouts_completed_format, 3, 5), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -161,10 +170,3 @@ private fun WorkoutItem(workout: Workout) {
 }
 
 private data class Workout(val name: String, val duration: String, val intensity: String, val color: Color)
-
-private val workoutList = listOf(
-    Workout("Morning Yoga", "30 mins", "Low", Color(0xFF4CAF50)),
-    Workout("Weight Lifting", "45 mins", "High", Color(0xFFF44336)),
-    Workout("Cardio Session", "20 mins", "Medium", Color(0xFF2196F3)),
-    Workout("Abs Workout", "15 mins", "Medium", Color(0xFFFF9800))
-)

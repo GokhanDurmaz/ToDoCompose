@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">Por favor, insira um endereço de e-mail válido</string>
+    <string name="welcome_back">Bem-vindo de volta</string>
+    <string name="sign_in_subtitle">Por favor, inicie sessão para continuar</string>
+    <string name="email_address">Endereço de e-mail</string>
+    <string name="password">Palavra-passe</string>
+    <string name="forgot_password">Esqueceu-se da palavra-passe?</string>
+    <string name="sign_in">Iniciar sessão</string>
+    <string name="dont_have_account_sign_up">Não tem uma conta? Registe-se</string>
+    <string name="create_new_account">Criar nova conta</string>
+    <string name="sign_up_subtitle">Junte-se a nós e comece a sua jornada</string>
+    <string name="first_name">Nome</string>
+    <string name="last_name">Apelido</string>
+    <string name="sign_up">Registar-se</string>
+    <string name="already_have_account_sign_in">Já tem uma conta? Inicie sessão</string>
+    <string name="forgot_password_title">Esqueci-me da palavra-passe</string>
+    <string name="forgot_password_instructions">Introduza o seu endereço de e-mail e enviar-lhe-emos instruções para redefinir a sua palavra-passe.</string>
+    <string name="back_to_login">&lt; Voltar ao login</string>
+    <string name="send">Enviar</string>
+    <string name="reset_link_sent">Link de redefinição enviado! Verifique a sua caixa de entrada.</string>
+    <string name="two_factor_title">Autenticação de dois fatores</string>
+    <string name="two_factor_subtitle">Introduza o código de 6 dígitos enviado para o seu dispositivo</string>
+    <string name="verification_code">Código de verificação</string>
+    <string name="enter_code_hint">Introduza o código de 6 dígitos</string>
+    <string name="verify_and_proceed">Verificar e prosseguir</string>
+    <string name="resend_code">Reenviar código</string>
+    <string name="code_resent_success">Código reenviado com sucesso!</string>
+</resources>

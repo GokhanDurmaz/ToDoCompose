@@ -21,7 +21,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val navigationDispatcher: NavigationDispatcher,
-    private val repo: EncryptedProtoRepository
+    private val repo: EncryptedProtoRepository,
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -41,6 +41,14 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             repo.themeFlow().collectLatest { theme ->
                 _uiState.update { it.copy(theme = theme ?: "Dark") }
+                val mode = when(theme) {
+                    "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+                    "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_YES // Default to Dark if not set, or FOLLOW_SYSTEM
+                }
+                if (AppCompatDelegate.getDefaultNightMode() != mode) {
+                    AppCompatDelegate.setDefaultNightMode(mode)
+                }
             }
         }
     }
@@ -50,6 +58,12 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             repo.updateTheme(newTheme)
         }
+        val mode = when(newTheme) {
+            "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+            "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        AppCompatDelegate.setDefaultNightMode(mode)
     }
 
     fun onDndChange(enabled: Boolean) {

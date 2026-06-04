@@ -39,8 +39,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.flowintent.home.R
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -53,10 +55,10 @@ fun ArtScreen(onBack: () -> Unit = {}) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Art Gallery", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.art_gallery_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Back", modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = stringResource(R.string.back_desc), modifier = Modifier.size(20.dp))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -73,8 +75,15 @@ fun ArtScreen(onBack: () -> Unit = {}) {
         ) {
             ArtFeaturedCard()
             Spacer(modifier = Modifier.height(VAL_20.dp))
-            Text("Your Creations", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.your_creations_label), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(VAL_12.dp))
+            
+            val artItems = listOf(
+                ArtItem(stringResource(R.string.sketching), Icons.Default.Brush, Color(0xFFFF5722)),
+                ArtItem(stringResource(R.string.oil_painting), Icons.Default.Palette, Color(0xFFE91E63)),
+                ArtItem(stringResource(R.string.coloring), Icons.Default.ColorLens, Color(0xFF2196F3)),
+                ArtItem(stringResource(R.string.digital_art), Icons.Default.Palette, Color(0xFF9C27B0))
+            )
             
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -110,8 +119,8 @@ private fun ArtFeaturedCard() {
                 .padding(VAL_20.dp)
         ) {
             Column(modifier = Modifier.align(Alignment.BottomStart)) {
-                Text("Daily Inspiration", color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text("Unleash your creativity today", color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(R.string.daily_inspiration_label), color = Color.White, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.inspiration_subtitle), color = Color.White.copy(alpha = 0.8f), style = MaterialTheme.typography.bodyMedium)
             }
             Icon(
                 Icons.Default.Palette,
@@ -144,10 +153,3 @@ private fun ArtGalleryItem(item: ArtItem) {
 }
 
 private data class ArtItem(val title: String, val icon: ImageVector, val color: Color)
-
-private val artItems = listOf(
-    ArtItem("Sketching", Icons.Default.Brush, Color(0xFFFF5722)),
-    ArtItem("Oil Painting", Icons.Default.Palette, Color(0xFFE91E63)),
-    ArtItem("Coloring", Icons.Default.ColorLens, Color(0xFF2196F3)),
-    ArtItem("Digital Art", Icons.Default.Palette, Color(0xFF9C27B0))
-)

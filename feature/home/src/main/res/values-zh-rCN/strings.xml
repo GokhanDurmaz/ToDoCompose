@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_label">类别</string>
+    <string name="good_morning">早上好</string>
+    <string name="good_afternoon">下午好</string>
+    <string name="good_evening">晚上好</string>
+    <string name="default_user">用户</string>
+    <string name="search_desc">搜索</string>
+    <string name="notifications_desc">通知</string>
+    <string name="profile_desc">个人资料</string>
+    <string name="back_desc">返回</string>
+
+    <!-- Art Screen -->
+    <string name="art_gallery_title">艺术画廊</string>
+    <string name="your_creations_label">您的创作</string>
+    <string name="daily_inspiration_label">每日灵感</string>
+    <string name="inspiration_subtitle">今天尽情释放您的创造力</string>
+    <string name="sketching">素描</string>
+    <string name="oil_painting">油画</string>
+    <string name="coloring">填色</string>
+    <string name="digital_art">数字艺术</string>
+
+    <!-- Gym Screen -->
+    <string name="gym_fitness_title">健身与运动</string>
+    <string name="add_workout_desc">添加训练</string>
+    <string name="today_plan_label">今日计划</string>
+    <string name="weekly_goal_label">每周目标</string>
+    <string name="workouts_completed_format">已完成 %1$d/%2$d 项训练</string>
+    <string name="morning_yoga">晨间瑜伽</string>
+    <string name="weight_lifting">举重</string>
+    <string name="cardio_session">有氧运动</string>
+    <string name="abs_workout">腹肌训练</string>
+    <string name="duration_mins_format">%1$s 分钟</string>
+    <string name="intensity_low">低强度</string>
+    <string name="intensity_medium">中强度</string>
+    <string name="intensity_high">高强度</string>
+
+    <!-- Health Screen -->
+    <string name="health_tracker_title">健康追踪</string>
+    <string name="daily_metrics_label">每日指标</string>
+    <string name="health_score_label">健康评分</string>
+    <string name="health_positive_feedback">您做得很好！继续保持。</string>
+    <string name="heart_rate">心率</string>
+    <string name="water_intake">饮水量</string>
+    <string name="calories_burned">卡路里消耗</string>
+    <string name="sleep">睡眠</string>
+    <string name="status_normal">正常</string>
+    <string name="status_in_progress">进行中</string>
+    <string name="status_good">良好</string>
+    <string name="status_optimal">最佳</string>
+</resources>
