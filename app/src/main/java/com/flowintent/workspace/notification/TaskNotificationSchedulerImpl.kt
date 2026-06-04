@@ -39,7 +39,7 @@ class TaskNotificationSchedulerImpl @Inject constructor(
         )
 
         // Schedule for 30 minutes before due date
-        val triggerAtMillis = task.dueDate - (30 * 60 * 1000)
+        val triggerAtMillis = task.dueDate - NOTIFICATION_LEAD_TIME_MILLIS
 
         val finalTriggerAt = if (triggerAtMillis > System.currentTimeMillis()) {
             triggerAtMillis
@@ -69,5 +69,11 @@ class TaskNotificationSchedulerImpl @Inject constructor(
         if (pendingIntent != null) {
             alarmManager.cancel(pendingIntent)
         }
+    }
+
+    companion object {
+        private const val MINUTES_TO_MILLIS = 60 * 1000
+        private const val LEAD_TIME_MINUTES = 30
+        private const val NOTIFICATION_LEAD_TIME_MILLIS = LEAD_TIME_MINUTES * MINUTES_TO_MILLIS
     }
 }

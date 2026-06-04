@@ -82,13 +82,18 @@ import javax.inject.Inject
                     when (action) {
                         ActionType.DELETE -> {
                             val taskToDelete = toDoDao.findFirstTaskByMatch(ftsQuery)
-                            taskToDelete?.let { toDoDao.delete(it) }
+                            taskToDelete?.let {
+                                notificationScheduler.cancel(it)
+                                toDoDao.delete(it)
+                            }
                         }
 
                         ActionType.UPDATE -> {
                             val taskToUpdate = toDoDao.findFirstTaskByMatch(ftsQuery)
                             taskToUpdate?.let {
-                                toDoDao.updateTask(it.uid, it.title, TaskRes.TaskContent(title))
+                                val updatedContent = TaskRes.TaskContent(title)
+                                toDoDao.updateTask(it.uid, it.title, updatedContent)
+                                notificationScheduler.schedule(it.copy(content = updatedContent))
                             }
                         }
 

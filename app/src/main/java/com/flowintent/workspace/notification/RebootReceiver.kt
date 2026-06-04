@@ -29,10 +29,15 @@ class RebootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == Intent.ACTION_BOOT_COMPLETED) {
+            val pendingResult = goAsync()
             scope.launch {
-                val tasks = taskRepository.getAllTasksRaw()
-                tasks.forEach { task ->
-                    notificationScheduler.schedule(task)
+                try {
+                    val tasks = taskRepository.getAllTasksRaw()
+                    tasks.forEach { task ->
+                        notificationScheduler.schedule(task)
+                    }
+                } finally {
+                    pendingResult.finish()
                 }
             }
         }

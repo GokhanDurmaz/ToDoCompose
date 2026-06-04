@@ -25,14 +25,14 @@ class TaskNotificationReceiver : BroadcastReceiver() {
     }
 
     private fun showNotification(context: Context, taskId: Int, title: String, content: String) {
-        val channelId = "task_reminders"
+        val channelId = CHANNEL_ID
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Task Reminders",
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             notificationManager.createNotificationChannel(channel)
@@ -53,5 +53,8 @@ class TaskNotificationReceiver : BroadcastReceiver() {
         const val EXTRA_TASK_ID = "extra_task_id"
         const val EXTRA_TASK_TITLE = "extra_task_title"
         const val EXTRA_TASK_CONTENT = "extra_task_content"
+
+        private const val CHANNEL_ID = "task_reminders"
+        private const val CHANNEL_NAME = "Task Reminders"
     }
 }
