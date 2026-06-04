@@ -4,15 +4,18 @@
 
 package com.flowintent.test.settings
 
+import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.test.rules.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.flowOf
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
 @ExperimentalCoroutinesApi
@@ -24,12 +27,17 @@ class SettingsViewModelTest {
     @Mock
     private lateinit var navigationDispatcher: NavigationDispatcher
 
+    @Mock
+    private lateinit var repo: EncryptedProtoRepository
+
     private lateinit var viewModel: SettingsViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        viewModel = SettingsViewModel(navigationDispatcher)
+        `when`(repo.languageFlow()).thenReturn(flowOf("en"))
+        `when`(repo.themeFlow()).thenReturn(flowOf("Dark"))
+        viewModel = SettingsViewModel(navigationDispatcher, repo)
     }
 
     @Test
