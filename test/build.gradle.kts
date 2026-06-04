@@ -17,6 +17,10 @@ dependencies {
     testImplementation(project(":data"))
     testImplementation(kotlin("test"))
 
+    androidTestImplementation(project(":core:common"))
+    androidTestImplementation(project(":core:navigation"))
+    androidTestImplementation(project(":data"))
+
     implementation(libs.androidx.espresso.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -29,13 +33,17 @@ dependencies {
 
     // Feature Dependencies for Screen Tests
     testImplementation(project(":feature:auth"))
+    testImplementation(project(":feature:home"))
     testImplementation(project(":feature:profile"))
     testImplementation(project(":feature:settings"))
+    testImplementation(project(":app"))
     androidTestImplementation(project(":feature:auth"))
+    androidTestImplementation(project(":feature:home"))
     androidTestImplementation(project(":feature:profile"))
     androidTestImplementation(project(":feature:settings"))
     androidTestImplementation(project(":feature:uikit"))
     androidTestImplementation(project(":core:navigation"))
+    androidTestImplementation(project(":app"))
 
     // Testing Navigation
     androidTestImplementation(libs.androidx.navigation.testing)
@@ -44,6 +52,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
 }
 
 tasks.withType<Test>().configureEach {
