@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">Idioma</string>
+    <string name="theme_label">Tema</string>
+    <string name="logout">Cerrar sesión</string>
+    <string name="logout_confirmation">¿Estás seguro de que quieres cerrar sesión?</string>
+    <string name="cancel">Cancelar</string>
+    <string name="github">Github</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="dnd_label">No molestar</string>
+    <string name="enable_dnd">Activar No molestar</string>
+    <string name="intensity">Intensidad</string>
+    <string name="about_label">Acerca de</string>
+    <string name="settings_label">Ajustes</string>
+    <string name="version_label">Versión</string>
+    <string name="privacy_policy">Política de privacidad</string>
+    <string name="terms_service">Términos de servicio</string>
+    <string name="check_updates">Buscar actualizaciones</string>
+</resources>

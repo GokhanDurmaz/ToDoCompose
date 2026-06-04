@@ -17,8 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.flowintent.core.db.model.TaskType
+import com.flowintent.profile.R
 
 @Composable
 fun ProfileCategoryChips(
@@ -38,7 +40,7 @@ fun ProfileCategoryChips(
             FilterChip(
                 selected = selectedType == null,
                 onClick = { onTypeSelected(null) },
-                label = { Text("ALL") },
+                label = { Text(stringResource(R.string.all_filter)) },
                 shape = RoundedCornerShape(20.dp)
             )
         }

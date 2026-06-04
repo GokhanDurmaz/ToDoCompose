@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_label">カテゴリー</string>
+    <string name="good_morning">おはようございます</string>
+    <string name="good_afternoon">こんにちは</string>
+    <string name="good_evening">こんばんは</string>
+    <string name="default_user">ユーザー</string>
+    <string name="search_desc">検索</string>
+    <string name="notifications_desc">通知</string>
+    <string name="profile_desc">プロフィール</string>
+    <string name="back_desc">戻る</string>
+
+    <!-- Art Screen -->
+    <string name="art_gallery_title">アートギャラリー</string>
+    <string name="your_creations_label">あなたの作品</string>
+    <string name="daily_inspiration_label">毎日のインスピレーション</string>
+    <string name="inspiration_subtitle">今日の創造力を解き放ちましょう</string>
+    <string name="sketching">スケッチ</string>
+    <string name="oil_painting">油絵</string>
+    <string name="coloring">塗り絵</string>
+    <string name="digital_art">デジタルアート</string>
+
+    <!-- Gym Screen -->
+    <string name="gym_fitness_title">ジム＆フィットネス</string>
+    <string name="add_workout_desc">ワークアウトを追加</string>
+    <string name="today_plan_label">今日のプラン</string>
+    <string name="weekly_goal_label">週間の目標</string>
+    <string name="workouts_completed_format">%2$d件中%1$d件のワークアウトが完了</string>
+    <string name="morning_yoga">モーニングヨガ</string>
+    <string name="weight_lifting">ウェイトリフティング</string>
+    <string name="cardio_session">カーディオセッション</string>
+    <string name="abs_workout">腹筋ワークアウト</string>
+    <string name="duration_mins_format">%1$s分</string>
+    <string name="intensity_low">低</string>
+    <string name="intensity_medium">中</string>
+    <string name="intensity_high">高</string>
+
+    <!-- Health Screen -->
+    <string name="health_tracker_title">ヘルスケアトラッカー</string>
+    <string name="daily_metrics_label">毎日の指標</string>
+    <string name="health_score_label">健康スコア</string>
+    <string name="health_positive_feedback">素晴らしいです！その調子で頑張りましょう。</string>
+    <string name="heart_rate">心拍数</string>
+    <string name="water_intake">水分摂取量</string>
+    <string name="calories_burned">消費カロリー</string>
+    <string name="sleep">睡眠</string>
+    <string name="status_normal">正常</string>
+    <string name="status_in_progress">進行中</string>
+    <string name="status_good">良好</string>
+    <string name="status_optimal">最適</string>
+</resources>

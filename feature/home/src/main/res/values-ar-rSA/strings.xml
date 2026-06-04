@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_label">الفئات</string>
+    <string name="good_morning">صباح الخير</string>
+    <string name="good_afternoon">طاب يومك</string>
+    <string name="good_evening">مساء الخير</string>
+    <string name="default_user">المستخدم</string>
+    <string name="search_desc">بحث</string>
+    <string name="notifications_desc">الإشعارات</string>
+    <string name="profile_desc">الملف الشخصي</string>
+    <string name="back_desc">عودة</string>
+
+    <!-- Art Screen -->
+    <string name="art_gallery_title">معرض الفنون</string>
+    <string name="your_creations_label">إبداعاتك</string>
+    <string name="daily_inspiration_label">إلهام يومي</string>
+    <string name="inspiration_subtitle">أطلق العنان لإبداعك اليوم</string>
+    <string name="sketching">رسم</string>
+    <string name="oil_painting">رسم زيتي</string>
+    <string name="coloring">تلوين</string>
+    <string name="digital_art">فن رقمي</string>
+
+    <!-- Gym Screen -->
+    <string name="gym_fitness_title">الجيم واللياقة البدنية</string>
+    <string name="add_workout_desc">إضافة تمرين</string>
+    <string name="today_plan_label">خطة اليوم</string>
+    <string name="weekly_goal_label">الهدف الأسبوعي</string>
+    <string name="workouts_completed_format">تم إكمال %1$d من %2$d من التمارين</string>
+    <string name="morning_yoga">يوغا الصباح</string>
+    <string name="weight_lifting">رفع الأثقال</string>
+    <string name="cardio_session">جلسة كارديو</string>
+    <string name="abs_workout">تمرين البطن</string>
+    <string name="duration_mins_format">%1$s دقيقة</string>
+    <string name="intensity_low">منخفض</string>
+    <string name="intensity_medium">متوسط</string>
+    <string name="intensity_high">عالي</string>
+
+    <!-- Health Screen -->
+    <string name="health_tracker_title">تتبع الصحة</string>
+    <string name="daily_metrics_label">المقاييس اليومية</string>
+    <string name="health_score_label">درجة الصحة</string>
+    <string name="health_positive_feedback">أنت تقوم بعمل رائع! استمر في ذلك.</string>
+    <string name="heart_rate">نبض القلب</string>
+    <string name="water_intake">شرب الماء</string>
+    <string name="calories_burned">السعرات الحرارية المحروقة</string>
+    <string name="sleep">النوم</string>
+    <string name="status_normal">طبيعي</string>
+    <string name="status_in_progress">قيد التنفيذ</string>
+    <string name="status_good">جيد</string>
+    <string name="status_optimal">أمثل</string>
+</resources>

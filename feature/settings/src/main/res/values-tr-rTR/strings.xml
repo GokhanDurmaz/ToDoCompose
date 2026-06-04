@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">Dil</string>
+    <string name="theme_label">Tema</string>
+    <string name="logout">Çıkış Yap</string>
+    <string name="logout_confirmation">Çıkış yapmak istediğinizden emin misiniz?</string>
+    <string name="cancel">İptal</string>
+    <string name="github">Github</string>
+    <string name="theme_light">Açık</string>
+    <string name="theme_dark">Koyu</string>
+    <string name="dnd_label">Rahatsız Etmeyin</string>
+    <string name="enable_dnd">Rahatsız Etmeyin\'i Etkinleştir</string>
+    <string name="intensity">Yoğunluk</string>
+    <string name="about_label">Hakkında</string>
+    <string name="settings_label">Ayarlar</string>
+    <string name="version_label">Versiyon</string>
+    <string name="privacy_policy">Gizlilik Politikası</string>
+    <string name="terms_service">Hizmet Şartları</string>
+    <string name="check_updates">Güncellemeleri Denetle</string>
+</resources>

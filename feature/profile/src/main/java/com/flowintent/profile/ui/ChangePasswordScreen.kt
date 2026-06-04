@@ -38,12 +38,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.util.Resource
+import com.flowintent.profile.R
 import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
@@ -77,10 +79,10 @@ fun ChangePasswordScreen(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Change Password", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.change_password_label), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
-                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Back", modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = stringResource(R.string.back_desc), modifier = Modifier.size(20.dp))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -107,7 +109,7 @@ fun ChangePasswordScreen(
             ) {
                 Column(modifier = Modifier.padding(VAL_16.dp)) {
                     Text(
-                        text = "Update Security",
+                        text = stringResource(R.string.update_security_label),
                         style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
@@ -117,7 +119,7 @@ fun ChangePasswordScreen(
                     PasswordTextField(
                         value = uiState.oldPassword,
                         onValueChange = viewModel::onOldPasswordChange,
-                        label = "Current Password",
+                        label = stringResource(R.string.current_password_label),
                         enabled = uiState.changePasswordState !is Resource.Loading
                     )
 
@@ -126,7 +128,7 @@ fun ChangePasswordScreen(
                     PasswordTextField(
                         value = uiState.newPassword,
                         onValueChange = viewModel::onNewPasswordChange,
-                        label = "New Password",
+                        label = stringResource(R.string.new_password_label),
                         enabled = uiState.changePasswordState !is Resource.Loading
                     )
 
@@ -135,7 +137,7 @@ fun ChangePasswordScreen(
                     PasswordTextField(
                         value = uiState.confirmPassword,
                         onValueChange = viewModel::onConfirmPasswordChange,
-                        label = "Confirm New Password",
+                        label = stringResource(R.string.confirm_new_password_label),
                         enabled = uiState.changePasswordState !is Resource.Loading
                     )
                 }
@@ -161,7 +163,7 @@ fun ChangePasswordScreen(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Update Password", fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.update_password_btn), fontWeight = FontWeight.Bold)
                 }
             }
 

@@ -12,6 +12,9 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(project(":core:common"))
     implementation(project(":core:navigation"))
     implementation(project(":feature:auth"))
     implementation(project(":feature:profile"))

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">Пожалуйста, введите действительный адрес электронной почты</string>
+    <string name="welcome_back">С возвращением</string>
+    <string name="sign_in_subtitle">Пожалуйста, войдите, чтобы продолжить</string>
+    <string name="email_address">Адрес электронной почты</string>
+    <string name="password">Пароль</string>
+    <string name="forgot_password">Забыли пароль?</string>
+    <string name="sign_in">Войти</string>
+    <string name="dont_have_account_sign_up">Нет учетной записи? Зарегистрироваться</string>
+    <string name="create_new_account">Создать новую учетную запись</string>
+    <string name="sign_up_subtitle">Присоединяйтесь к нам и начните свое путешествие</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="sign_up">Зарегистрироваться</string>
+    <string name="already_have_account_sign_in">Уже есть учетная запись? Войти</string>
+    <string name="forgot_password_title">Забыли пароль</string>
+    <string name="forgot_password_instructions">Введите свой адрес электронной почты, и мы отправим вам инструкции по сбросу пароля.</string>
+    <string name="back_to_login">&lt; Назад к входу</string>
+    <string name="send">Отправить</string>
+    <string name="reset_link_sent">Ссылка для сброса отправлена! Проверьте свой почтовый ящик.</string>
+    <string name="two_factor_title">Двухфакторная аутентификация</string>
+    <string name="two_factor_subtitle">Введите 6-значный код, отправленный на ваше устройство</string>
+    <string name="verification_code">Код подтверждения</string>
+    <string name="enter_code_hint">Введите 6-значный код</string>
+    <string name="verify_and_proceed">Подтвердить и продолжить</string>
+    <string name="resend_code">Отправить код еще раз</string>
+    <string name="code_resent_success">Код успешно отправлен повторно!</string>
+</resources>

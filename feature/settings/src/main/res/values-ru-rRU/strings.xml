@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">Язык</string>
+    <string name="theme_label">Тема</string>
+    <string name="logout">Выйти</string>
+    <string name="logout_confirmation">Вы уверены, что хотите выйти?</string>
+    <string name="cancel">Отмена</string>
+    <string name="github">Github</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Темная</string>
+    <string name="dnd_label">Не беспокоить</string>
+    <string name="enable_dnd">Включить режим "Не беспокоить"</string>
+    <string name="intensity">Интенсивность</string>
+    <string name="about_label">О приложении</string>
+    <string name="settings_label">Настройки</string>
+    <string name="version_label">Версия</string>
+    <string name="privacy_policy">Политика конфиденциальности</string>
+    <string name="terms_service">Условия использования</string>
+    <string name="check_updates">Проверить обновления</string>
+</resources>

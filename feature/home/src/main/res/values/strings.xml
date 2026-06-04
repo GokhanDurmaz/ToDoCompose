@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_label">Categories</string>
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="default_user">User</string>
+    <string name="search_desc">Search</string>
+    <string name="notifications_desc">Notifications</string>
+    <string name="profile_desc">Profile</string>
+    <string name="back_desc">Back</string>
+
+    <!-- Art Screen -->
+    <string name="art_gallery_title">Art Gallery</string>
+    <string name="your_creations_label">Your Creations</string>
+    <string name="daily_inspiration_label">Daily Inspiration</string>
+    <string name="inspiration_subtitle">Unleash your creativity today</string>
+    <string name="sketching">Sketching</string>
+    <string name="oil_painting">Oil Painting</string>
+    <string name="coloring">Coloring</string>
+    <string name="digital_art">Digital Art</string>
+
+    <!-- Gym Screen -->
+    <string name="gym_fitness_title">Gym &amp; Fitness</string>
+    <string name="add_workout_desc">Add Workout</string>
+    <string name="today_plan_label">Today\'s Plan</string>
+    <string name="weekly_goal_label">Weekly Goal</string>
+    <string name="workouts_completed_format">%1$d of %2$d workouts completed</string>
+    <string name="morning_yoga">Morning Yoga</string>
+    <string name="weight_lifting">Weight Lifting</string>
+    <string name="cardio_session">Cardio Session</string>
+    <string name="abs_workout">Abs Workout</string>
+    <string name="duration_mins_format">%1$s mins</string>
+    <string name="intensity_low">Low</string>
+    <string name="intensity_medium">Medium</string>
+    <string name="intensity_high">High</string>
+
+    <!-- Health Screen -->
+    <string name="health_tracker_title">Health Tracker</string>
+    <string name="daily_metrics_label">Daily Metrics</string>
+    <string name="health_score_label">Health Score</string>
+    <string name="health_positive_feedback">You are doing great! Keep it up.</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="water_intake">Water Intake</string>
+    <string name="calories_burned">Calories Burned</string>
+    <string name="sleep">Sleep</string>
+    <string name="status_normal">Normal</string>
+    <string name="status_in_progress">In Progress</string>
+    <string name="status_good">Good</string>
+    <string name="status_optimal">Optimal</string>
+</resources>

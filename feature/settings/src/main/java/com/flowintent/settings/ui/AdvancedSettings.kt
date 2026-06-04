@@ -105,19 +105,19 @@ fun AdvancedSettingsScreen(
     if (showLogoutDialog) {
         AlertDialog(
             onDismissRequest = { showLogoutDialog = false },
-            title = { Text("Logout") },
-            text = { Text("Are you sure you want to log out?") },
+            title = { Text(stringResource(R.string.logout)) },
+            text = { Text(stringResource(R.string.logout_confirmation)) },
             confirmButton = {
                 TextButton(onClick = {
                     showLogoutDialog = false
                     authViewModel.onLogoutClicked()
                 }) {
-                    Text("Logout", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.logout), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showLogoutDialog = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -278,7 +278,7 @@ private fun ProfileHeader(
                     IconButton(onClick = onLogout) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Logout",
+                            contentDescription = stringResource(R.string.logout),
                             tint = MaterialTheme.colorScheme.error
                         )
                     }
@@ -334,13 +334,18 @@ private fun LanguageSelection(currentLanguage: String, onLanguageChange: (String
 
 @Composable
 private fun ThemeSelection(currentTheme: String, onThemeChange: (String) -> Unit) {
+    val themes = listOf(
+        "Light" to (stringResource(R.string.theme_light) to Icons.Default.LightMode),
+        "Dark" to (stringResource(R.string.theme_dark) to Icons.Default.DarkMode)
+    )
     SettingsSection(title = stringResource(R.string.theme_label), icon = Icons.Default.ColorLens) {
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            listOf("Light" to Icons.Default.LightMode, "Dark" to Icons.Default.DarkMode).forEach { (option, icon) ->
-                val isSelected = currentTheme == option
+            themes.forEach { (key, pair) ->
+                val (name, icon) = pair
+                val isSelected = currentTheme == key
                 FilterChip(
                     selected = isSelected,
-                    onClick = { onThemeChange(option) },
+                    onClick = { onThemeChange(key) },
                     leadingIcon = {
                         Icon(
                             icon,
@@ -350,7 +355,7 @@ private fun ThemeSelection(currentTheme: String, onThemeChange: (String) -> Unit
                     },
                     label = {
                         Text(
-                            text = option,
+                            text = name,
                             style = MaterialTheme.typography.labelLarge
                         )
                     },
@@ -384,7 +389,7 @@ private fun AboutSection() {
                 icon = Icons.Default.Terminal
             )
             ActionRow(
-                label = "Github",
+                label = stringResource(R.string.github),
                 icon = Icons.Default.Terminal
             )
         }

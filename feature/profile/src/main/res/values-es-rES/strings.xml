@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">Perfil</string>
+    <string name="back_desc">Atrás</string>
+    <string name="default_user">Usuario</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">Pendiente</string>
+    <string name="done_label">Hecho</string>
+    <string name="success_label">Éxito</string>
+    <string name="account_details_label">Detalles de la cuenta</string>
+    <string name="username_label">Nombre de usuario</string>
+    <string name="email_label">Correo electrónico</string>
+    <string name="security_label">Seguridad</string>
+    <string name="change_password_label">Cambiar contraseña</string>
+    <string name="two_factor_auth_label">Autenticación de dos factores</string>
+    <string name="all_filter">TODO</string>
+    <string name="pending_tasks_title">Tareas pendientes</string>
+    <string name="manage_schedule_subtitle">Administra tu próxima agenda</string>
+    <string name="alerts_desc">Alertas</string>
+    <string name="mark_done_desc">Marcar como hecho</string>
+    <string name="task_id_prefix">ID: #%1$s</string>
+    <string name="update_security_label">Actualizar seguridad</string>
+    <string name="current_password_label">Contraseña actual</string>
+    <string name="new_password_label">Nueva contraseña</string>
+    <string name="confirm_new_password_label">Confirmar nueva contraseña</string>
+    <string name="update_password_btn">Actualizar contraseña</string>
+    <string name="profile_picture_title">Foto de perfil</string>
+    <string name="edit_desc">Editar</string>
+    <string name="pick_photo_instruction">Elige una foto que te represente en FlowIntent.</string>
+</resources>

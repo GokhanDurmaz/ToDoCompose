@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.uikit.theme.ToDoTheme
 import com.flowintent.uikit.theme.md_theme_light_primary
 import com.flowintent.uikit.util.COLOR_0XFF003366
@@ -78,6 +79,7 @@ class MainActivity : AppCompatActivity() {
     @JvmSuppressWildcards
     lateinit var featureApi: Set<FeatureApi>
     private val authViewModel: AuthViewModel by viewModels()
+    private val settingsViewModel: SettingsViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -86,7 +88,14 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val isDarkTheme = isSystemInDarkTheme()
+            val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
+            val isSystemDark = isSystemInDarkTheme()
+            val isDarkTheme = when (settingsUiState.theme) {
+                "Dark" -> true
+                "Light" -> false
+                else -> isSystemDark
+            }
+
             LaunchedEffect(isDarkTheme) {
                 val windowInsetsController =
                     WindowInsetsControllerCompat(window, window.decorView)
@@ -94,9 +103,10 @@ class MainActivity : AppCompatActivity() {
                 windowInsetsController.isAppearanceLightNavigationBars = !isDarkTheme
             }
             HomeScreen(
-                viewModel = authViewModel,
+                isDarkTheme = isDarkTheme,
+                authViewModel = authViewModel,
                 navigationDispatcher = navigationDispatcher,
-                featureApi = featureApi
+                featureApi = featureApi,
             )
         }
         Log.i(TAG, "onCreate")
@@ -139,12 +149,13 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 fun HomeScreen(
-    viewModel: AuthViewModel,
+    isDarkTheme: Boolean,
+    authViewModel: AuthViewModel,
     navigationDispatcher: NavigationDispatcher,
     featureApi: Set<FeatureApi>
 ) {
-    ToDoTheme {
-        val isReady by viewModel.isReady.collectAsStateWithLifecycle()
+    ToDoTheme(darkTheme = isDarkTheme) {
+        val isReady by authViewModel.isReady.collectAsStateWithLifecycle()
 
         Crossfade(targetState = isReady, label = "splash_transition") { ready ->
             if (ready) {
@@ -153,9 +164,10 @@ fun HomeScreen(
                     color = md_theme_light_primary
                 ) {
                     ToDoNavigationBar(
-                        authViewModel = viewModel,
+                        authViewModel = authViewModel,
                         navigationDispatcher = navigationDispatcher,
-                        featureApis = featureApi)
+                        featureApis = featureApi
+                    )
                 }
             } else {
                 CustomSplashScreen()
@@ -217,7 +229,7 @@ fun CustomSplashScreen() {
 
                 val outPath = Path()
                 PathMeasure().apply {
-                    setPath(path, false)
+                    setPath(path, forceClosed = false)
                     getSegment(VAL_0_0, length * checkProgress, outPath)
                 }
 

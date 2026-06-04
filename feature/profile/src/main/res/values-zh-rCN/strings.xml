@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">个人资料</string>
+    <string name="back_desc">返回</string>
+    <string name="default_user">用户</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">待处理</string>
+    <string name="done_label">已完成</string>
+    <string name="success_label">成功</string>
+    <string name="account_details_label">账户详情</string>
+    <string name="username_label">用户名</string>
+    <string name="email_label">电子邮件</string>
+    <string name="security_label">安全</string>
+    <string name="change_password_label">更改密码</string>
+    <string name="two_factor_auth_label">双重认证</string>
+    <string name="all_filter">全部</string>
+    <string name="pending_tasks_title">待办任务</string>
+    <string name="manage_schedule_subtitle">管理您接下来的日程</string>
+    <string name="alerts_desc">警报</string>
+    <string name="mark_done_desc">标记为完成</string>
+    <string name="task_id_prefix">ID: #%1$s</string>
+    <string name="update_security_label">更新安全设置</string>
+    <string name="current_password_label">当前密码</string>
+    <string name="new_password_label">新密码</string>
+    <string name="confirm_new_password_label">确认新密码</string>
+    <string name="update_password_btn">更新密码</string>
+    <string name="profile_picture_title">个人资料照片</string>
+    <string name="edit_desc">编辑</string>
+    <string name="pick_photo_instruction">选择一张在 FlowIntent 中代表您的照片。</string>
+</resources>

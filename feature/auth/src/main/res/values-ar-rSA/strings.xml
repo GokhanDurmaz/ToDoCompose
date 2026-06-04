@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">يرجى إدخال عنوان بريد إلكتروني صالح</string>
+    <string name="welcome_back">مرحباً بعودتك</string>
+    <string name="sign_in_subtitle">يرجى تسجيل الدخول للمتابعة</string>
+    <string name="email_address">عنوان البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="forgot_password">هل نسيت كلمة المرور؟</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="dont_have_account_sign_up">ليس لديك حساب؟ سجل الآن</string>
+    <string name="create_new_account">إنشاء حساب جديد</string>
+    <string name="sign_up_subtitle">انضم إلينا وابدأ رحلتك</string>
+    <string name="first_name">الاسم الأول</string>
+    <string name="last_name">اسم العائلة</string>
+    <string name="sign_up">إنشاء حساب</string>
+    <string name="already_have_account_sign_in">لديك حساب بالفعل؟ سجل دخولك</string>
+    <string name="forgot_password_title">نسيت كلمة المرور</string>
+    <string name="forgot_password_instructions">أدخل عنوان بريدك الإلكتروني وسنرسل لك تعليمات لإعادة تعيين كلمة المرور الخاصة بك.</string>
+    <string name="back_to_login">&lt; العودة إلى تسجيل الدخول</string>
+    <string name="send">إرسال</string>
+    <string name="reset_link_sent">تم إرسال رابط إعادة التعيين! تحقق من بريدك الوارد.</string>
+    <string name="two_factor_title">المصادقة الثنائية</string>
+    <string name="two_factor_subtitle">أدخل الرمز المكون من 6 أرقام المرسل إلى جهازك</string>
+    <string name="verification_code">رمز التحقق</string>
+    <string name="enter_code_hint">أدخل الرمز المكون من 6 أرقام</string>
+    <string name="verify_and_proceed">التحقق والمتابعة</string>
+    <string name="resend_code">إعادة إرسال الرمز</string>
+    <string name="code_resent_success">تم إعادة إرسال الرمز بنجاح!</string>
+</resources>

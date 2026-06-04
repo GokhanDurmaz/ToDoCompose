@@ -46,11 +46,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.core.db.model.TaskCategory
+import com.flowintent.home.R
 import com.flowintent.home.ui.vm.HomeViewModel
 import com.flowintent.uikit.theme.ToDoTheme
 import com.flowintent.uikit.util.VAL_12
@@ -90,7 +92,7 @@ fun HomeScreen(
                 WelcomeHeader(username)
                 
                 Text(
-                    text = "Categories",
+                    text = stringResource(R.string.categories_label),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = VAL_20.dp, vertical = VAL_12.dp)
@@ -124,10 +126,10 @@ private fun HomeTopBar() {
         title = {},
         actions = {
             IconButton(onClick = { /* TODO: Search */ }) {
-                Icon(Icons.Default.Search, contentDescription = "Search")
+                Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_desc))
             }
             IconButton(onClick = { /* TODO: Notifications */ }) {
-                Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                Icon(Icons.Default.Notifications, contentDescription = stringResource(R.string.notifications_desc))
             }
             Box(
                 modifier = Modifier
@@ -139,7 +141,7 @@ private fun HomeTopBar() {
             ) {
                 Icon(
                     Icons.Default.Person,
-                    contentDescription = "Profile",
+                    contentDescription = stringResource(R.string.profile_desc),
                     modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.primary
                 )
@@ -154,9 +156,9 @@ private fun HomeTopBar() {
 @Composable
 private fun WelcomeHeader(username: String?) {
     val greeting = when (Calendar.getInstance().get(Calendar.HOUR_OF_DAY)) {
-        in 0..11 -> "Good Morning"
-        in 12..16 -> "Good Afternoon"
-        else -> "Good Evening"
+        in 0..11 -> stringResource(R.string.good_morning)
+        in 12..16 -> stringResource(R.string.good_afternoon)
+        else -> stringResource(R.string.good_evening)
     }
 
     Column(
@@ -170,7 +172,7 @@ private fun WelcomeHeader(username: String?) {
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
-            text = username ?: "User",
+            text = username ?: stringResource(R.string.default_user),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.onSurface

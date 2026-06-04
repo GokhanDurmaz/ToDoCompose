@@ -17,10 +17,19 @@
     <string name="sign_up">Sign Up</string>
     <string name="already_have_account_sign_in">Already have an account? Sign In</string>
 
+    <!-- Forgot Password Screen -->
+    <string name="forgot_password_title">Forgot Password</string>
+    <string name="forgot_password_instructions">Enter your email address and we will send you instructions to reset your password.</string>
+    <string name="back_to_login">&lt; Back to Login</string>
+    <string name="send">Send</string>
+    <string name="reset_link_sent">Reset link sent! Check your inbox.</string>
+
     <!-- Two-Factor Authentication Screen -->
     <string name="two_factor_title">Two-Factor Authentication</string>
     <string name="two_factor_subtitle">Enter the 6-digit code sent to your device</string>
     <string name="verification_code">Verification Code</string>
+    <string name="enter_code_hint">Enter the 6-digit code</string>
     <string name="verify_and_proceed">Verify and Proceed</string>
     <string name="resend_code">Resend Code</string>
+    <string name="code_resent_success">Code resent successfully!</string>
 </resources>

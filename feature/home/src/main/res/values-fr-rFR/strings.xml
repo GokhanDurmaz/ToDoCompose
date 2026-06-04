@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="categories_label">Catégories</string>
+    <string name="good_morning">Bonjour</string>
+    <string name="good_afternoon">Bon après-midi</string>
+    <string name="good_evening">Bonsoir</string>
+    <string name="default_user">Utilisateur</string>
+    <string name="search_desc">Rechercher</string>
+    <string name="notifications_desc">Notifications</string>
+    <string name="profile_desc">Profil</string>
+    <string name="back_desc">Retour</string>
+
+    <!-- Art Screen -->
+    <string name="art_gallery_title">Galerie d\'Art</string>
+    <string name="your_creations_label">Vos Créations</string>
+    <string name="daily_inspiration_label">Inspiration Quotidienne</string>
+    <string name="inspiration_subtitle">Libérez votre créativité aujourd\'hui</string>
+    <string name="sketching">Esquisse</string>
+    <string name="oil_painting">Peinture à l\'Huile</string>
+    <string name="coloring">Coloriage</string>
+    <string name="digital_art">Art Numérique</string>
+
+    <!-- Gym Screen -->
+    <string name="gym_fitness_title">Salle de Sport &amp; Fitness</string>
+    <string name="add_workout_desc">Ajouter un Entraînement</string>
+    <string name="today_plan_label">Plan d\'Aujourd\'hui</string>
+    <string name="weekly_goal_label">Objectif Hebdomadaire</string>
+    <string name="workouts_completed_format">%1$d sur %2$d entraînements terminés</string>
+    <string name="morning_yoga">Yoga du Matin</string>
+    <string name="weight_lifting">Musculation</string>
+    <string name="cardio_session">Séance de Cardio</string>
+    <string name="abs_workout">Entraînement des Abdos</string>
+    <string name="duration_mins_format">%1$s min</string>
+    <string name="intensity_low">Faible</string>
+    <string name="intensity_medium">Moyenne</string>
+    <string name="intensity_high">Élevée</string>
+
+    <!-- Health Screen -->
+    <string name="health_tracker_title">Suivi de Santé</string>
+    <string name="daily_metrics_label">Métriques Quotidiennes</string>
+    <string name="health_score_label">Score de Santé</string>
+    <string name="health_positive_feedback">Vous vous en sortez très bien ! Continuez comme ça.</string>
+    <string name="heart_rate">Fréquence Cardiaque</string>
+    <string name="water_intake">Consommation d\'Eau</string>
+    <string name="calories_burned">Calories Brûlées</string>
+    <string name="sleep">Sommeil</string>
+    <string name="status_normal">Normal</string>
+    <string name="status_in_progress">En Cours</string>
+    <string name="status_good">Bon</string>
+    <string name="status_optimal">Optimal</string>
+</resources>

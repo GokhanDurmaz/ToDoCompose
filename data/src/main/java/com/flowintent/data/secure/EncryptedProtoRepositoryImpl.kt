@@ -53,4 +53,18 @@ import javax.inject.Inject
     override fun profileImageUrlFlow(): Flow<String?> =
         dataStore.data.map { store -> store.profileImageUrl.takeIf { it.isNotEmpty() } }
 
+    override suspend fun updateLanguage(language: String) {
+        dataStore.updateData { it.toBuilder().setLanguage(language).build() }
+    }
+
+    override fun languageFlow(): Flow<String?> =
+        dataStore.data.map { it.language.takeIf { it.isNotEmpty() } }
+
+    override suspend fun updateTheme(theme: String) {
+        dataStore.updateData { it.toBuilder().setTheme(theme).build() }
+    }
+
+    override fun themeFlow(): Flow<String?> =
+        dataStore.data.map { it.theme.takeIf { it.isNotEmpty() } }
+
 }
