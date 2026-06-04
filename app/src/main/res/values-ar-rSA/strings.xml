@@ -37,4 +37,8 @@
     <string name="check_updates">التحقق من التحديثات</string>
     <string name="logout">تسجيل الخروج</string>
     <string name="ai_thinking">الذكاء الاصطناعي يفكر…</string>
+    <string name="notification_consent_title">ابقَ على اطلاع</string>
+    <string name="notification_consent_description">اسمح بالتنبيهات لتلقي تذكيرات في الوقت المناسب بشأن مهامك القادمة وعدم تفويت أي موعد نهائي.</string>
+    <string name="allow">السماح</string>
+    <string name="not_now">ليس الآن</string>
 </resources>

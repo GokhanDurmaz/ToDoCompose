@@ -37,4 +37,8 @@
     <string name="check_updates">Verificar atualizações</string>
     <string name="logout">Sair</string>
     <string name="ai_thinking">A IA está a pensar…</string>
+    <string name="notification_consent_title">Mantenha-se atualizado(a)</string>
+    <string name="notification_consent_description">Permita notificações para receber lembretes pontuais sobre suas próximas tarefas e nunca perder um prazo.</string>
+    <string name="allow">Permitir</string>
+    <string name="not_now">Agora não</string>
 </resources>
