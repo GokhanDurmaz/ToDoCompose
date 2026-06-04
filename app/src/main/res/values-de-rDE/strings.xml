@@ -37,4 +37,8 @@
     <string name="check_updates">Auf Updates prüfen</string>
     <string name="logout">Abmelden</string>
     <string name="ai_thinking">KI denkt nach…</string>
+    <string name="notification_consent_title">Bleiben Sie auf dem Laufenden</string>
+    <string name="notification_consent_description">Erlauben Sie Benachrichtigungen, um rechtzeitig Erinnerungen an Ihre anstehenden Aufgaben zu erhalten und keine Frist mehr zu verpassen.</string>
+    <string name="allow">Zulassen</string>
+    <string name="not_now">Später</string>
 </resources>

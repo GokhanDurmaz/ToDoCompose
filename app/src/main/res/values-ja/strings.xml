@@ -37,4 +37,8 @@
     <string name="check_updates">アップデートを確認</string>
     <string name="logout">ログアウト</string>
     <string name="ai_thinking">AIが考えています…</string>
+    <string name="notification_consent_title">最新情報をチェック</string>
+    <string name="notification_consent_description">通知を許可すると、今後のタスクに関するリマインダーをタイムリーに受け取ることができ、締め切りを逃すことがなくなります。</string>
+    <string name="allow">許可する</string>
+    <string name="not_now">後で</string>
 </resources>
