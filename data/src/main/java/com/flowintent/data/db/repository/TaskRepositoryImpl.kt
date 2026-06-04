@@ -7,6 +7,7 @@ package com.flowintent.data.db.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import android.util.Log
 import com.flowintent.core.db.model.ActionType
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
@@ -45,7 +46,9 @@ import javax.inject.Inject
 
     override suspend fun insertTask(task: Task) {
         val id = toDoDao.insertTask(task)
-        notificationScheduler.schedule(task.copy(uid = id.toInt()))
+        val newTask = task.copy(uid = id.toInt())
+        Log.d("TaskRepository", "Inserted task: ${newTask.title} with ID: ${newTask.uid}")
+        notificationScheduler.schedule(newTask)
     }
 
     override fun findByTaskName(query: String): Flow<PagingData<Task>> {

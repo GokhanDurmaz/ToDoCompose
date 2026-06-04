@@ -4,10 +4,15 @@
 
 package com.flowintent.workspace.notification
 
+import android.Manifest
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
+import androidx.core.content.ContextCompat
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
 import com.flowintent.core.notification.TaskNotificationScheduler
@@ -21,6 +26,16 @@ class TaskNotificationSchedulerImpl @Inject constructor(
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
     override fun schedule(task: Task) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                Log.w("TaskNotification", "POST_NOTIFICATIONS permission not granted.")
+            }
+        }
+        Log.d("TaskNotification", "Scheduling task: ${task.title} at ${task.dueDate}")
         val intent = Intent(context, TaskNotificationReceiver::class.java).apply {
             putExtra(TaskNotificationReceiver.EXTRA_TASK_ID, task.uid)
             putExtra(TaskNotificationReceiver.EXTRA_TASK_TITLE, task.title)
@@ -50,11 +65,24 @@ class TaskNotificationSchedulerImpl @Inject constructor(
         }
 
         finalTriggerAt?.let {
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                it,
-                pendingIntent
-            )
+            Log.d("TaskNotification", "Triggering alarm at $it")
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        it,
+                        pendingIntent
+                    )
+                } else {
+                    alarmManager.setExactAndAllowWhileIdle(
+                        AlarmManager.RTC_WAKEUP,
+                        it,
+                        pendingIntent
+                    )
+                }
+            } catch (e: SecurityException) {
+                Log.e("TaskNotification", "SecurityException when scheduling alarm", e)
+            }
         }
     }
 
