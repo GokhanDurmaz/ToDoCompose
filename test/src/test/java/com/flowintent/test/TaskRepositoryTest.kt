@@ -7,7 +7,6 @@ package com.flowintent.test
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
 import com.flowintent.test.fakes.FakeTaskRepositoryImpl
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -27,7 +26,7 @@ class TaskRepositoryTest {
         val task = createTask(uid = 1, title = "Task 1")
         taskRepository.insertTask(task)
 
-        val result = taskRepository.getAllTasksRaw().first()
+        val result = taskRepository.getAllTasksRaw()
 
         assertEquals(1, result.size)
         assertEquals("Task 1", result[0].title)
@@ -38,7 +37,7 @@ class TaskRepositoryTest {
         val task = createTask(uid = 99, title = "New Task")
         taskRepository.insertTask(task)
 
-        val result = taskRepository.getAllTasksRaw().first()
+        val result = taskRepository.getAllTasksRaw()
         val found = result.find { it.title == "New Task" }
 
         assertEquals(99, found?.uid)
@@ -50,7 +49,7 @@ class TaskRepositoryTest {
         taskRepository.insertTask(task)
 
         val deleteResult = taskRepository.deleteTask(task)
-        val remainingTasks = taskRepository.getAllTasksRaw().first()
+        val remainingTasks = taskRepository.getAllTasksRaw()
 
         assertEquals(1, deleteResult)
         assertEquals(0, remainingTasks.size)
@@ -61,7 +60,7 @@ class TaskRepositoryTest {
         taskRepository.insertTask(createTask(uid = 5, title = "Target"))
 
         val result = taskRepository.deleteTaskById(5)
-        val remaining = taskRepository.getAllTasksRaw().first()
+        val remaining = taskRepository.getAllTasksRaw()
 
         assertEquals(1, result)
         assertEquals(0, remaining.size)

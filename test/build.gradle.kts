@@ -36,6 +36,7 @@ dependencies {
     testImplementation(project(":feature:home"))
     testImplementation(project(":feature:profile"))
     testImplementation(project(":feature:settings"))
+    testImplementation(project(":feature:uikit"))
     testImplementation(project(":app"))
     androidTestImplementation(project(":feature:auth"))
     androidTestImplementation(project(":feature:home"))

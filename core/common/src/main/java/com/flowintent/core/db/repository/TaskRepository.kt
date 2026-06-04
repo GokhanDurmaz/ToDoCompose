@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.Flow
 interface TaskRepository {
     fun  getTasks(query: String?, type: TaskType? = null): Flow<PagingData<Task>>
 
+    suspend fun getAllTasksRaw(): List<Task>
+
     fun findByTaskName(query: String): Flow<PagingData<Task>>
 
     suspend fun insertTask(task: Task)
@@ -23,6 +25,8 @@ interface TaskRepository {
     suspend fun deleteTaskById(id: Int): Int
 
     suspend fun updateTask(id: Int, title: String, content: TaskRes)
+
+    suspend fun updateTask(task: Task)
 
     suspend fun insertSmartTask(userInput: String): Flow<Resource<Unit>>
 }

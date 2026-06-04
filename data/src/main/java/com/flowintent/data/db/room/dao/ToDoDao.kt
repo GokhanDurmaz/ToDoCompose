@@ -18,6 +18,9 @@ interface ToDoDao {
     @Query("SELECT * FROM tasks ORDER BY due_date DESC")
     fun getAllTasksPaging(): PagingSource<Int, Task>
 
+    @Query("SELECT * FROM tasks")
+    suspend fun getAllTasks(): List<Task>
+
     @Query("""
     SELECT * FROM tasks 
     WHERE (:type IS NULL OR tasks.task_type = :type)
@@ -57,4 +60,7 @@ interface ToDoDao {
 
     @Query("UPDATE tasks SET title = :title, content = :content WHERE uid = :id")
     suspend fun updateTask(id: Int, title: String, content: TaskRes)
+
+    @androidx.room.Update
+    suspend fun update(task: Task)
 }

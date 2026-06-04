@@ -46,9 +46,9 @@ class SettingsUseCaseTest {
     @Test
     fun `UpdateThemeUseCase calls updateTheme in repository`() = runTest {
         val newTheme = AppTheme("Light", "White")
-        
+
         updateThemeUseCase(newTheme)
-        
+
         verify(settingsRepository).updateTheme(newTheme)
     }
 }
