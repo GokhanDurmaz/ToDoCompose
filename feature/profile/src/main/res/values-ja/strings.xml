@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">プロフィール</string>
+    <string name="back_desc">戻る</string>
+    <string name="default_user">ユーザー</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">保留中</string>
+    <string name="done_label">完了</string>
+    <string name="success_label">成功</string>
+    <string name="account_details_label">アカウント詳細</string>
+    <string name="username_label">ユーザー名</string>
+    <string name="email_label">メールアドレス</string>
+    <string name="security_label">セキュリティ</string>
+    <string name="change_password_label">パスワード変更</string>
+    <string name="two_factor_auth_label">2段階認証</string>
+    <string name="all_filter">すべて</string>
+    <string name="pending_tasks_title">保留中のタスク</string>
+    <string name="manage_schedule_subtitle">今後のスケジュールを管理する</string>
+    <string name="alerts_desc">アラート</string>
+    <string name="mark_done_desc">完了にする</string>
+    <string name="task_id_prefix">ID: #%1$s</string>
+    <string name="update_security_label">セキュリティの更新</string>
+    <string name="current_password_label">現在のパスワード</string>
+    <string name="new_password_label">新しいパスワード</string>
+    <string name="confirm_new_password_label">新しいパスワードの確認</string>
+    <string name="update_password_btn">パスワードを更新</string>
+    <string name="profile_picture_title">プロフィール写真</string>
+    <string name="edit_desc">編集</string>
+    <string name="pick_photo_instruction">FlowIntentであなたを表現する写真を選んでください。</string>
+</resources>

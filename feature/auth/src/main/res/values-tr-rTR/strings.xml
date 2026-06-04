@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">Lütfen geçerli bir e-posta adresi girin</string>
+    <string name="welcome_back">Tekrar Hoş Geldiniz</string>
+    <string name="sign_in_subtitle">Devam etmek için lütfen giriş yapın</string>
+    <string name="email_address">E-posta Adresi</string>
+    <string name="password">Şifre</string>
+    <string name="forgot_password">Şifremi Unuttum?</string>
+    <string name="sign_in">Giriş Yap</string>
+    <string name="dont_have_account_sign_up">Hesabınız yok mu? Kaydolun</string>
+    <string name="create_new_account">Yeni Hesap Oluştur</string>
+    <string name="sign_up_subtitle">Bize katılın ve yolculuğunuza başlayın</string>
+    <string name="first_name">Ad</string>
+    <string name="last_name">Soyad</string>
+    <string name="sign_up">Kaydol</string>
+    <string name="already_have_account_sign_in">Zaten hesabınız var mı? Giriş Yapın</string>
+    <string name="forgot_password_title">Şifremi Unuttum</string>
+    <string name="forgot_password_instructions">E-posta adresinizi girin, şifrenizi sıfırlamanız için size talimatları gönderelim.</string>
+    <string name="back_to_login">&lt; Girişe Dön</string>
+    <string name="send">Gönder</string>
+    <string name="reset_link_sent">Sıfırlama bağlantısı gönderildi! Gelen kutunuzu kontrol edin.</string>
+    <string name="two_factor_title">İki Faktörlü Doğrulama</string>
+    <string name="two_factor_subtitle">Cihazınıza gönderilen 6 haneli kodu girin</string>
+    <string name="verification_code">Doğrulama Kodu</string>
+    <string name="enter_code_hint">6 haneli kodu girin</string>
+    <string name="verify_and_proceed">Doğrula ve Devam Et</string>
+    <string name="resend_code">Kodu Yeniden Gönder</string>
+    <string name="code_resent_success">Kod başarıyla yeniden gönderildi!</string>
+</resources>

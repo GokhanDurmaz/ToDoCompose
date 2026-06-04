@@ -42,9 +42,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.flowintent.home.R
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -53,13 +55,20 @@ import com.flowintent.uikit.util.VAL_8
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HealthScreen(onBack: () -> Unit = {}) {
+    val healthMetrics = listOf(
+        HealthMetric(stringResource(R.string.heart_rate), "72 BPM", Icons.Default.MonitorHeart, Color(0xFFF44336), stringResource(R.string.status_normal)),
+        HealthMetric(stringResource(R.string.water_intake), "1.5L / 2.5L", Icons.Default.WaterDrop, Color(0xFF2196F3), stringResource(R.string.status_in_progress)),
+        HealthMetric(stringResource(R.string.calories_burned), "450 kcal", Icons.Default.LocalFireDepartment, Color(0xFFFF9800), stringResource(R.string.status_good)),
+        HealthMetric(stringResource(R.string.sleep), "7h 20m", Icons.Default.Favorite, Color(0xFF9C27B0), stringResource(R.string.status_optimal))
+    )
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Health Tracker", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.health_tracker_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = "Back", modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = stringResource(R.string.back_desc), modifier = Modifier.size(20.dp))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -76,7 +85,7 @@ fun HealthScreen(onBack: () -> Unit = {}) {
             verticalArrangement = Arrangement.spacedBy(VAL_16.dp)
         ) {
             item { HealthSummaryCard() }
-            item { Text("Daily Metrics", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
+            item { Text(stringResource(R.string.daily_metrics_label), style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold) }
             items(healthMetrics) { metric ->
                 HealthMetricItem(metric)
             }
@@ -96,14 +105,14 @@ private fun HealthSummaryCard() {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
                 Spacer(modifier = Modifier.width(VAL_8.dp))
-                Text("Health Score", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.health_score_label), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(VAL_12.dp))
             Row(verticalAlignment = Alignment.Bottom) {
                 Text("85", fontSize = 48.sp, fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSecondaryContainer)
                 Text("/100", fontSize = 18.sp, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f), modifier = Modifier.padding(bottom = 8.dp))
             }
-            Text("You are doing great! Keep it up.", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.health_positive_feedback), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -139,10 +148,3 @@ private fun HealthMetricItem(metric: HealthMetric) {
 }
 
 private data class HealthMetric(val title: String, val value: String, val icon: ImageVector, val color: Color, val status: String)
-
-private val healthMetrics = listOf(
-    HealthMetric("Heart Rate", "72 BPM", Icons.Default.MonitorHeart, Color(0xFFF44336), "Normal"),
-    HealthMetric("Water Intake", "1.5L / 2.5L", Icons.Default.WaterDrop, Color(0xFF2196F3), "In Progress"),
-    HealthMetric("Calories Burned", "450 kcal", Icons.Default.LocalFireDepartment, Color(0xFFFF9800), "Good"),
-    HealthMetric("Sleep", "7h 20m", Icons.Default.Favorite, Color(0xFF9C27B0), "Optimal")
-)

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">Profil</string>
+    <string name="back_desc">Retour</string>
+    <string name="default_user">Utilisateur</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">En attente</string>
+    <string name="done_label">Terminé</string>
+    <string name="success_label">Succès</string>
+    <string name="account_details_label">Détails du compte</string>
+    <string name="username_label">Nom d\'utilisateur</string>
+    <string name="email_label">E-mail</string>
+    <string name="security_label">Sécurité</string>
+    <string name="change_password_label">Changer le mot de passe</string>
+    <string name="two_factor_auth_label">Authentification à deux facteurs</string>
+    <string name="all_filter">TOUT</string>
+    <string name="pending_tasks_title">Tâches en attente</string>
+    <string name="manage_schedule_subtitle">Gérez votre emploi du temps à venir</string>
+    <string name="alerts_desc">Alertes</string>
+    <string name="mark_done_desc">Marquer comme terminé</string>
+    <string name="task_id_prefix">ID : #%1$s</string>
+    <string name="update_security_label">Mettre à jour la sécurité</string>
+    <string name="current_password_label">Mot de passe actuel</string>
+    <string name="new_password_label">Nouveau mot de passe</string>
+    <string name="confirm_new_password_label">Confirmer le nouveau mot de passe</string>
+    <string name="update_password_btn">Mettre à jour le mot de passe</string>
+    <string name="profile_picture_title">Photo de profil</string>
+    <string name="edit_desc">Modifier</string>
+    <string name="pick_photo_instruction">Choisissez une photo qui vous représente dans FlowIntent.</string>
+</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">Langue</string>
+    <string name="theme_label">Thème</string>
+    <string name="logout">Déconnexion</string>
+    <string name="logout_confirmation">Êtes-vous sûr de vouloir vous déconnecter ?</string>
+    <string name="cancel">Annuler</string>
+    <string name="github">Github</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="dnd_label">Ne pas déranger</string>
+    <string name="enable_dnd">Activer Ne pas déranger</string>
+    <string name="intensity">Intensité</string>
+    <string name="about_label">À propos</string>
+    <string name="settings_label">Paramètres</string>
+    <string name="version_label">Version</string>
+    <string name="privacy_policy">Politique de confidentialité</string>
+    <string name="terms_service">Conditions d\'utilisation</string>
+    <string name="check_updates">Vérifier les mises à jour</string>
+</resources>

@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +47,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.flowintent.core.util.Resource
+import com.flowintent.profile.R
 import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.uikit.util.VAL_24
 import com.flowintent.uikit.util.VAL_32
@@ -68,10 +70,10 @@ fun EditProfileImageScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Profile Picture", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.profile_picture_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = { viewModel.onBackClicked() }) {
-                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = null)
+                        Icon(Icons.Default.ArrowBackIosNew, contentDescription = stringResource(R.string.back_desc))
                     }
                 }
             )
@@ -137,14 +139,14 @@ fun EditProfileImageScreen(
                     contentColor = Color.White,
                     shape = CircleShape
                 ) {
-                    Icon(Icons.Default.PhotoCamera, contentDescription = "Edit", modifier = Modifier.size(20.dp))
+                    Icon(Icons.Default.PhotoCamera, contentDescription = stringResource(R.string.edit_desc), modifier = Modifier.size(20.dp))
                 }
             }
 
             Spacer(modifier = Modifier.height(VAL_32.dp))
 
             Text(
-                "Pick a photo that represents you in FlowIntent.",
+                stringResource(R.string.pick_photo_instruction),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant

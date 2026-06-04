@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">Профиль</string>
+    <string name="back_desc">Назад</string>
+    <string name="default_user">Пользователь</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">Ожидание</string>
+    <string name="done_label">Готово</string>
+    <string name="success_label">Успех</string>
+    <string name="account_details_label">Детали аккаунта</string>
+    <string name="username_label">Имя пользователя</string>
+    <string name="email_label">Email</string>
+    <string name="security_label">Безопасность</string>
+    <string name="change_password_label">Изменить пароль</string>
+    <string name="two_factor_auth_label">Двухфакторная аутентификация</string>
+    <string name="all_filter">ВСЕ</string>
+    <string name="pending_tasks_title">Ожидающие задачи</string>
+    <string name="manage_schedule_subtitle">Управляйте своим будущим расписанием</string>
+    <string name="alerts_desc">Оповещения</string>
+    <string name="mark_done_desc">Отметить как выполненное</string>
+    <string name="task_id_prefix">ID: #%1$s</string>
+    <string name="update_security_label">Обновить безопасность</string>
+    <string name="current_password_label">Текущий пароль</string>
+    <string name="new_password_label">Новый пароль</string>
+    <string name="confirm_new_password_label">Подтвердите новый пароль</string>
+    <string name="update_password_btn">Обновить пароль</string>
+    <string name="profile_picture_title">Фото профиля</string>
+    <string name="edit_desc">Редактировать</string>
+    <string name="pick_photo_instruction">Выберите фото, которое представляет вас в FlowIntent.</string>
+</resources>

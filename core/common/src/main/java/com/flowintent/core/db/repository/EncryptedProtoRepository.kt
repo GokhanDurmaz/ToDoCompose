@@ -27,4 +27,12 @@ interface EncryptedProtoRepository {
     fun emailFlow(): Flow<String?>
 
     fun profileImageUrlFlow(): Flow<String?>
+
+    suspend fun updateLanguage(language: String)
+
+    fun languageFlow(): Flow<String?>
+
+    suspend fun updateTheme(theme: String)
+
+    fun themeFlow(): Flow<String?>
 }

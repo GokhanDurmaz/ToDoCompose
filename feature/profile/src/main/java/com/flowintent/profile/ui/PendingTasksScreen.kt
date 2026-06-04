@@ -48,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -62,6 +63,7 @@ import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskType
 import com.flowintent.core.db.model.toDisplayContent
 import com.flowintent.core.util.toReadableDateTime
+import com.flowintent.profile.R
 import com.flowintent.profile.ui.components.ProfileCategoryChips
 import com.flowintent.profile.ui.components.ProfileSearchBar
 import com.flowintent.profile.ui.vm.PendingTasksViewModel
@@ -81,13 +83,13 @@ fun PendingTasksScreen(
                 title = {
                     Column {
                         Text(
-                            text = "Pending Tasks",
+                            text = stringResource(R.string.pending_tasks_title),
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Black,
                             color = MaterialTheme.colorScheme.onBackground
                         )
                         Text(
-                            text = "Manage your upcoming schedule",
+                            text = stringResource(R.string.manage_schedule_subtitle),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                         )
@@ -95,7 +97,7 @@ fun PendingTasksScreen(
                 },
                 actions = {
                     IconButton(onClick = { /* TODO */ }) {
-                        Icon(Icons.Default.NotificationsActive, contentDescription = "Alerts")
+                        Icon(Icons.Default.NotificationsActive, contentDescription = stringResource(R.string.alerts_desc))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -198,7 +200,7 @@ fun ModernPendingTaskCard(task: Task) {
                 ) {
                     Icon(
                         Icons.Default.CheckCircle,
-                        contentDescription = "Mark Done",
+                        contentDescription = stringResource(R.string.mark_done_desc),
                         tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
                     )
                 }
@@ -273,7 +275,7 @@ fun ModernPendingTaskCard(task: Task) {
                     color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
                 ) {
                     Text(
-                        text = "ID: #${task.uid}",
+                        text = stringResource(R.string.task_id_prefix, task.uid),
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                         style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,

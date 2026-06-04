@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">Veuillez saisir une adresse e-mail valide</string>
+    <string name="welcome_back">Bon retour</string>
+    <string name="sign_in_subtitle">Veuillez vous connecter pour continuer</string>
+    <string name="email_address">Adresse e-mail</string>
+    <string name="password">Mot de passe</string>
+    <string name="forgot_password">Mot de passe oublié ?</string>
+    <string name="sign_in">Se connecter</string>
+    <string name="dont_have_account_sign_up">Vous n\'avez pas de compte ? S\'inscrire</string>
+    <string name="create_new_account">Créer un nouveau compte</string>
+    <string name="sign_up_subtitle">Rejoignez-nous et commencez votre voyage</string>
+    <string name="first_name">Prénom</string>
+    <string name="last_name">Nom</string>
+    <string name="sign_up">S\'inscrire</string>
+    <string name="already_have_account_sign_in">Vous avez déjà un compte ? Se connecter</string>
+    <string name="forgot_password_title">Mot de passe oublié</string>
+    <string name="forgot_password_instructions">Entrez votre adresse e-mail et nous vous enverrons des instructions pour réinitialiser votre mot de passe.</string>
+    <string name="back_to_login">&lt; Retour à la connexion</string>
+    <string name="send">Envoyer</string>
+    <string name="reset_link_sent">Lien de réinitialisation envoyé ! Vérifiez votre boîte de réception.</string>
+    <string name="two_factor_title">Authentification à deux facteurs</string>
+    <string name="two_factor_subtitle">Entrez le code à 6 chiffres envoyé sur votre appareil</string>
+    <string name="verification_code">Code de vérification</string>
+    <string name="enter_code_hint">Entrez le code à 6 chiffres</string>
+    <string name="verify_and_proceed">Vérifier et continuer</string>
+    <string name="resend_code">Renvoyer le code</string>
+    <string name="code_resent_success">Code renvoyé avec succès !</string>
+</resources>

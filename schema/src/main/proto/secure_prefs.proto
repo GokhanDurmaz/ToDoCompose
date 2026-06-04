@@ -11,6 +11,8 @@ message SecurePrefs {
   string token = 5;
   string refresh = 6;
   string profileImageUrl = 7;
+  string language = 8;
+  string theme = 9;
 }
 
 

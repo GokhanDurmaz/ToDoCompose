@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="profile_title">الملف الشخصي</string>
+    <string name="back_desc">عودة</string>
+    <string name="default_user">المستخدم</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">قيد الانتظار</string>
+    <string name="done_label">مكتمل</string>
+    <string name="success_label">نجاح</string>
+    <string name="account_details_label">تفاصيل الحساب</string>
+    <string name="username_label">اسم المستخدم</string>
+    <string name="email_label">البريد الإلكتروني</string>
+    <string name="security_label">الأمان</string>
+    <string name="change_password_label">تغيير كلمة المرور</string>
+    <string name="two_factor_auth_label">المصادقة الثنائية</string>
+    <string name="all_filter">الكل</string>
+    <string name="pending_tasks_title">المهام المعلقة</string>
+    <string name="manage_schedule_subtitle">إدارة جدولك القادم</string>
+    <string name="alerts_desc">تنبيهات</string>
+    <string name="mark_done_desc">تم الإنجاز</string>
+    <string name="task_id_prefix">معرف: #%1$s</string>
+    <string name="update_security_label">تحديث الأمان</string>
+    <string name="current_password_label">كلمة المرور الحالية</string>
+    <string name="new_password_label">كلمة مرور جديدة</string>
+    <string name="confirm_new_password_label">تأكيد كلمة المرور الجديدة</string>
+    <string name="update_password_btn">تحديث كلمة المرور</string>
+    <string name="profile_picture_title">صورة الملف الشخصي</string>
+    <string name="edit_desc">تعديل</string>
+    <string name="pick_photo_instruction">اختر صورة تمثلك في FlowIntent.</string>
+</resources>

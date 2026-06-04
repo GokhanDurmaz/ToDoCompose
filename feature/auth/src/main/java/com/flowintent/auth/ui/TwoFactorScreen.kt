@@ -150,7 +150,7 @@ private fun TwoFactorForm(
             )
             
             Text(
-                text = "Enter the 6-digit code",
+                text = stringResource(R.string.enter_code_hint),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

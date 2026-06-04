@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">Bitte geben Sie eine gültige E-Mail-Adresse ein</string>
+    <string name="welcome_back">Willkommen zurück</string>
+    <string name="sign_in_subtitle">Bitte melden Sie sich an, um fortzufahren</string>
+    <string name="email_address">E-Mail-Adresse</string>
+    <string name="password">Passwort</string>
+    <string name="forgot_password">Passwort vergessen?</string>
+    <string name="sign_in">Anmelden</string>
+    <string name="dont_have_account_sign_up">Haben Sie noch kein Konto? Registrieren</string>
+    <string name="create_new_account">Neues Konto erstellen</string>
+    <string name="sign_up_subtitle">Werden Sie Teil von uns und starten Sie Ihre Reise</string>
+    <string name="first_name">Vorname</string>
+    <string name="last_name">Nachname</string>
+    <string name="sign_up">Registrieren</string>
+    <string name="already_have_account_sign_in">Haben Sie bereits ein Konto? Anmelden</string>
+    <string name="forgot_password_title">Passwort vergessen</string>
+    <string name="forgot_password_instructions">Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.</string>
+    <string name="back_to_login">&lt; Zurück zum Login</string>
+    <string name="send">Senden</string>
+    <string name="reset_link_sent">Link zum Zurücksetzen gesendet! Überprüfen Sie Ihren Posteingang.</string>
+    <string name="two_factor_title">Zwei-Faktor-Authentifizierung</string>
+    <string name="two_factor_subtitle">Geben Sie den 6-stelligen Code ein, der an Ihr Gerät gesendet wurde</string>
+    <string name="verification_code">Verifizierungscode</string>
+    <string name="enter_code_hint">Geben Sie den 6-stelligen Code ein</string>
+    <string name="verify_and_proceed">Verifizieren und fortfahren</string>
+    <string name="resend_code">Code erneut senden</string>
+    <string name="code_resent_success">Code erfolgreich erneut gesendet!</string>
+</resources>

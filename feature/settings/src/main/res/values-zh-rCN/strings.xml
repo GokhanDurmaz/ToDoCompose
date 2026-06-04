@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="language_label">语言</string>
+    <string name="theme_label">主题</string>
+    <string name="logout">退出登录</string>
+    <string name="logout_confirmation">您确定要退出登录吗？</string>
+    <string name="cancel">取消</string>
+    <string name="github">Github</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
+    <string name="dnd_label">免打扰</string>
+    <string name="enable_dnd">启用免打扰</string>
+    <string name="intensity">强度</string>
+    <string name="about_label">关于</string>
+    <string name="settings_label">设置</string>
+    <string name="version_label">版本</string>
+    <string name="privacy_policy">隐私政策</string>
+    <string name="terms_service">服务条款</string>
+    <string name="check_updates">检查更新</string>
+</resources>

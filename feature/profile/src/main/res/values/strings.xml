@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Profile Screen -->
+    <string name="profile_title">Profile</string>
+    <string name="back_desc">Back</string>
+    <string name="default_user">User</string>
+    <string name="default_email">email@flow.com</string>
+    <string name="pending_label">Pending</string>
+    <string name="done_label">Done</string>
+    <string name="success_label">Success</string>
+    <string name="account_details_label">Account Details</string>
+    <string name="username_label">Username</string>
+    <string name="email_label">Email</string>
+    <string name="security_label">Security</string>
+    <string name="change_password_label">Change Password</string>
+    <string name="two_factor_auth_label">Two-Factor Auth</string>
+    <string name="all_filter">ALL</string>
+
+    <!-- Pending Tasks Screen -->
+    <string name="pending_tasks_title">Pending Tasks</string>
+    <string name="manage_schedule_subtitle">Manage your upcoming schedule</string>
+    <string name="alerts_desc">Alerts</string>
+    <string name="mark_done_desc">Mark Done</string>
+    <string name="task_id_prefix">ID: #%1$s</string>
+
+    <!-- Change Password Screen -->
+    <string name="update_security_label">Update Security</string>
+    <string name="current_password_label">Current Password</string>
+    <string name="new_password_label">New Password</string>
+    <string name="confirm_new_password_label">Confirm New Password</string>
+    <string name="update_password_btn">Update Password</string>
+
+    <!-- Edit Profile Image Screen -->
+    <string name="profile_picture_title">Profile Picture</string>
+    <string name="edit_desc">Edit</string>
+    <string name="pick_photo_instruction">Pick a photo that represents you in FlowIntent.</string>
+</resources>

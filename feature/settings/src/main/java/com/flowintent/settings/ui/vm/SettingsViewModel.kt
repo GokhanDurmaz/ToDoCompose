@@ -4,25 +4,72 @@
 
 package com.flowintent.settings.ui.vm
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.flowintent.core.db.settings.GetLanguageUseCase
+import com.flowintent.core.db.settings.GetProtoThemeUseCase
+import com.flowintent.core.db.settings.UpdateLanguageUseCase
+import com.flowintent.core.db.settings.UpdateProtoThemeUseCase
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.ProfileNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val navigationDispatcher: NavigationDispatcher
+    private val navigationDispatcher: NavigationDispatcher,
+    private val getLanguageUseCase: GetLanguageUseCase,
+    private val updateLanguageUseCase: UpdateLanguageUseCase,
+    private val getProtoThemeUseCase: GetProtoThemeUseCase,
+    private val updateProtoThemeUseCase: UpdateProtoThemeUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        observeSettings()
+    }
+
+    private fun observeSettings() {
+        viewModelScope.launch {
+            getLanguageUseCase().collectLatest { language ->
+                val current = language ?: AppCompatDelegate.getApplicationLocales().toLanguageTags().ifEmpty { "en" }
+                _uiState.update { it.copy(currentLocale = current) }
+            }
+        }
+        viewModelScope.launch {
+            getProtoThemeUseCase().collectLatest { theme ->
+                _uiState.update { it.copy(theme = theme ?: "Dark") }
+                val mode = when(theme) {
+                    "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+                    "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_YES // Default to Dark if not set, or FOLLOW_SYSTEM
+                }
+                if (AppCompatDelegate.getDefaultNightMode() != mode) {
+                    AppCompatDelegate.setDefaultNightMode(mode)
+                }
+            }
+        }
+    }
+
     fun onThemeChange(newTheme: String) {
         _uiState.update { it.copy(theme = newTheme) }
+        viewModelScope.launch {
+            updateProtoThemeUseCase(newTheme)
+        }
+        val mode = when(newTheme) {
+            "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+            "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        AppCompatDelegate.setDefaultNightMode(mode)
     }
 
     fun onDndChange(enabled: Boolean) {
@@ -35,6 +82,9 @@ class SettingsViewModel @Inject constructor(
 
     fun onLocaleChange(locale: String) {
         _uiState.update { it.copy(currentLocale = locale) }
+        viewModelScope.launch {
+            updateLanguageUseCase(locale)
+        }
     }
 
     fun onProfileClicked() {

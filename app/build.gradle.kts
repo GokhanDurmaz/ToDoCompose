@@ -27,6 +27,10 @@ android {
     namespace = "com.flowintent.workspace"
     compileSdk = 36
 
+    androidResources {
+        localeFilters.addAll(listOf("en", "ar", "de", "es", "fr", "ja", "pt", "ru", "zh", "tr"))
+    }
+
     defaultConfig {
         applicationId = "com.flowintent.workspace"
         minSdk = 24

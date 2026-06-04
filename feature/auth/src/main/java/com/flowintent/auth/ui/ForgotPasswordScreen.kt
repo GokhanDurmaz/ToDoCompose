@@ -31,11 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.flowintent.auth.R
 import com.flowintent.auth.ui.vm.AuthViewModel
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
@@ -50,6 +52,7 @@ fun ForgotPasswordScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.forgotPasswordUiState.collectAsStateWithLifecycle()
+    val errorInvalidEmail = stringResource(R.string.error_invalid_email)
 
     Column(
         modifier = Modifier
@@ -75,7 +78,7 @@ fun ForgotPasswordScreen(
             isEnabled = uiState.email.isNotEmpty(),
             onClick = {
                 if (!uiState.email.isValidEmail()) {
-                    viewModel.setForgotPasswordStatus("Please enter a valid email address" to true)
+                    viewModel.setForgotPasswordStatus(errorInvalidEmail to true)
                 } else {
                     viewModel.resetPassword()
                 }
@@ -95,14 +98,14 @@ private fun PasswordResetForm(email: String, onEmailChange: (String) -> Unit) {
     ) {
         Column(modifier = Modifier.padding(VAL_16.dp), verticalArrangement = Arrangement.spacedBy(VAL_16.dp)) {
             Text(
-                "Enter your email address and we will send you instructions to reset your password.",
+                stringResource(R.string.forgot_password_instructions),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyMedium
             )
             CustomTextField(
                 value = email,
                 onValueChange = onEmailChange,
-                label = "Email Address",
+                label = stringResource(R.string.email_address),
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -136,7 +139,7 @@ private fun ResetButton(isLoading: Boolean, isEnabled: Boolean, onClick: () -> U
             )
         } else {
             Text(
-                "Send",
+                stringResource(R.string.send),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimary
@@ -166,13 +169,13 @@ private fun HeaderSection(onBack: () -> Unit) {
             modifier = Modifier.align(Alignment.Start)
         ) {
             Text(
-                "< Back to Login",
+                stringResource(R.string.back_to_login),
                 color = MaterialTheme.colorScheme.secondary
             )
         }
         Spacer(modifier = Modifier.height(VAL_20.dp))
         Text(
-            "Forgot Password",
+            stringResource(R.string.forgot_password_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground

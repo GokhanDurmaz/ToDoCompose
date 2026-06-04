@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_invalid_email">有効なメールアドレスを入力してください</string>
+    <string name="welcome_back">おかえりなさい</string>
+    <string name="sign_in_subtitle">続行するにはサインインしてください</string>
+    <string name="email_address">メールアドレス</string>
+    <string name="password">パスワード</string>
+    <string name="forgot_password">パスワードをお忘れですか？</string>
+    <string name="sign_in">サインイン</string>
+    <string name="dont_have_account_sign_up">アカウントをお持ちでないですか？サインアップ</string>
+    <string name="create_new_account">新規アカウント作成</string>
+    <string name="sign_up_subtitle">私たちに参加して、あなたの旅を始めましょう</string>
+    <string name="first_name">名</string>
+    <string name="last_name">姓</string>
+    <string name="sign_up">サインアップ</string>
+    <string name="already_have_account_sign_in">既にアカウントをお持ちですか？サインイン</string>
+    <string name="forgot_password_title">パスワードを忘れた場合</string>
+    <string name="forgot_password_instructions">メールアドレスを入力してください。パスワード再設定の手順をお送りします。</string>
+    <string name="back_to_login">&lt; ログインに戻る</string>
+    <string name="send">送信</string>
+    <string name="reset_link_sent">再設定リンクを送信しました。受信トレイを確認してください。</string>
+    <string name="two_factor_title">2段階認証</string>
+    <string name="two_factor_subtitle">デバイスに送信された6桁のコードを入力してください</string>
+    <string name="verification_code">認証コード</string>
+    <string name="enter_code_hint">6桁のコードを入力してください</string>
+    <string name="verify_and_proceed">認証して続行</string>
+    <string name="resend_code">コードを再送</string>
+    <string name="code_resent_success">コードを正常に再送しました！</string>
+</resources>
