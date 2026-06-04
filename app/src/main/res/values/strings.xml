@@ -36,4 +36,8 @@
     <string name="logout">Logout</string>
     <string name="ai_thinking">AI is thinking…</string>
     <string name="reminder_label">Reminder</string>
+    <string name="notification_consent_title">Stay Updated</string>
+    <string name="notification_consent_description">Allow notifications to receive timely reminders about your upcoming tasks and never miss a deadline.</string>
+    <string name="allow">Allow</string>
+    <string name="not_now">Not Now</string>
 </resources>

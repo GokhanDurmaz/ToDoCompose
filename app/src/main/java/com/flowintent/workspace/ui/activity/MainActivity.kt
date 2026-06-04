@@ -71,8 +71,11 @@ import com.flowintent.uikit.util.VAL_7
 import com.flowintent.uikit.util.VAL_72
 import com.flowintent.uikit.util.VAL_75
 import com.flowintent.workspace.nav.ToDoNavigationBar
+import com.flowintent.workspace.ui.dialog.PermissionConsentDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
  @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -89,8 +92,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        checkPermissions()
-
         setContent {
             val isDarkTheme = isSystemInDarkTheme()
             LaunchedEffect(isDarkTheme) {
@@ -106,23 +107,6 @@ class MainActivity : AppCompatActivity() {
             )
         }
         Log.i(TAG, "onCreate")
-    }
-
-    private fun checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val hasPermission = ActivityCompat.checkSelfPermission(
-                this@MainActivity,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) == PackageManager.PERMISSION_GRANTED
-
-            if (!hasPermission) {
-                ActivityCompat.requestPermissions(
-                    this@MainActivity,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    NOTIFICATION_PERMISSION_REQUEST_CODE
-                )
-            }
-        }
     }
 
     override fun onRestart() {

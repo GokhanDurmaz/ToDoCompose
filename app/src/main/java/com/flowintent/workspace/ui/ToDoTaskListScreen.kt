@@ -4,7 +4,10 @@
 
 package com.flowintent.workspace.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -48,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -55,6 +59,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
@@ -74,6 +79,7 @@ import com.flowintent.workspace.nav.route.NavTopBarViewModels
 import com.flowintent.workspace.nav.route.ToDoNavTopBar
 import com.flowintent.workspace.nav.route.TopBarState
 import com.flowintent.workspace.ui.card.CategoryChipsRow
+import com.flowintent.workspace.ui.dialog.PermissionConsentDialog
 import com.flowintent.workspace.ui.task.AiThinkingIndicator
 import com.flowintent.workspace.ui.task.EmptyTaskPlaceholder
 import com.flowintent.workspace.ui.task.TaskSearchBar
@@ -83,6 +89,7 @@ import com.flowintent.workspace.ui.vm.TaskViewModel
 fun TaskInputBar(
     onSendMessage: (String) -> Unit,
     onFileClick: () -> Unit,
+    onValueChange: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var text by remember { mutableStateOf("") }
@@ -107,7 +114,10 @@ fun TaskInputBar(
             }
             TextField(
                 value = text,
-                onValueChange = { text = it },
+                onValueChange = { 
+                    text = it
+                    onValueChange(it)
+                },
                 placeholder = {
                     Text(
                         stringResource(R.string.type_new_todo),
@@ -152,14 +162,38 @@ data class TaskActions(
 
 @Composable
 fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
-    val focusManager = LocalFocusManager.current
+    val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isSearchBarVisible by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) println("Permission Granted")
+    }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
         uri?.let { println("Selected File URI: $it") }
+    }
+
+    val hasNotificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+    } else {
+        true
+    }
+
+    if (uiState.showPermissionConsent && !hasNotificationPermission) {
+        PermissionConsentDialog(
+            onDismiss = { viewModel.dismissPermissionConsent() },
+            onConfirm = {
+                viewModel.dismissPermissionConsent()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        )
     }
 
     val actions = remember(viewModel) {
@@ -193,8 +227,16 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
         ),
         bottomBar = {
             TaskInputBar(
-                onSendMessage = { viewModel.insertSmartTask(it) },
-                onFileClick = { filePickerLauncher.launch("*/*") }
+                onSendMessage = {
+                    viewModel.insertSmartTask(it)
+                    if (it.isNotEmpty() && !hasNotificationPermission) {
+                        viewModel.onTaskInput()
+                    }
+                },
+                onFileClick = { filePickerLauncher.launch("*/*") },
+                onValueChange = {
+
+                }
             )
         }
     ) { paddingValues ->
