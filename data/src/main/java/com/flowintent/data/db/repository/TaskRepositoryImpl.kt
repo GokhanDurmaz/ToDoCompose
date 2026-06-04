@@ -12,6 +12,7 @@ import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
 import com.flowintent.core.db.model.TaskType
 import com.flowintent.core.db.repository.TaskRepository
+import com.flowintent.core.notification.TaskNotificationScheduler
 import com.flowintent.core.util.Resource
 import com.flowintent.core.util.parseDateToLong
 import com.flowintent.data.db.room.dao.ToDoDao
@@ -28,7 +29,8 @@ import javax.inject.Inject
  internal open class TaskRepositoryImpl @Inject constructor(
     private val toDoDao: ToDoDao,
     private val llmEngine: TaskLlmEngine,
-    private val externalScope: CoroutineScope
+    private val externalScope: CoroutineScope,
+    private val notificationScheduler: TaskNotificationScheduler
 ): TaskRepository {
     override fun getTasks(query: String?, type: TaskType?): Flow<PagingData<Task>> {
         return Pager(
@@ -37,8 +39,13 @@ import javax.inject.Inject
         ).flow
     }
 
+    override suspend fun getAllTasksRaw(): List<Task> {
+        return toDoDao.getAllTasks()
+    }
+
     override suspend fun insertTask(task: Task) {
-        toDoDao.insertTask(task)
+        val id = toDoDao.insertTask(task)
+        notificationScheduler.schedule(task.copy(uid = id.toInt()))
     }
 
     override fun findByTaskName(query: String): Flow<PagingData<Task>> {
@@ -46,6 +53,7 @@ import javax.inject.Inject
     }
 
     override suspend fun deleteTask(task: Task): Int {
+        notificationScheduler.cancel(task)
         return toDoDao.delete(task)
     }
 
@@ -56,6 +64,11 @@ import javax.inject.Inject
 
     override suspend fun updateTask(id: Int, title: String, content: TaskRes) {
         toDoDao.updateTask(id, title, content)
+    }
+
+    override suspend fun updateTask(task: Task) {
+        toDoDao.update(task)
+        notificationScheduler.schedule(task)
     }
 
     override suspend fun insertSmartTask(userInput: String): Flow<Resource<Unit>> = callbackFlow {
@@ -86,7 +99,8 @@ import javax.inject.Inject
                                 taskType = category,
                                 dueDate = parseDateToLong(timeText, emptyList())
                             )
-                            toDoDao.insertTask(newTask)
+                            val id = toDoDao.insertTask(newTask)
+                            notificationScheduler.schedule(newTask.copy(uid = id.toInt()))
                         }
                     }
                     trySend(Resource.Success(Unit))

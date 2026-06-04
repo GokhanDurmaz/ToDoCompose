@@ -57,6 +57,12 @@ class FakeTaskRepositoryImpl : TaskRepository {
         }
     }
 
+    override suspend fun updateTask(task: Task) {
+        tasksFlow.update { list ->
+            list.map { if (it.uid == task.uid) task else it }
+        }
+    }
+
     override suspend fun insertSmartTask(userInput: String): Flow<Resource<Unit>> = flow {
         emit(Resource.Loading)
         val newTask = Task(
@@ -69,5 +75,5 @@ class FakeTaskRepositoryImpl : TaskRepository {
         emit(Resource.Success(Unit))
     }
 
-    fun getAllTasksRaw(): Flow<List<Task>> = tasksFlow
+    override suspend fun getAllTasksRaw(): List<Task> = tasksFlow.value
 }
