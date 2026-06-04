@@ -4,9 +4,6 @@
 
 package com.flowintent.workspace.ui.activity
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -36,7 +33,6 @@ import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -71,11 +67,8 @@ import com.flowintent.uikit.util.VAL_7
 import com.flowintent.uikit.util.VAL_72
 import com.flowintent.uikit.util.VAL_75
 import com.flowintent.workspace.nav.ToDoNavigationBar
-import com.flowintent.workspace.ui.dialog.PermissionConsentDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 
  @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -140,7 +133,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val NOTIFICATION_PERMISSION_REQUEST_CODE = 101
         private val TAG: String = MainActivity::class.simpleName.toString()
     }
 }

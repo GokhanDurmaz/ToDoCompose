@@ -136,12 +136,16 @@ class TaskViewModel @Inject constructor(
         hasTriggeredPermissionDialog = true
 
         viewModelScope.launch {
-            delay(2000)
+            delay(PERMISSION_DIALOG_DELAY)
             _uiState.update { it.copy(showPermissionConsent = true) }
         }
     }
 
     fun dismissPermissionConsent() {
         _uiState.update { it.copy(showPermissionConsent = false) }
+    }
+
+    companion object {
+        private const val PERMISSION_DIALOG_DELAY = 2000L
     }
 }

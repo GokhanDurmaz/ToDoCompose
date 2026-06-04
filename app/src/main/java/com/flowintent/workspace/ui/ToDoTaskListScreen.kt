@@ -5,6 +5,7 @@
 package com.flowintent.workspace.ui
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -99,56 +100,74 @@ fun TaskInputBar(
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
         tonalElevation = 4.dp
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                .navigationBarsPadding()
-                .imePadding(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onFileClick) {
-                Icon(
-                    imageVector = Icons.Default.AttachFile,
-                    contentDescription = stringResource(R.string.attach_file_desc),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-            TextField(
-                value = text,
-                onValueChange = { 
-                    text = it
-                    onValueChange(it)
-                },
-                placeholder = {
-                    Text(
-                        stringResource(R.string.type_new_todo),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                },
-                modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                ),
-                maxLines = 4
+        TaskInputRow(
+            text = text,
+            onTextChange = {
+                text = it
+                onValueChange(it)
+            },
+            onSendMessage = {
+                onSendMessage(text)
+                text = ""
+            },
+            onFileClick = onFileClick
+        )
+    }
+}
+
+@Composable
+private fun TaskInputRow(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onSendMessage: () -> Unit,
+    onFileClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+            .navigationBarsPadding()
+            .imePadding(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        IconButton(onClick = onFileClick) {
+            Icon(
+                imageVector = Icons.Default.AttachFile,
+                contentDescription = stringResource(R.string.attach_file_desc),
+                tint = MaterialTheme.colorScheme.primary
             )
-            IconButton(
-                onClick = {
-                    if (text.isNotBlank()) {
-                        onSendMessage(text)
-                        text = ""
-                    }
-                },
-                enabled = text.isNotBlank()
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Send,
-                    contentDescription = stringResource(R.string.send_desc),
-                    tint = if (text.isNotBlank()) MaterialTheme.colorScheme.primary else Color.Gray.copy(alpha = 0.5f)
+        }
+        TextField(
+            value = text,
+            onValueChange = onTextChange,
+            placeholder = {
+                Text(
+                    stringResource(R.string.type_new_todo),
+                    style = MaterialTheme.typography.bodyMedium
                 )
+            },
+            modifier = Modifier.weight(1f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            maxLines = 4
+        )
+        IconButton(
+            onClick = onSendMessage,
+            enabled = text.isNotBlank()
+        ) {
+            val tint = if (text.isNotBlank()) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                Color.Gray.copy(alpha = 0.5f)
             }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Send,
+                contentDescription = stringResource(R.string.send_desc),
+                tint = tint
+            )
         }
     }
 }
@@ -165,36 +184,17 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var isSearchBarVisible by remember { mutableStateOf(false) }
+    val hasNotificationPermission = rememberPermissionState(context)
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) println("Permission Granted")
-    }
+    NotificationPermissionHandler(
+        showConsent = uiState.showPermissionConsent,
+        hasPermission = hasNotificationPermission,
+        onDismiss = viewModel::dismissPermissionConsent
+    )
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let { println("Selected File URI: $it") }
-    }
-
-    val hasNotificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-    } else {
-        true
-    }
-
-    if (uiState.showPermissionConsent && !hasNotificationPermission) {
-        PermissionConsentDialog(
-            onDismiss = { viewModel.dismissPermissionConsent() },
-            onConfirm = {
-                viewModel.dismissPermissionConsent()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-            }
-        )
-    }
+    ) { uri: Uri? -> uri?.let { println("Selected File URI: $it") } }
 
     val actions = remember(viewModel) {
         TaskActions(
@@ -221,10 +221,7 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
         actions = NavTopBarActions(
             onSearchToggle = { isSearchBarVisible = !isSearchBarVisible }
         ),
-        viewModels = NavTopBarViewModels(
-            taskViewModel = viewModel,
-            profileViewModel = hiltViewModel()
-        ),
+        viewModels = NavTopBarViewModels(taskViewModel = viewModel, profileViewModel = hiltViewModel()),
         bottomBar = {
             TaskInputBar(
                 onSendMessage = {
@@ -233,10 +230,7 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
                         viewModel.onTaskInput()
                     }
                 },
-                onFileClick = { filePickerLauncher.launch("*/*") },
-                onValueChange = {
-
-                }
+                onFileClick = { filePickerLauncher.launch("*/*") }
             )
         }
     ) { paddingValues ->
@@ -246,6 +240,43 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
             uiState = uiState,
             isSearchBarVisible = isSearchBarVisible,
             actions = actions
+        )
+    }
+}
+
+@Composable
+private fun rememberPermissionState(context: Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    } else {
+        true
+    }
+}
+
+@Composable
+private fun NotificationPermissionHandler(
+    showConsent: Boolean,
+    hasPermission: Boolean,
+    onDismiss: () -> Unit
+) {
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) println("Permission Granted")
+    }
+
+    if (showConsent && !hasPermission) {
+        PermissionConsentDialog(
+            onDismiss = onDismiss,
+            onConfirm = {
+                onDismiss()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
         )
     }
 }
