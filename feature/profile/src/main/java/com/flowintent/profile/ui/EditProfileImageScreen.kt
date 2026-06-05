@@ -109,10 +109,8 @@ fun EditProfileImageScreen(
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop,
-                            onSuccess = { println("Coil: Upload the image file successfully.") },
-                            onError = { error ->
-                                println("Coil Err: ${error.result.throwable.message}")
-                            }
+                            onSuccess = { /* Success handler */ },
+                            onError = { /* Error handler */ }
                         )
                     } else {
                         Icon(

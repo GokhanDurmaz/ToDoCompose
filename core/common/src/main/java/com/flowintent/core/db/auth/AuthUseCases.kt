@@ -7,6 +7,7 @@ package com.flowintent.core.db.auth
 import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.repository.AuthRepository
 import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -44,6 +45,19 @@ class UpdateTokenUseCase @Inject constructor(private val repository: EncryptedPr
 
 class ClearEncryptedStorageUseCase @Inject constructor(private val repository: EncryptedProtoRepository) {
     suspend operator fun invoke() = repository.clear()
+}
+
+/**
+ * Use case to clear all local data (Database + Encrypted Storage).
+ */
+class LogoutUseCase @Inject constructor(
+    private val encryptedRepo: EncryptedProtoRepository,
+    private val taskRepo: TaskRepository
+) {
+    suspend operator fun invoke() {
+        encryptedRepo.clear()
+        taskRepo.clearAllTasks()
+    }
 }
 
 class GetNameUseCase @Inject constructor(private val repository: EncryptedProtoRepository) {

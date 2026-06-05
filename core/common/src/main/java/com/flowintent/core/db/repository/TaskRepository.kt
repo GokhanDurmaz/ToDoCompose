@@ -29,4 +29,6 @@ interface TaskRepository {
     suspend fun updateTask(task: Task)
 
     suspend fun insertSmartTask(userInput: String): Flow<Resource<Unit>>
+
+    suspend fun clearAllTasks()
 }
