@@ -41,4 +41,9 @@
     <string name="notification_consent_description">通知を許可すると、今後のタスクに関するリマインダーをタイムリーに受け取ることができ、締め切りを逃すことがなくなります。</string>
     <string name="allow">許可する</string>
     <string name="not_now">後で</string>
+    <string name="all_label">すべて</string>
+    <string name="social_label">ソーシャル</string>
+    <string name="daily_label">日常</string>
+    <string name="work_label">仕事</string>
+    <string name="other_label">その他</string>
 </resources>

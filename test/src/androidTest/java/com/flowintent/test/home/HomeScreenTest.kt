@@ -8,8 +8,8 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.flowintent.home.ui.HomeScreen
-import com.flowintent.home.ui.vm.HomeViewModel
 import com.flowintent.home.ui.vm.HomeUiState
+import com.flowintent.home.ui.vm.HomeViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.junit.Before
 import org.junit.Rule

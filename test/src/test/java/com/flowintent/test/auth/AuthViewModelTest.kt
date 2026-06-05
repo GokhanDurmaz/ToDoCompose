@@ -5,11 +5,19 @@
 package com.flowintent.test.auth
 
 import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.core.db.auth.ClearEncryptedStorageUseCase
 import com.flowintent.core.db.auth.ForgetPasswordUseCase
+import com.flowintent.core.db.auth.GetEmailUseCase
+import com.flowintent.core.db.auth.GetNameUseCase
+import com.flowintent.core.db.auth.GetProfileImageUrlUseCase
+import com.flowintent.core.db.auth.GetTokenUseCase
+import com.flowintent.core.db.auth.GetUidUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.SaveUserInfoUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
-import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.db.auth.UpdateTokenUseCase
+import com.flowintent.core.db.auth.UpdateUidUseCase
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.test.rules.MainDispatcherRule
 import com.flowintent.test.scenarios.UseCaseScenarios
@@ -31,30 +39,46 @@ class AuthViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    @Mock
-    private lateinit var repo: EncryptedProtoRepository
-    @Mock
-    private lateinit var signUpUseCase: SignUpUseCase
-    @Mock
-    private lateinit var signInUseCase: SignInUseCase
-    @Mock
-    private lateinit var getUserProfileUseCase: GetUserProfileUseCase
-    @Mock
-    private lateinit var forgetPasswordUseCase: ForgetPasswordUseCase
-    @Mock
-    private lateinit var navigationDispatcher: NavigationDispatcher
+    @Mock private lateinit var getTokenUseCase: GetTokenUseCase
+    @Mock private lateinit var updateTokenUseCase: UpdateTokenUseCase
+    @Mock private lateinit var clearEncryptedStorageUseCase: ClearEncryptedStorageUseCase
+    @Mock private lateinit var getNameUseCase: GetNameUseCase
+    @Mock private lateinit var getEmailUseCase: GetEmailUseCase
+    @Mock private lateinit var getProfileImageUrlUseCase: GetProfileImageUrlUseCase
+    @Mock private lateinit var getUidUseCase: GetUidUseCase
+    @Mock private lateinit var updateUidUseCase: UpdateUidUseCase
+    @Mock private lateinit var saveUserInfoUseCase: SaveUserInfoUseCase
+    @Mock private lateinit var signUpUseCase: SignUpUseCase
+    @Mock private lateinit var signInUseCase: SignInUseCase
+    @Mock private lateinit var getUserProfileUseCase: GetUserProfileUseCase
+    @Mock private lateinit var forgetPasswordUseCase: ForgetPasswordUseCase
+    @Mock private lateinit var navigationDispatcher: NavigationDispatcher
 
     private lateinit var viewModel: AuthViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        whenever(repo.tokenFlow()).thenReturn(flowOf(null))
-        whenever(repo.nameFlow()).thenReturn(flowOf(""))
-        whenever(repo.emailFlow()).thenReturn(flowOf(""))
+        whenever(getTokenUseCase()).thenReturn(flowOf(null))
+        whenever(getNameUseCase()).thenReturn(flowOf(""))
+        whenever(getEmailUseCase()).thenReturn(flowOf(""))
+        whenever(getProfileImageUrlUseCase()).thenReturn(flowOf(null))
         
         viewModel = AuthViewModel(
-            repo, signUpUseCase, signInUseCase, getUserProfileUseCase, forgetPasswordUseCase, navigationDispatcher
+            getTokenUseCase,
+            updateTokenUseCase,
+            clearEncryptedStorageUseCase,
+            getNameUseCase,
+            getEmailUseCase,
+            getProfileImageUrlUseCase,
+            getUidUseCase,
+            updateUidUseCase,
+            saveUserInfoUseCase,
+            signUpUseCase,
+            signInUseCase,
+            getUserProfileUseCase,
+            forgetPasswordUseCase,
+            navigationDispatcher
         )
     }
 

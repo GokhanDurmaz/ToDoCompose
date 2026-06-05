@@ -6,8 +6,8 @@ package com.flowintent.workspace.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flowintent.core.db.home.GetHomeCategoriesUseCase
 import com.flowintent.core.db.model.TaskCategory
-import com.flowintent.core.db.repository.TaskCategoryRepository
 import com.flowintent.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,9 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TaskCategoryViewModel @Inject constructor(
-    taskCategoryRepository: TaskCategoryRepository
+    getHomeCategoriesUseCase: GetHomeCategoriesUseCase
 ): ViewModel() {
-    val allCategories: StateFlow<Resource<List<TaskCategory>>> = taskCategoryRepository.getAllLocalCategories()
+    val allCategories: StateFlow<Resource<List<TaskCategory>>> = getHomeCategoriesUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

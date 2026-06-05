@@ -17,8 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.flowintent.core.db.model.TaskType
+import com.flowintent.workspace.R
 
 @Composable
 fun CategoryChipsRow(
@@ -38,15 +40,21 @@ fun CategoryChipsRow(
             FilterChip(
                 selected = selectedType == null,
                 onClick = { onTypeSelected(null) },
-                label = { Text("ALL") },
+                label = { Text(stringResource(R.string.all_label)) },
                 shape = RoundedCornerShape(20.dp)
             )
         }
         items(categories) { type ->
+            val labelRes = when (type) {
+                TaskType.SOCIAL -> R.string.social_label
+                TaskType.DAILY -> R.string.daily_label
+                TaskType.WORK -> R.string.work_label
+                TaskType.OTHER -> R.string.other_label
+            }
             FilterChip(
                 selected = selectedType == type,
                 onClick = { onTypeSelected(type) },
-                label = { Text(type.name) },
+                label = { Text(stringResource(labelRes)) },
                 shape = RoundedCornerShape(20.dp),
                 colors = FilterChipDefaults.filterChipColors(
                     selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,

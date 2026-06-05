@@ -192,6 +192,14 @@ private fun HomeCategoryCard(
         else -> Icons.Default.ArtTrack
     }
 
+    val (title, description) = when (category.title) {
+        "Gym" -> stringResource(R.string.category_gym) to stringResource(R.string.category_gym_desc)
+        "Art" -> stringResource(R.string.category_art) to stringResource(R.string.category_art_desc)
+        "Health" -> stringResource(R.string.category_health) to stringResource(R.string.category_health_desc)
+        "Sent" -> stringResource(R.string.category_sent) to stringResource(R.string.category_sent_desc)
+        else -> category.title to category.content.text
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -227,14 +235,14 @@ private fun HomeCategoryCard(
                 Spacer(modifier = Modifier.height(VAL_16.dp))
                 
                 Text(
-                    text = category.title,
+                    text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color(category.textColor)
                 )
                 
                 Text(
-                    text = category.content.text,
+                    text = description,
                     style = MaterialTheme.typography.bodySmall,
                     color = Color(category.textColor).copy(alpha = 0.7f),
                     maxLines = 2

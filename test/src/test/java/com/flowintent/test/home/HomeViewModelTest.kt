@@ -4,13 +4,15 @@
 
 package com.flowintent.test.home
 
+import com.flowintent.core.db.auth.GetNameUseCase
 import com.flowintent.core.db.home.GetHomeCategoriesUseCase
 import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.core.db.model.TaskContent
 import com.flowintent.core.db.model.TaskIcon
-import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.util.Resource
 import com.flowintent.home.ui.vm.HomeViewModel
 import com.flowintent.test.rules.MainDispatcherRule
+import com.flowintent.test.scenarios.UseCaseScenarios
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
@@ -34,15 +36,15 @@ class HomeViewModelTest {
     private lateinit var getHomeCategoriesUseCase: GetHomeCategoriesUseCase
 
     @Mock
-    private lateinit var repo: EncryptedProtoRepository
+    private lateinit var getNameUseCase: GetNameUseCase
 
     private lateinit var viewModel: HomeViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        whenever(repo.nameFlow()).thenReturn(flowOf("Test User"))
-        whenever(getHomeCategoriesUseCase()).thenReturn(flowOf(emptyList()))
+        whenever(getNameUseCase()).thenReturn(flowOf("Test User"))
+        whenever(getHomeCategoriesUseCase()).thenReturn(flowOf(Resource.Loading))
     }
 
     @Test
@@ -57,9 +59,9 @@ class HomeViewModelTest {
                 textColor = 0xFF0D47A1
             )
         )
-        whenever(getHomeCategoriesUseCase()).thenReturn(flowOf(categories))
+        whenever(getHomeCategoriesUseCase()).thenReturn(UseCaseScenarios.success(categories))
 
-        viewModel = HomeViewModel(getHomeCategoriesUseCase, repo)
+        viewModel = HomeViewModel(getHomeCategoriesUseCase, getNameUseCase)
 
         assertEquals(categories, viewModel.uiState.value.categories)
         assertEquals(false, viewModel.uiState.value.isLoading)
@@ -68,9 +70,9 @@ class HomeViewModelTest {
     @Test
     fun `userName flow updates userName state`() = runTest {
         val expectedName = "John Doe"
-        whenever(repo.nameFlow()).thenReturn(flowOf(expectedName))
+        whenever(getNameUseCase()).thenReturn(flowOf(expectedName))
 
-        viewModel = HomeViewModel(getHomeCategoriesUseCase, repo)
+        viewModel = HomeViewModel(getHomeCategoriesUseCase, getNameUseCase)
 
         // Using backgroundScope to ensure the flow is collected
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
