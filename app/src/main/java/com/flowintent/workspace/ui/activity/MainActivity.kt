@@ -6,6 +6,7 @@ package com.flowintent.workspace.ui.activity
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -37,6 +38,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.core.util.RootDetectionUtil
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.settings.ui.vm.SettingsViewModel
@@ -85,6 +87,13 @@ class MainActivity : AppCompatActivity() {
         installSplashScreen()
 
         super.onCreate(savedInstanceState)
+        
+        if (RootDetectionUtil.isDeviceRooted()) {
+            Toast.makeText(this, "Security Alert: Rooted device detected. App will close.", Toast.LENGTH_LONG).show()
+            finish()
+            return
+        }
+
         enableEdgeToEdge()
 
         setContent {

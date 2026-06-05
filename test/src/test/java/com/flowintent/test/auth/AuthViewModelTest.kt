@@ -13,6 +13,7 @@ import com.flowintent.core.db.auth.GetProfileImageUrlUseCase
 import com.flowintent.core.db.auth.GetTokenUseCase
 import com.flowintent.core.db.auth.GetUidUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.LogoutUseCase
 import com.flowintent.core.db.auth.SaveUserInfoUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
@@ -42,6 +43,7 @@ class AuthViewModelTest {
     @Mock private lateinit var getTokenUseCase: GetTokenUseCase
     @Mock private lateinit var updateTokenUseCase: UpdateTokenUseCase
     @Mock private lateinit var clearEncryptedStorageUseCase: ClearEncryptedStorageUseCase
+    @Mock private lateinit var logoutUseCase: LogoutUseCase
     @Mock private lateinit var getNameUseCase: GetNameUseCase
     @Mock private lateinit var getEmailUseCase: GetEmailUseCase
     @Mock private lateinit var getProfileImageUrlUseCase: GetProfileImageUrlUseCase
@@ -67,7 +69,7 @@ class AuthViewModelTest {
         viewModel = AuthViewModel(
             getTokenUseCase,
             updateTokenUseCase,
-            clearEncryptedStorageUseCase,
+            logoutUseCase,
             getNameUseCase,
             getEmailUseCase,
             getProfileImageUrlUseCase,

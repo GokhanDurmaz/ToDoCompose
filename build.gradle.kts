@@ -13,6 +13,9 @@ plugins {
     alias(libs.plugins.flowintent.detekt) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
+
+apply(from = "jacoco.gradle.kts")
+
 tasks.register("clean") {
     delete(rootProject.layout.buildDirectory)
 
@@ -24,8 +27,12 @@ defaultTasks("buildApp")
 
 tasks.register("runAllTests") {
     group = "verification"
-    description = "Runs all unit tests for the specified modules."
-    dependsOn(":test:testDebugUnitTest")
+    description = "Runs all unit tests for all modules."
+    subprojects.forEach { subproject ->
+        subproject.tasks.withType<Test>().forEach { task ->
+            dependsOn(task)
+        }
+    }
 }
 
 tasks.register("buildAppDebug") {

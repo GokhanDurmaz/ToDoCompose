@@ -194,7 +194,7 @@ fun ToDoListScreen(viewModel: TaskViewModel = hiltViewModel()) {
 
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? -> uri?.let { println("Selected File URI: $it") } }
+    ) { uri: Uri? -> uri?.let { /* Handle file selection */ } }
 
     val actions = remember(viewModel) {
         TaskActions(
@@ -264,8 +264,8 @@ private fun NotificationPermissionHandler(
 ) {
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        if (isGranted) println("Permission Granted")
+    ) { _ ->
+        // Handle result
     }
 
     if (showConsent && !hasPermission) {
@@ -329,7 +329,6 @@ private fun SmartTaskStateOverlay(
         }
         is Resource.Error -> {
             LaunchedEffect(state.message) {
-                println("Error: ${state.message}")
                 onClearState()
             }
         }

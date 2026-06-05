@@ -16,6 +16,7 @@ import com.flowintent.core.db.repository.TaskRepository
 import com.flowintent.core.notification.TaskNotificationScheduler
 import com.flowintent.core.util.Resource
 import com.flowintent.core.util.parseDateToLong
+import com.flowintent.data.db.room.ToDoDatabase
 import com.flowintent.data.db.room.dao.ToDoDao
 import com.flowintent.network.network.TaskLlmEngine
 import kotlinx.coroutines.CoroutineScope
@@ -29,6 +30,7 @@ import javax.inject.Inject
 
  internal open class TaskRepositoryImpl @Inject constructor(
     private val toDoDao: ToDoDao,
+    private val db: ToDoDatabase,
     private val llmEngine: TaskLlmEngine,
     private val externalScope: CoroutineScope,
     private val notificationScheduler: TaskNotificationScheduler
@@ -119,4 +121,8 @@ import javax.inject.Inject
         }
         awaitClose { }
     }.onStart { emit(Resource.Loading) }
+
+    override suspend fun clearAllTasks() {
+        db.clearAllTables()
+    }
 }

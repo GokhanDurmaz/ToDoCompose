@@ -6,7 +6,6 @@ package com.flowintent.auth.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flowintent.core.db.auth.ClearEncryptedStorageUseCase
 import com.flowintent.core.db.auth.ForgetPasswordUseCase
 import com.flowintent.core.db.auth.GetEmailUseCase
 import com.flowintent.core.db.auth.GetNameUseCase
@@ -14,6 +13,7 @@ import com.flowintent.core.db.auth.GetProfileImageUrlUseCase
 import com.flowintent.core.db.auth.GetTokenUseCase
 import com.flowintent.core.db.auth.GetUidUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.LogoutUseCase
 import com.flowintent.core.db.auth.SaveUserInfoUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
@@ -41,7 +41,7 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val getTokenUseCase: GetTokenUseCase,
     private val updateTokenUseCase: UpdateTokenUseCase,
-    private val clearEncryptedStorageUseCase: ClearEncryptedStorageUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val getNameUseCase: GetNameUseCase,
     private val getEmailUseCase: GetEmailUseCase,
     private val getProfileImageUrlUseCase: GetProfileImageUrlUseCase,
@@ -132,7 +132,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun clearAll() = viewModelScope.launch {
-        clearEncryptedStorageUseCase()
+        logoutUseCase()
     }
 
     fun registerUser() {
@@ -250,7 +250,7 @@ class AuthViewModel @Inject constructor(
 
     fun onLogoutClicked() {
         viewModelScope.launch {
-            clearEncryptedStorageUseCase()
+            logoutUseCase()
             navigationDispatcher.navigateTo(AuthNavigation.SIGN_IN.route) {
                 popUpTo(0) {
                     inclusive = true

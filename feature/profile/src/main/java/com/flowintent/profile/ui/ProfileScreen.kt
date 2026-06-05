@@ -106,7 +106,7 @@ fun ProfileScreen(
                 profileViewModel.clearUploadState()
             }
             is Resource.Error -> {
-                println("Upload Err: ${(uiState.uploadState as Resource.Error).message}")
+                // Log only in non-production or handle gracefully
             }
             else -> {}
         }
