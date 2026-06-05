@@ -10,6 +10,16 @@
     <string name="profile_desc">Profile</string>
     <string name="back_desc">Back</string>
 
+    <!-- Categories -->
+    <string name="category_gym">Gym</string>
+    <string name="category_art">Art</string>
+    <string name="category_health">Health</string>
+    <string name="category_sent">Sent</string>
+    <string name="category_gym_desc">Ideal space for strength, endurance, and fitness.</string>
+    <string name="category_art_desc">Unique world where creativity meets vibrant colors.</string>
+    <string name="category_sent_desc">Tasks delivered swiftly, connecting ideas effortlessly.</string>
+    <string name="category_health_desc">Holistic well-being for body and mind.</string>
+
     <!-- Art Screen -->
     <string name="art_gallery_title">Art Gallery</string>
     <string name="your_creations_label">Your Creations</string>

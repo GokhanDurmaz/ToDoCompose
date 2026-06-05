@@ -10,6 +10,15 @@
     <string name="profile_desc">プロフィール</string>
     <string name="back_desc">戻る</string>
 
+    <string name="category_gym">ジム</string>
+    <string name="category_art">アート</string>
+    <string name="category_health">健康</string>
+    <string name="category_sent">送信済み</string>
+    <string name="category_gym_desc">筋力、持久力、フィットネスに最適なスペース。</string>
+    <string name="category_art_desc">創造性と鮮やかな色彩が融合するユニークな世界。</string>
+    <string name="category_sent_desc">アイデアを簡単に結びつけ、迅速に提供されるタスク。</string>
+    <string name="category_health_desc">心身のトータルな幸福。</string>
+
     <!-- Art Screen -->
     <string name="art_gallery_title">アートギャラリー</string>
     <string name="your_creations_label">あなたの作品</string>

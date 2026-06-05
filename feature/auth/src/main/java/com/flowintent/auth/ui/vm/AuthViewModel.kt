@@ -1,4 +1,4 @@
- /**
+/**
  * Copyright (c) 2026 FlowIntent. All rights reserved.
  */
 
@@ -6,11 +6,19 @@ package com.flowintent.auth.ui.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.flowintent.core.db.auth.ClearEncryptedStorageUseCase
 import com.flowintent.core.db.auth.ForgetPasswordUseCase
+import com.flowintent.core.db.auth.GetEmailUseCase
+import com.flowintent.core.db.auth.GetNameUseCase
+import com.flowintent.core.db.auth.GetProfileImageUrlUseCase
+import com.flowintent.core.db.auth.GetTokenUseCase
+import com.flowintent.core.db.auth.GetUidUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.SaveUserInfoUseCase
 import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
-import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.db.auth.UpdateTokenUseCase
+import com.flowintent.core.db.auth.UpdateUidUseCase
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.AuthNavigation
@@ -29,15 +37,23 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
- @HiltViewModel
+@HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val repo: EncryptedProtoRepository,
+    private val getTokenUseCase: GetTokenUseCase,
+    private val updateTokenUseCase: UpdateTokenUseCase,
+    private val clearEncryptedStorageUseCase: ClearEncryptedStorageUseCase,
+    private val getNameUseCase: GetNameUseCase,
+    private val getEmailUseCase: GetEmailUseCase,
+    private val getProfileImageUrlUseCase: GetProfileImageUrlUseCase,
+    private val getUidUseCase: GetUidUseCase,
+    private val updateUidUseCase: UpdateUidUseCase,
+    private val saveUserInfoUseCase: SaveUserInfoUseCase,
     private val signUpUseCase: SignUpUseCase,
     private val signInUseCase: SignInUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val forgetPasswordUseCase: ForgetPasswordUseCase,
     private val navigationDispatcher: NavigationDispatcher
-) : ViewModel()  {
+) : ViewModel() {
 
     private val _signInUiState = MutableStateFlow(SignInUiState())
     val signInUiState = _signInUiState.asStateFlow()
@@ -51,10 +67,10 @@ class AuthViewModel @Inject constructor(
     private val _twoFactorUiState = MutableStateFlow(TwoFactorUiState())
     val twoFactorUiState = _twoFactorUiState.asStateFlow()
 
-    val token: StateFlow<String?> = repo.tokenFlow()
+    val token: StateFlow<String?> = getTokenUseCase()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Companion.Eagerly,
+            started = SharingStarted.Eagerly,
             initialValue = null
         )
 
@@ -90,16 +106,16 @@ class AuthViewModel @Inject constructor(
         _twoFactorUiState.update { it.copy(code = newValue, errorMessage = null) }
     }
 
-    val userName: StateFlow<String?> = repo.nameFlow()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
+    val userName: StateFlow<String?> = getNameUseCase()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    val userEmail: StateFlow<String?> = repo.emailFlow()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
+    val userEmail: StateFlow<String?> = getEmailUseCase()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    val profileImageUrl: StateFlow<String?> = repo.profileImageUrlFlow()
-        .stateIn(viewModelScope, SharingStarted.Companion.WhileSubscribed(5000), null)
+    val profileImageUrl: StateFlow<String?> = getProfileImageUrlUseCase()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
-    val isReady: StateFlow<Boolean> = repo.tokenFlow()
+    val isReady: StateFlow<Boolean> = getTokenUseCase()
         .map { true }
         .onStart {
             delay(1500)
@@ -107,16 +123,16 @@ class AuthViewModel @Inject constructor(
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Companion.WhileSubscribed(5000),
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = false
         )
 
     fun saveToken(t: String) = viewModelScope.launch {
-        repo.updateToken(t)
+        updateTokenUseCase(t)
     }
 
     fun clearAll() = viewModelScope.launch {
-        repo.clear()
+        clearEncryptedStorageUseCase()
     }
 
     fun registerUser() {
@@ -185,13 +201,13 @@ class AuthViewModel @Inject constructor(
     }
 
     fun saveUser(firstName: String, lastName: String, email: String) = viewModelScope.launch {
-        repo.saveUserInfo("$firstName $lastName", email)
+        saveUserInfoUseCase("$firstName $lastName", email)
     }
 
     fun fetchAndSaveUserProfileIfEmpty() = viewModelScope.launch {
-        val currentName = repo.nameFlow().firstOrNull()
-        val currentEmail = repo.emailFlow().firstOrNull()
-        val currentUid = repo.uidFlow().firstOrNull()
+        val currentName = getNameUseCase().firstOrNull()
+        val currentEmail = getEmailUseCase().firstOrNull()
+        val currentUid = getUidUseCase().firstOrNull()
 
         if (currentName.isNullOrBlank() || currentEmail.isNullOrBlank() || currentUid.isNullOrBlank()) {
             getUserProfileUseCase().collect { resource ->
@@ -203,7 +219,7 @@ class AuthViewModel @Inject constructor(
                             lastName = profile.surname,
                             email = profile.email
                         )
-                        repo.updateUid(profile.uid)
+                        updateUidUseCase(profile.uid)
                     }
                     is Resource.Error -> {
                     }
@@ -234,7 +250,7 @@ class AuthViewModel @Inject constructor(
 
     fun onLogoutClicked() {
         viewModelScope.launch {
-            repo.clear()
+            clearEncryptedStorageUseCase()
             navigationDispatcher.navigateTo(AuthNavigation.SIGN_IN.route) {
                 popUpTo(0) {
                     inclusive = true

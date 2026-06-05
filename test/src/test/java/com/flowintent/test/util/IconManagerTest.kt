@@ -5,8 +5,8 @@
 package com.flowintent.test.util
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.DeviceUnknown
+import androidx.compose.material.icons.filled.Home
 import com.flowintent.uikit.util.IconManager
 import org.junit.Assert.assertEquals
 import org.junit.Test

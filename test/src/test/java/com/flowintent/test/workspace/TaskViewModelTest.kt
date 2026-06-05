@@ -7,9 +7,13 @@ package com.flowintent.test.workspace
 import androidx.paging.PagingData
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskType
-import com.flowintent.core.db.repository.TaskRepository
-import com.flowintent.workspace.ui.vm.TaskViewModel
+import com.flowintent.core.db.task.DeleteTaskByIdUseCase
+import com.flowintent.core.db.task.GetTasksUseCase
+import com.flowintent.core.db.task.InsertSmartTaskUseCase
+import com.flowintent.core.db.task.InsertTaskUseCase
+import com.flowintent.core.db.task.UpdateTaskUseCase
 import com.flowintent.test.rules.MainDispatcherRule
+import com.flowintent.workspace.ui.vm.TaskViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -28,16 +32,25 @@ class TaskViewModelTest {
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
-    @Mock
-    private lateinit var repository: TaskRepository
+    @Mock private lateinit var getTasksUseCase: GetTasksUseCase
+    @Mock private lateinit var insertTaskUseCase: InsertTaskUseCase
+    @Mock private lateinit var insertSmartTaskUseCase: InsertSmartTaskUseCase
+    @Mock private lateinit var updateTaskUseCase: UpdateTaskUseCase
+    @Mock private lateinit var deleteTaskByIdUseCase: DeleteTaskByIdUseCase
 
     private lateinit var viewModel: TaskViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        whenever(repository.getTasks(any(), any())).thenReturn(flowOf(PagingData.empty<Task>()))
-        viewModel = TaskViewModel(repository)
+        whenever(getTasksUseCase(any(), any())).thenReturn(flowOf(PagingData.empty<Task>()))
+        viewModel = TaskViewModel(
+            getTasksUseCase,
+            insertTaskUseCase,
+            insertSmartTaskUseCase,
+            updateTaskUseCase,
+            deleteTaskByIdUseCase
+        )
     }
 
     @Test
