@@ -4,7 +4,6 @@
 
 package com.flowintent.settings.ui
 
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -66,11 +65,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.os.LocaleListCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
@@ -94,6 +93,8 @@ fun AdvancedSettingsScreen(
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val username by authViewModel.userName.collectAsStateWithLifecycle()
     val email by authViewModel.userEmail.collectAsStateWithLifecycle()
     val profileImageUrl by authViewModel.profileImageUrl.collectAsStateWithLifecycle()
@@ -165,8 +166,6 @@ fun AdvancedSettingsScreen(
 
             LanguageSelection(currentLanguage = settingsUiState.currentLocale) { selectedLocale ->
                 settingsViewModel.onLocaleChange(selectedLocale)
-                val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(selectedLocale)
-                AppCompatDelegate.setApplicationLocales(appLocale)
             }
 
             ThemeSelection(currentTheme = settingsUiState.theme, onThemeChange = { settingsViewModel.onThemeChange(it) })

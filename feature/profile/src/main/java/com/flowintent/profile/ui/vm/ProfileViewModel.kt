@@ -10,12 +10,13 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flowintent.core.db.auth.ChangePasswordUseCase
+import com.flowintent.core.db.auth.GetUidUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.SaveProfileImageUrlUseCase
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
 import com.flowintent.core.db.profile.GetLocalAvatarUseCase
 import com.flowintent.core.db.profile.ObserveUserProfileUseCase
 import com.flowintent.core.db.profile.UploadProfileUseCase
-import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.ProfileNavigation
@@ -40,7 +41,8 @@ class ProfileViewModel @Inject constructor(
     private val downloadAndSaveUseCase: DownloadAndSaveUseCase,
     private val getLocalAvatarUseCase: GetLocalAvatarUseCase,
     private val observeUserProfileUseCase: ObserveUserProfileUseCase,
-    private val encryptedProtoRepository: EncryptedProtoRepository
+    private val getUidUseCase: GetUidUseCase,
+    private val saveProfileImageUrlUseCase: SaveProfileImageUrlUseCase
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -55,7 +57,7 @@ class ProfileViewModel @Inject constructor(
 
     private fun observeUid() {
         viewModelScope.launch {
-            encryptedProtoRepository.uidFlow().collect { uid ->
+            getUidUseCase().collect { uid ->
                 _uiState.update { it.copy(userUid = uid) }
             }
         }
@@ -117,7 +119,7 @@ class ProfileViewModel @Inject constructor(
     fun reloadProfileImageIfNull() {
         if (_uiState.value.profileBitmap == null) {
             viewModelScope.launch {
-                val uid = _uiState.value.userUid ?: encryptedProtoRepository.uidFlow().first()
+                val uid = _uiState.value.userUid ?: getUidUseCase().first()
                 uid?.let {
                     val bitmap = downloadAndSaveUseCase(it)
                     _uiState.update { it.copy(profileBitmap = bitmap) }
@@ -129,7 +131,7 @@ class ProfileViewModel @Inject constructor(
     fun uploadImage(uri: Uri) {
         _uiState.update { it.copy(selectedImageUri = uri) }
         viewModelScope.launch {
-            val currentUid = _uiState.value.userUid ?: encryptedProtoRepository.uidFlow().first { it != null }
+            val currentUid = _uiState.value.userUid ?: getUidUseCase().first { it != null }
 
             if (currentUid == null) {
                 _uiState.update { it.copy(uploadState = Resource.Error("Couldn't find userId.")) }
@@ -148,7 +150,7 @@ class ProfileViewModel @Inject constructor(
                     _uiState.update { it.copy(uploadState = result) }
 
                     if (result is Resource.Success) {
-                        encryptedProtoRepository.saveProfileImageUrl(result.data)
+                        saveProfileImageUrlUseCase(result.data)
                         val newBitmap = downloadAndSaveUseCase(currentUid)
                         _uiState.update { it.copy(
                             profileBitmap = newBitmap,

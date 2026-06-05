@@ -4,10 +4,10 @@
 
 package com.flowintent.data.db.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import android.util.Log
 import com.flowintent.core.db.model.ActionType
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes

@@ -11,10 +11,15 @@ import androidx.paging.cachedIn
 import com.flowintent.core.db.model.Task
 import com.flowintent.core.db.model.TaskRes
 import com.flowintent.core.db.model.TaskType
-import com.flowintent.core.db.repository.TaskRepository
+import com.flowintent.core.db.task.DeleteTaskByIdUseCase
+import com.flowintent.core.db.task.GetTasksUseCase
+import com.flowintent.core.db.task.InsertSmartTaskUseCase
+import com.flowintent.core.db.task.InsertTaskUseCase
+import com.flowintent.core.db.task.UpdateTaskUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,12 +30,15 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
-    private val repository: TaskRepository
+    private val getTasksUseCase: GetTasksUseCase,
+    private val insertTaskUseCase: InsertTaskUseCase,
+    private val insertSmartTaskUseCase: InsertSmartTaskUseCase,
+    private val updateTaskUseCase: UpdateTaskUseCase,
+    private val deleteTaskByIdUseCase: DeleteTaskByIdUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TaskUiState())
@@ -41,7 +49,7 @@ class TaskViewModel @Inject constructor(
         .map { it.searchQuery to it.selectedType }
         .debounce(300)
         .flatMapLatest { (query, type) ->
-            repository.getTasks(query, type)
+            getTasksUseCase(query, type)
         }.cachedIn(viewModelScope)
         .stateIn(
             scope = viewModelScope,
@@ -62,7 +70,7 @@ class TaskViewModel @Inject constructor(
             val idsToDelete = _uiState.value.selectedTasks.filter { it.value }.keys.toList()
 
             idsToDelete.forEach { id ->
-                repository.deleteTaskById(id)
+                deleteTaskByIdUseCase(id)
             }
 
             _uiState.update { it.copy(selectedTasks = emptyMap(), isSelectionMode = false) }
@@ -71,7 +79,7 @@ class TaskViewModel @Inject constructor(
 
     fun insertTask(task: Task) {
         viewModelScope.launch {
-            repository.insertTask(task)
+            insertTaskUseCase(task)
         }
     }
 
@@ -79,7 +87,7 @@ class TaskViewModel @Inject constructor(
         if (userInput.isBlank()) return
 
         viewModelScope.launch {
-            repository.insertSmartTask(userInput).collect { resource ->
+            insertSmartTaskUseCase(userInput).collect { resource ->
                 _uiState.update { it.copy(smartTaskState = resource) }
             }
         }
@@ -91,7 +99,7 @@ class TaskViewModel @Inject constructor(
 
     fun updateTask(id: Int, title: String, content: TaskRes) {
         viewModelScope.launch {
-            repository.updateTask(id, title, content)
+            updateTaskUseCase(id, title, content)
         }
     }
 

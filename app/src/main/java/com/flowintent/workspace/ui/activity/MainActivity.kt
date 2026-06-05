@@ -102,6 +102,7 @@ class MainActivity : AppCompatActivity() {
                 windowInsetsController.isAppearanceLightStatusBars = !isDarkTheme
                 windowInsetsController.isAppearanceLightNavigationBars = !isDarkTheme
             }
+
             HomeScreen(
                 isDarkTheme = isDarkTheme,
                 authViewModel = authViewModel,
@@ -109,7 +110,6 @@ class MainActivity : AppCompatActivity() {
                 featureApi = featureApi,
             )
         }
-        Log.i(TAG, "onCreate")
     }
 
     override fun onRestart() {

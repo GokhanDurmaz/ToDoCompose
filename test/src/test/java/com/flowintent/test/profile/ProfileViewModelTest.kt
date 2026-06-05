@@ -6,13 +6,14 @@ package com.flowintent.test.profile
 
 import android.content.Context
 import com.flowintent.core.db.auth.ChangePasswordUseCase
+import com.flowintent.core.db.auth.GetUidUseCase
 import com.flowintent.core.db.auth.GetUserProfileUseCase
+import com.flowintent.core.db.auth.SaveProfileImageUrlUseCase
 import com.flowintent.core.db.model.UserProfile
 import com.flowintent.core.db.profile.DownloadAndSaveUseCase
 import com.flowintent.core.db.profile.GetLocalAvatarUseCase
 import com.flowintent.core.db.profile.ObserveUserProfileUseCase
 import com.flowintent.core.db.profile.UploadProfileUseCase
-import com.flowintent.core.db.repository.EncryptedProtoRepository
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.profile.ui.vm.ProfileViewModel
@@ -52,14 +53,16 @@ class ProfileViewModelTest {
     @Mock
     private lateinit var observeUserProfileUseCase: ObserveUserProfileUseCase
     @Mock
-    private lateinit var encryptedProtoRepository: EncryptedProtoRepository
+    private lateinit var getUidUseCase: GetUidUseCase
+    @Mock
+    private lateinit var saveProfileImageUrlUseCase: SaveProfileImageUrlUseCase
 
     private lateinit var viewModel: ProfileViewModel
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        whenever(encryptedProtoRepository.uidFlow()).thenReturn(flowOf("uid-123"))
+        whenever(getUidUseCase()).thenReturn(flowOf("uid-123"))
         whenever(observeUserProfileUseCase()).thenReturn(flowOf(Resource.Loading))
         whenever(getUserProfileUseCase()).thenReturn(flowOf(Resource.Loading))
         
@@ -72,7 +75,8 @@ class ProfileViewModelTest {
             downloadAndSaveUseCase,
             getLocalAvatarUseCase,
             observeUserProfileUseCase,
-            encryptedProtoRepository
+            getUidUseCase,
+            saveProfileImageUrlUseCase
         )
     }
 
@@ -92,7 +96,8 @@ class ProfileViewModelTest {
             downloadAndSaveUseCase,
             getLocalAvatarUseCase,
             observeUserProfileUseCase,
-            encryptedProtoRepository
+            getUidUseCase,
+            saveProfileImageUrlUseCase
         )
 
         assertEquals(userProfile, viewModel.uiState.value.userProfile)

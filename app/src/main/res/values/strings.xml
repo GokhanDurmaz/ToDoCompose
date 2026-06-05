@@ -40,4 +40,9 @@
     <string name="notification_consent_description">Allow notifications to receive timely reminders about your upcoming tasks and never miss a deadline.</string>
     <string name="allow">Allow</string>
     <string name="not_now">Not Now</string>
+    <string name="all_label">All</string>
+    <string name="social_label">Social</string>
+    <string name="daily_label">Daily</string>
+    <string name="work_label">Work</string>
+    <string name="other_label">Other</string>
 </resources>
