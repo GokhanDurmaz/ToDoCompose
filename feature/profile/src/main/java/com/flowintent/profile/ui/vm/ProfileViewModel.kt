@@ -95,19 +95,14 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.map { it.userUid }.collectLatest { uid ->
                 if (uid != null) {
-                    println("ProfileViewModel: UID changed to $uid, checking local storage...")
-                    
                     // Always try to load local bitmap whenever UID is available/changed
                     val localBitmap = getLocalAvatarUseCase(uid)
                     if (localBitmap != null) {
-                        println("ProfileViewModel: Local bitmap load successful for $uid")
                         _uiState.update { it.copy(profileBitmap = localBitmap) }
                     } else {
-                        println("ProfileViewModel: No local bitmap found for $uid, attempting download...")
                         // Only download if local is not found
                         val bitmap = downloadAndSaveUseCase(uid)
                         if (bitmap != null) {
-                            println("ProfileViewModel: Download success for $uid")
                             _uiState.update { it.copy(profileBitmap = bitmap) }
                         }
                     }

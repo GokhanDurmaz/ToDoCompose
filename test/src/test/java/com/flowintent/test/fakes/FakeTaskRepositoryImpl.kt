@@ -84,6 +84,10 @@ class FakeTaskRepositoryImpl(
 
     override suspend fun getAllTasksRaw(): List<Task> = tasksFlow.value
 
+    override suspend fun clearAllTasks() {
+        tasksFlow.value = emptyList()
+    }
+
     companion object {
         private const val MAX_RANDOM_UID = 1000
     }
