@@ -27,16 +27,16 @@ android {
     namespace = "com.flowintent.workspace"
     compileSdk = 36
 
-    androidResources {
-        localeFilters.addAll(listOf("en", "ar", "de", "es", "fr", "ja", "pt", "ru", "zh", "tr"))
-    }
-
     defaultConfig {
         applicationId = "com.flowintent.workspace"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
+        androidResources {
+            localeFilters += listOf("en", "ar", "de", "es", "fr", "ja", "pt", "ru", "zh", "tr")
+        }
     }
 
     signingConfigs {
@@ -67,19 +67,6 @@ android {
         }
     }
 
-    androidComponents {
-        onVariants { variant ->
-            variant.outputs.forEach { output ->
-                val gitHash = gitHashProvider.get()
-                val verName = versionNameProvider.get().replace(".", "_")
-                val verCode = versionCodeProvider.get()
-                val variantName = variant.name
-                
-                output.outputFileName.set("todo_app_${verName}_${verCode}_${gitHash}_${variantName}.apk")
-            }
-        }
-    }
-
     buildTypes {
         debug {
             isMinifyEnabled = false
@@ -90,6 +77,7 @@ android {
         }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -101,6 +89,20 @@ android {
     packaging {
         jniLibs {
             useLegacyPackaging = true
+        }
+    }
+
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            val gitHash = gitHashProvider.get()
+            val verName = versionNameProvider.get().replace(".", "_")
+            val verCode = versionCodeProvider.get()
+            val variantName = variant.name
+
+            output.outputFileName.set("todo_app_${verName}_${verCode}_${gitHash}_${variantName}.apk")
         }
     }
 }
@@ -177,6 +179,9 @@ val vName = versionNameProvider
 val vCode = versionCodeProvider
 
 tasks.register<Exec>("deployApk") {
+    description = "Deploys the built APK to a connected device using deploy.sh."
+    group = "deployment"
+
     val requestedVariant = project.findProperty("variant")?.toString() ?: "debug"
     val scriptPath = deployScriptPath
     val verNameValue = vName.get()
@@ -184,23 +189,41 @@ tasks.register<Exec>("deployApk") {
     val workingDirectory = rootDirFile
 
     workingDir = workingDirectory
-    commandLine("sh", scriptPath, requestedVariant)
+
+    // Use "sh" by default, allowing override via -PdeployShell=...
+    executable = (project.findProperty("deployShell") as? String) ?: "sh"
+
+    args(scriptPath, requestedVariant)
+    isIgnoreExitValue = true
+
+    onlyIf {
+        val exe = executable
+        if (exe == null) {
+            println("WARNING: No shell executable specified. Skipping deployment.")
+            return@onlyIf false
+        }
+        val shellExists = if (File(exe).isAbsolute) {
+            File(exe).exists()
+        } else {
+            try {
+                ProcessBuilder(exe, "--version").start().waitFor() == 0
+            } catch (_: Exception) {
+                false
+            }
+        }
+        if (!shellExists) {
+            println("WARNING: Shell '$exe' not found. Skipping deployment.")
+        }
+        shellExists
+    }
 
     doFirst {
         println("--- Deployment Info ---")
         println("Variant: $requestedVariant")
         println("VersionName: $verNameValue")
         println("VersionCode: $verCodeValue")
-
-        val scriptFile = File(scriptPath)
-        if (scriptFile.exists()) {
-            println("Running deploy.sh from: ${scriptFile.absolutePath}")
-        } else {
-            throw GradleException("Missing: deploy.sh at $scriptPath")
-        }
+        println("Running deploy.sh from: $scriptPath")
     }
-
-    isIgnoreExitValue = true
 
     doLast {
         val result = executionResult.get()
