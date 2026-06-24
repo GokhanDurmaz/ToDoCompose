@@ -14,6 +14,13 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
 }
 
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 apply(from = "jacoco.gradle.kts")
 
 tasks.register("clean") {
