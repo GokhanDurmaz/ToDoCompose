@@ -21,9 +21,8 @@ allprojects {
     }
 }
 
-apply(from = "jacoco.gradle.kts")
-
 tasks.register("clean") {
+    description = "Clean project build artifacts."
     delete(rootProject.layout.buildDirectory)
 
     delete("build-logic/build")
@@ -65,6 +64,7 @@ subprojects {
             ignoreFailures = isDebugBuild
         }
     }
+    pluginManager.apply("com.flowintent.core.shared")
 }
 
 subprojects {

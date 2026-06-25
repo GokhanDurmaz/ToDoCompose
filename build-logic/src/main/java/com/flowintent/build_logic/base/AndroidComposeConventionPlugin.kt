@@ -2,7 +2,7 @@
  * Copyright (c) 2026 FlowIntent. All rights reserved.
  */
 
-package com.flowintent.build_logic
+package com.flowintent.build_logic.base
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
@@ -11,6 +11,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
 
 class AndroidComposeConventionPlugin : Plugin<Project> {
@@ -18,7 +19,8 @@ class AndroidComposeConventionPlugin : Plugin<Project> {
         with(target) {
             pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            val libs = extensions.findByType<VersionCatalogsExtension>()?.named("libs")
+                ?: rootProject.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             val configureDependencies = {
                 dependencies {

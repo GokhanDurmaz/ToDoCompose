@@ -1,8 +1,4 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.flowintent.android.base)
-    alias(libs.plugins.flowintent.android.compose)
-    alias(libs.plugins.flowintent.hilt)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -11,7 +7,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(project(":core:common"))

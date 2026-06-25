@@ -1,9 +1,6 @@
 import com.flowintent.build_logic.secret.loadSecretConfig
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.flowintent.android.base)
-    alias(libs.plugins.flowintent.hilt)
     alias(libs.plugins.flowintent.android.secret)
 }
 
@@ -24,7 +21,7 @@ androidSecrets {
 }
 
 android {
-    namespace = "com.flowintent.network"
+    namespace = "com.flowintent.core.network"
 
     buildFeatures {
         buildConfig = true

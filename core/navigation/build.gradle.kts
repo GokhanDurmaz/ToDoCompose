@@ -1,11 +1,5 @@
-plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.flowintent.android.base)
-    alias(libs.plugins.flowintent.hilt)
-}
-
 android {
-    namespace = "com.flowintent.navigation"
+    namespace = "com.flowintent.core.navigation"
 }
 
 dependencies {
