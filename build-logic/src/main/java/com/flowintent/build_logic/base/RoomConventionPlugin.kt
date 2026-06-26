@@ -2,7 +2,7 @@
  * Copyright (c) 2026 FlowIntent. All rights reserved.
  */
 
-package com.flowintent.build_logic
+package com.flowintent.build_logic.base
 
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
@@ -10,6 +10,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
 
 class RoomConventionPlugin : Plugin<Project> {
@@ -19,7 +20,8 @@ class RoomConventionPlugin : Plugin<Project> {
                 apply("com.google.devtools.ksp")
             }
 
-            val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+            val libs = extensions.findByType<VersionCatalogsExtension>()?.named("libs")
+                ?: rootProject.extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             dependencies {
                 "implementation"(libs.findLibrary("androidx-room-runtime").get())

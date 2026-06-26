@@ -4,9 +4,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.services) // The Google Services plugin
-    alias(libs.plugins.flowintent.android.base)
     alias(libs.plugins.flowintent.android.compose)
-    alias(libs.plugins.flowintent.hilt)
     alias(libs.plugins.flowintent.detekt)
 }
 
@@ -70,6 +68,7 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
+            enableUnitTestCoverage = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -235,7 +234,7 @@ tasks.register<Exec>("deployApk") {
     }
 }
 
-// build.gradle.kts (Kotlin DSL)
+// core.gradle.kts (Kotlin DSL)
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(

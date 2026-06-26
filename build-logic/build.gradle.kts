@@ -38,7 +38,7 @@ gradlePlugin {
     plugins {
         register("android-base-plugin") {
             id = "flowintent.android.base"
-            implementationClass = "com.flowintent.build_logic.AndroidBaseConventionPlugin"
+            implementationClass = "com.flowintent.build_logic.base.AndroidBaseConventionPlugin"
         }
     }
 }
@@ -47,7 +47,7 @@ gradlePlugin {
     plugins {
         register("hilt") {
             id = "flowintent.hilt"
-            implementationClass = "com.flowintent.build_logic.HiltConventionPlugin"
+            implementationClass = "com.flowintent.build_logic.base.HiltConventionPlugin"
         }
     }
 }
@@ -56,7 +56,7 @@ gradlePlugin {
     plugins {
         register("room") {
             id = "flowintent.room"
-            implementationClass = "com.flowintent.build_logic.RoomConventionPlugin"
+            implementationClass = "com.flowintent.build_logic.base.RoomConventionPlugin"
         }
     }
 }
@@ -74,7 +74,20 @@ gradlePlugin {
     plugins {
         register("android-compose") {
             id = "flowintent.android.compose"
-            implementationClass = "com.flowintent.build_logic.AndroidComposeConventionPlugin"
+            implementationClass = "com.flowintent.build_logic.base.AndroidComposeConventionPlugin"
+        }
+        register("jacoco") {
+            id = "flowintent.jacoco"
+            implementationClass = "com.flowintent.build_logic.JacocoConventionPlugin"
+        }
+    }
+}
+
+gradlePlugin {
+    plugins {
+        register("flowintentCoreShared") {
+            id = "com.flowintent.core.shared"
+            implementationClass = "com.flowintent.build_logic.core.CoreSharedConventionPlugin"
         }
     }
 }
