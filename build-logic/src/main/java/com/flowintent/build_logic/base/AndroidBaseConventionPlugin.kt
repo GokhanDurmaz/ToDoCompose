@@ -1,14 +1,11 @@
-/*
- * Copyright (c) 2026 FlowIntent. All rights reserved.
- */
-
-package com.flowintent.build_logic
+package com.flowintent.build_logic.base
 
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -26,7 +23,7 @@ class AndroidBaseConventionPlugin : Plugin<Project> {
                 }
             }
 
-            tasks.withType<org.gradle.api.tasks.testing.Test>().configureEach {
+            tasks.withType<Test>().configureEach {
                 jvmArgs("-Xshare:off")
             }
 

@@ -9,9 +9,8 @@ import com.flowintent.core.db.repository.TaskCategoryRepository
 import com.flowintent.core.db.source.LocalTaskDataProvider
 import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class FakeTaskCategoryRepositoryImpl @Inject constructor(
+class FakeTaskCategoryRepositoryImpl(
     val localTaskDataProvider: LocalTaskDataProvider
 ): TaskCategoryRepository {
     override fun getAllLocalCategories(): Flow<Resource<List<TaskCategory>>> = localTaskDataProvider.getAllCategories()

@@ -1,8 +1,5 @@
 plugins {
-    alias(libs.plugins.android.library)
     alias(libs.plugins.google.protobuf)
-    alias(libs.plugins.flowintent.android.base)
-    alias(libs.plugins.flowintent.hilt)
     alias(libs.plugins.flowintent.room)
 }
 
