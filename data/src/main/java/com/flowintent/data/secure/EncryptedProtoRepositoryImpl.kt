@@ -5,8 +5,11 @@
 package com.flowintent.data.secure
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.core.IOException
 import com.flowintent.core.db.repository.EncryptedProtoRepository
+import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -18,8 +21,14 @@ import javax.inject.Inject
         dataStore.updateData { it.toBuilder().setToken(token).build() }
     }
 
-    override suspend fun clear() {
-        dataStore.updateData { SecurePrefs.getDefaultInstance() }
+    override fun clear(): Flow<Resource<Unit>> = flow {
+        emit(Resource.Loading)
+        try {
+            dataStore.updateData { SecurePrefs.getDefaultInstance() }
+            emit(Resource.Success(Unit))
+        } catch (e: IOException) {
+            emit(Resource.Error(e.message ?: "Failed to clear data store"))
+        }
     }
 
     override fun tokenFlow(): Flow<String?> =

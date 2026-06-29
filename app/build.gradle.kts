@@ -3,9 +3,9 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.google.services) // The Google Services plugin
     alias(libs.plugins.flowintent.android.compose)
     alias(libs.plugins.flowintent.detekt)
+    alias(libs.plugins.google.services) // The Google Services plugin must be at the end
 }
 
 val gitHashProvider = providers.exec {
@@ -118,7 +118,7 @@ dependencies {
     implementation(project(":feature:profile"))
     implementation(project(":feature:settings"))
     implementation(project(":feature:uikit"))
-    runtimeOnly(project(":data"))
+    implementation(project(":data"))
 
     // Jetpack Compose integration
     implementation(libs.androidx.navigation.compose)
