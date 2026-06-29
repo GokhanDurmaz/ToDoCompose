@@ -4,7 +4,8 @@
 
 package com.flowintent.data.di
 
-import com.flowintent.data.BuildConfig
+import android.content.Context
+import android.content.pm.ApplicationInfo
 import com.google.firebase.Firebase
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.appCheck
@@ -16,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -37,10 +39,11 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAppCheck(): FirebaseAppCheck {
+    fun provideFirebaseAppCheck(@ApplicationContext context: Context): FirebaseAppCheck {
         val firebaseAppCheck = Firebase.appCheck
 
-        val providerFactory = if (BuildConfig.DEBUG) {
+        val isDebuggable = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        val providerFactory = if (isDebuggable) {
             DebugAppCheckProviderFactory.getInstance()
         } else {
             PlayIntegrityAppCheckProviderFactory.getInstance()
