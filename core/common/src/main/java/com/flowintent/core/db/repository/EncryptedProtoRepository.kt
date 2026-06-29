@@ -4,13 +4,14 @@
 
 package com.flowintent.core.db.repository
 
+import com.flowintent.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface EncryptedProtoRepository {
 
     suspend fun updateToken(token: String)
 
-    suspend fun clear()
+    fun clear(): Flow<Resource<Unit>>
 
     suspend fun saveUserInfo(name: String, email: String)
 

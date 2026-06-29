@@ -51,13 +51,9 @@ class ClearEncryptedStorageUseCase @Inject constructor(private val repository: E
  * Use case to clear all local data (Database + Encrypted Storage).
  */
 class LogoutUseCase @Inject constructor(
-    private val encryptedRepo: EncryptedProtoRepository,
-    private val taskRepo: TaskRepository
+    private val encryptedRepo: EncryptedProtoRepository
 ) {
-    suspend operator fun invoke() {
-        encryptedRepo.clear()
-        taskRepo.clearAllTasks()
-    }
+    operator fun invoke(): Flow<Resource<Unit>> = encryptedRepo.clear()
 }
 
 class GetNameUseCase @Inject constructor(private val repository: EncryptedProtoRepository) {

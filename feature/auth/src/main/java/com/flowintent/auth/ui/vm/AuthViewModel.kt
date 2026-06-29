@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
@@ -118,7 +119,7 @@ class AuthViewModel @Inject constructor(
     val isReady: StateFlow<Boolean> = getTokenUseCase()
         .map { true }
         .onStart {
-            delay(1500)
+            delay(1500.milliseconds)
             emit(true)
         }
         .stateIn(
@@ -129,10 +130,6 @@ class AuthViewModel @Inject constructor(
 
     fun saveToken(t: String) = viewModelScope.launch {
         updateTokenUseCase(t)
-    }
-
-    fun clearAll() = viewModelScope.launch {
-        logoutUseCase()
     }
 
     fun registerUser() {
@@ -179,7 +176,7 @@ class AuthViewModel @Inject constructor(
                     is Resource.Loading -> _forgotPasswordUiState.update { it.copy(isLoading = true, statusMessage = null) }
                     is Resource.Success -> {
                         _forgotPasswordUiState.update { it.copy(isLoading = false, statusMessage = "Reset link sent! Check your inbox." to false) }
-                        delay(2000)
+                        delay(2000.milliseconds)
                         onNavigateBack()
                     }
                     is Resource.Error -> _forgotPasswordUiState.update { it.copy(isLoading = false, statusMessage = resource.message to true) }
@@ -250,10 +247,15 @@ class AuthViewModel @Inject constructor(
 
     fun onLogoutClicked() {
         viewModelScope.launch {
-            logoutUseCase()
-            navigationDispatcher.navigateTo(AuthNavigation.SIGN_IN.route) {
-                popUpTo(0) {
-                    inclusive = true
+            logoutUseCase().collect { resource ->
+                when(resource) {
+                    is Resource.Loading -> {}
+                    is Resource.Success -> {
+                        navigationDispatcher.navigateTo(AuthNavigation.SIGN_IN.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                    is Resource.Error -> {}
                 }
             }
         }
@@ -262,7 +264,7 @@ class AuthViewModel @Inject constructor(
     fun verifyTwoFactor() {
         viewModelScope.launch {
             _twoFactorUiState.update { it.copy(isLoading = true, errorMessage = null) }
-            delay(1500)
+            delay(1500.milliseconds)
             _twoFactorUiState.update { it.copy(isLoading = false) }
             onNavigateBack()
         }
@@ -270,7 +272,7 @@ class AuthViewModel @Inject constructor(
 
     fun resendTwoFactorCode() {
         viewModelScope.launch {
-            delay(1000)
+            delay(1000.milliseconds)
             _twoFactorUiState.update { it.copy(errorMessage = "Code resent successfully!") }
         }
     }
