@@ -19,6 +19,7 @@ import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
 import com.flowintent.core.db.auth.UpdateTokenUseCase
 import com.flowintent.core.db.auth.UpdateUidUseCase
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.test.rules.MainDispatcherRule
 import com.flowintent.test.scenarios.UseCaseScenarios
@@ -55,6 +56,7 @@ class AuthViewModelTest {
     @Mock private lateinit var getUserProfileUseCase: GetUserProfileUseCase
     @Mock private lateinit var forgetPasswordUseCase: ForgetPasswordUseCase
     @Mock private lateinit var navigationDispatcher: NavigationDispatcher
+    @Mock private lateinit var eventTracker: AppEventTracker
 
     private lateinit var viewModel: AuthViewModel
 
@@ -80,7 +82,8 @@ class AuthViewModelTest {
             signInUseCase,
             getUserProfileUseCase,
             forgetPasswordUseCase,
-            navigationDispatcher
+            navigationDispatcher,
+            eventTracker
         )
     }
 

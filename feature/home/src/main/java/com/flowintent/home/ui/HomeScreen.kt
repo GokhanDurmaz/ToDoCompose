@@ -80,7 +80,11 @@ fun HomeScreen(
     ToDoTheme {
         Scaffold(
             topBar = {
-                HomeTopBar()
+                HomeTopBar(
+                    onSearchClick = { homeViewModel.onSearchClicked() },
+                    onNotificationsClick = { homeViewModel.onNotificationsClicked() },
+                    onProfileClick = { homeViewModel.onProfileClicked() }
+                )
             },
             containerColor = MaterialTheme.colorScheme.background
         ) { padding ->
@@ -108,7 +112,10 @@ fun HomeScreen(
                     items(uiState.categories) { category ->
                         HomeCategoryCard(
                             category = category,
-                            onClick = { onCategoryClick(category.title) }
+                            onClick = { 
+                                homeViewModel.onCategoryClicked(category.title)
+                                onCategoryClick(category.title) 
+                            }
                         )
                     }
                 }
@@ -121,14 +128,18 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeTopBar() {
+private fun HomeTopBar(
+    onSearchClick: () -> Unit,
+    onNotificationsClick: () -> Unit,
+    onProfileClick: () -> Unit
+) {
     TopAppBar(
         title = {},
         actions = {
-            IconButton(onClick = { /* TODO: Search */ }) {
+            IconButton(onClick = onSearchClick) {
                 Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_desc))
             }
-            IconButton(onClick = { /* TODO: Notifications */ }) {
+            IconButton(onClick = onNotificationsClick) {
                 Icon(Icons.Default.Notifications, contentDescription = stringResource(R.string.notifications_desc))
             }
             Box(
@@ -136,7 +147,8 @@ private fun HomeTopBar() {
                     .padding(end = VAL_12.dp)
                     .size(VAL_36.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
+                    .background(MaterialTheme.colorScheme.primaryContainer)
+                    .clickable { onProfileClick() },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(

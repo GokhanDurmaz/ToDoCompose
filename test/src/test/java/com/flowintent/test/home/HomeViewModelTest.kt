@@ -9,6 +9,7 @@ import com.flowintent.core.db.home.GetHomeCategoriesUseCase
 import com.flowintent.core.db.model.TaskCategory
 import com.flowintent.core.db.model.TaskContent
 import com.flowintent.core.db.model.TaskIcon
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.core.util.Resource
 import com.flowintent.home.ui.vm.HomeViewModel
 import com.flowintent.test.rules.MainDispatcherRule
@@ -38,6 +39,9 @@ class HomeViewModelTest {
     @Mock
     private lateinit var getNameUseCase: GetNameUseCase
 
+    @Mock
+    private lateinit var eventTracker: AppEventTracker
+
     private lateinit var viewModel: HomeViewModel
 
     @Before
@@ -61,7 +65,7 @@ class HomeViewModelTest {
         )
         whenever(getHomeCategoriesUseCase()).thenReturn(UseCaseScenarios.success(categories))
 
-        viewModel = HomeViewModel(getHomeCategoriesUseCase, getNameUseCase)
+        viewModel = HomeViewModel(getHomeCategoriesUseCase, getNameUseCase, eventTracker)
 
         assertEquals(categories, viewModel.uiState.value.categories)
         assertEquals(false, viewModel.uiState.value.isLoading)
@@ -72,7 +76,7 @@ class HomeViewModelTest {
         val expectedName = "John Doe"
         whenever(getNameUseCase()).thenReturn(flowOf(expectedName))
 
-        viewModel = HomeViewModel(getHomeCategoriesUseCase, getNameUseCase)
+        viewModel = HomeViewModel(getHomeCategoriesUseCase, getNameUseCase, eventTracker)
 
         // Using backgroundScope to ensure the flow is collected
         backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {

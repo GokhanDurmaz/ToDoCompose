@@ -9,6 +9,7 @@ import com.flowintent.core.db.settings.GetLanguageUseCase
 import com.flowintent.core.db.settings.GetProtoThemeUseCase
 import com.flowintent.core.db.settings.UpdateLanguageUseCase
 import com.flowintent.core.db.settings.UpdateProtoThemeUseCase
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.settings.ui.vm.SettingsViewModel
 import com.flowintent.test.rules.MainDispatcherRule
@@ -34,6 +35,9 @@ class SettingsViewModelTest {
     @Mock
     private lateinit var repo: EncryptedProtoRepository
 
+    @Mock
+    private lateinit var eventTracker: AppEventTracker
+
     private lateinit var getLanguageUseCase: GetLanguageUseCase
     private lateinit var updateLanguageUseCase: UpdateLanguageUseCase
     private lateinit var getProtoThemeUseCase: GetProtoThemeUseCase
@@ -58,7 +62,8 @@ class SettingsViewModelTest {
             getLanguageUseCase,
             updateLanguageUseCase,
             getProtoThemeUseCase,
-            updateProtoThemeUseCase
+            updateProtoThemeUseCase,
+            eventTracker
         )
     }
 
