@@ -12,6 +12,7 @@ import com.flowintent.core.db.task.GetTasksUseCase
 import com.flowintent.core.db.task.InsertSmartTaskUseCase
 import com.flowintent.core.db.task.InsertTaskUseCase
 import com.flowintent.core.db.task.UpdateTaskUseCase
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.test.rules.MainDispatcherRule
 import com.flowintent.workspace.ui.vm.TaskViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,6 +38,7 @@ class TaskViewModelTest {
     @Mock private lateinit var insertSmartTaskUseCase: InsertSmartTaskUseCase
     @Mock private lateinit var updateTaskUseCase: UpdateTaskUseCase
     @Mock private lateinit var deleteTaskByIdUseCase: DeleteTaskByIdUseCase
+    @Mock private lateinit var eventTracker: AppEventTracker
 
     private lateinit var viewModel: TaskViewModel
 
@@ -49,7 +51,8 @@ class TaskViewModelTest {
             insertTaskUseCase,
             insertSmartTaskUseCase,
             updateTaskUseCase,
-            deleteTaskByIdUseCase
+            deleteTaskByIdUseCase,
+            eventTracker
         )
     }
 

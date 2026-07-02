@@ -4,6 +4,7 @@
 
 package com.flowintent.network.di
 
+import com.flowintent.network.network.interceptors.NetworkErrorInterceptor
 import com.flowintent.network.network.services.GroqApiService
 import com.flowintent.network.util.NativeConfig
 import com.flowintent.network.util.NetworkUtil
@@ -50,7 +51,8 @@ object NetworkModule {
     @Provides
     fun provideOkHttpClient(
         sslSocketFactory: SSLSocketFactory,
-        trustManager: X509TrustManager
+        trustManager: X509TrustManager,
+        networkErrorInterceptor: NetworkErrorInterceptor
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BASIC
@@ -58,6 +60,7 @@ object NetworkModule {
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(networkErrorInterceptor)
             .callTimeout(NetworkUtil.CALL_TIMEOUT, TimeUnit.SECONDS)
             .connectTimeout(NetworkUtil.CONNECT_TIMEOUT, TimeUnit.SECONDS)
             .sslSocketFactory(sslSocketFactory, trustManager)

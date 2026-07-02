@@ -12,6 +12,7 @@ import com.flowintent.core.db.settings.GetLanguageUseCase
 import com.flowintent.core.db.settings.GetProtoThemeUseCase
 import com.flowintent.core.db.settings.UpdateLanguageUseCase
 import com.flowintent.core.db.settings.UpdateProtoThemeUseCase
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.ProfileNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,8 @@ class SettingsViewModel @Inject constructor(
     private val getLanguageUseCase: GetLanguageUseCase,
     private val updateLanguageUseCase: UpdateLanguageUseCase,
     private val getProtoThemeUseCase: GetProtoThemeUseCase,
-    private val updateProtoThemeUseCase: UpdateProtoThemeUseCase
+    private val updateProtoThemeUseCase: UpdateProtoThemeUseCase,
+    private val eventTracker: AppEventTracker
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
@@ -92,6 +94,8 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onThemeChange(newTheme: String) {
+        val params = mapOf("theme" to newTheme)
+        eventTracker.logEvent("settings_theme_changed", params)
         _uiState.update { it.copy(theme = newTheme) }
         viewModelScope.launch {
             updateProtoThemeUseCase(newTheme)
@@ -113,6 +117,8 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onLocaleChange(locale: String) {
+        val params = mapOf("locale" to locale)
+        eventTracker.logEvent("settings_locale_changed", params)
         // 1. Apply to system immediately (this triggers activity recreation)
         val appLocale = LocaleListCompat.forLanguageTags(locale)
         AppCompatDelegate.setApplicationLocales(appLocale)

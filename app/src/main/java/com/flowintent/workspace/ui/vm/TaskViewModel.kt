@@ -16,6 +16,7 @@ import com.flowintent.core.db.task.GetTasksUseCase
 import com.flowintent.core.db.task.InsertSmartTaskUseCase
 import com.flowintent.core.db.task.InsertTaskUseCase
 import com.flowintent.core.db.task.UpdateTaskUseCase
+import com.flowintent.core.util.AppEventTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -38,7 +39,8 @@ class TaskViewModel @Inject constructor(
     private val insertTaskUseCase: InsertTaskUseCase,
     private val insertSmartTaskUseCase: InsertSmartTaskUseCase,
     private val updateTaskUseCase: UpdateTaskUseCase,
-    private val deleteTaskByIdUseCase: DeleteTaskByIdUseCase
+    private val deleteTaskByIdUseCase: DeleteTaskByIdUseCase,
+    private val eventTracker: AppEventTracker
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TaskUiState())
@@ -58,6 +60,8 @@ class TaskViewModel @Inject constructor(
         )
 
     fun onTypeSelected(type: TaskType?) {
+        val params = mapOf("type" to (type?.name ?: "All"))
+        eventTracker.logEvent("task_type_filter_changed", params)
         _uiState.update { it.copy(selectedType = type) }
     }
 
@@ -69,6 +73,7 @@ class TaskViewModel @Inject constructor(
         viewModelScope.launch {
             val idsToDelete = _uiState.value.selectedTasks.filter { it.value }.keys.toList()
 
+            eventTracker.logEvent("tasks_deleted", mapOf("count" to idsToDelete.size))
             idsToDelete.forEach { id ->
                 deleteTaskByIdUseCase(id)
             }
@@ -78,6 +83,7 @@ class TaskViewModel @Inject constructor(
     }
 
     fun insertTask(task: Task) {
+        eventTracker.logEvent("task_created")
         viewModelScope.launch {
             insertTaskUseCase(task)
         }
@@ -85,6 +91,7 @@ class TaskViewModel @Inject constructor(
 
     fun insertSmartTask(userInput: String) {
         if (userInput.isBlank()) return
+        eventTracker.logEvent("smart_task_input")
 
         viewModelScope.launch {
             insertSmartTaskUseCase(userInput).collect { resource ->
