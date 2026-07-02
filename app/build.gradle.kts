@@ -5,7 +5,6 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.flowintent.android.compose)
     alias(libs.plugins.flowintent.detekt)
-    alias(libs.plugins.google.services) // The Google Services plugin must be at the end
 }
 
 val gitHashProvider = providers.exec {

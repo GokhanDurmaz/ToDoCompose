@@ -19,6 +19,7 @@ import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
 import com.flowintent.core.db.auth.UpdateTokenUseCase
 import com.flowintent.core.db.auth.UpdateUidUseCase
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.AuthNavigation
@@ -53,7 +54,8 @@ class AuthViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase,
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val forgetPasswordUseCase: ForgetPasswordUseCase,
-    private val navigationDispatcher: NavigationDispatcher
+    private val navigationDispatcher: NavigationDispatcher,
+    private val eventTracker: AppEventTracker
 ) : ViewModel() {
 
     private val _signInUiState = MutableStateFlow(SignInUiState())
@@ -139,11 +141,16 @@ class AuthViewModel @Inject constructor(
                 when (resource) {
                     is Resource.Loading -> _signUpUiState.update { it.copy(isLoading = true, errorMessage = null) }
                     is Resource.Success -> {
+                        eventTracker.logEvent("sign_up_success")
                         _signUpUiState.update { it.copy(isLoading = false) }
                         saveUser(state.firstName, state.lastName, state.email)
                         onNavigateBack()
                     }
-                    is Resource.Error -> _signUpUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
+                    is Resource.Error -> {
+                        eventTracker.logEvent("sign_up_error")
+                        eventTracker.logMessage("Sign up failed: ${resource.message}")
+                        _signUpUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
+                    }
                 }
             }
         }
@@ -156,13 +163,18 @@ class AuthViewModel @Inject constructor(
                 when (resource) {
                     is Resource.Loading -> _signInUiState.update { it.copy(isLoading = true, errorMessage = null) }
                     is Resource.Success -> {
+                        eventTracker.logEvent("login_success")
                         _signInUiState.update { it.copy(isLoading = false) }
                         if (resource.data.isNotEmpty()) {
                             saveToken(resource.data)
                             onLoginSuccess()
                         }
                     }
-                    is Resource.Error -> _signInUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
+                    is Resource.Error -> {
+                        eventTracker.logEvent("login_error")
+                        eventTracker.logMessage("Login failed: ${resource.message}")
+                        _signInUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
+                    }
                 }
             }
         }
@@ -251,11 +263,15 @@ class AuthViewModel @Inject constructor(
                 when(resource) {
                     is Resource.Loading -> {}
                     is Resource.Success -> {
+                        eventTracker.logEvent("logout_success")
                         navigationDispatcher.navigateTo(AuthNavigation.SIGN_IN.route) {
                             popUpTo(0) { inclusive = true }
                         }
                     }
-                    is Resource.Error -> {}
+                    is Resource.Error -> {
+                        eventTracker.logEvent("logout_error")
+                        eventTracker.logMessage("Logout failed: ${resource.message}")
+                    }
                 }
             }
         }

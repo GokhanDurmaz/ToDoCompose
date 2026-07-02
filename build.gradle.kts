@@ -12,6 +12,7 @@ plugins {
 
     alias(libs.plugins.flowintent.detekt) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
 }
 
 allprojects {
