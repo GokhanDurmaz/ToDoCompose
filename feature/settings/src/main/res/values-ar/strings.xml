@@ -17,4 +17,5 @@
     <string name="privacy_policy">سياسة الخصوصية</string>
     <string name="terms_service">شروط الخدمة</string>
     <string name="check_updates">التحقق من التحديثات</string>
+    <string name="search_placeholder">البحث عن لغة…</string>
 </resources>

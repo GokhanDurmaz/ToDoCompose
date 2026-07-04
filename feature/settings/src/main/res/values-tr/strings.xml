@@ -17,4 +17,5 @@
     <string name="privacy_policy">Gizlilik Politikası</string>
     <string name="terms_service">Hizmet Şartları</string>
     <string name="check_updates">Güncellemeleri Denetle</string>
+    <string name="search_placeholder">Dil ara…</string>
 </resources>

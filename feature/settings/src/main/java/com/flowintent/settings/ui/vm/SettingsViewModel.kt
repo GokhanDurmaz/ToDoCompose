@@ -66,7 +66,7 @@ class SettingsViewModel @Inject constructor(
         // Theme observation
         viewModelScope.launch {
             getProtoThemeUseCase().collectLatest { theme ->
-                val currentTheme = theme ?: "Dark"
+                val currentTheme = theme ?: "Light"
                 _uiState.update { it.copy(theme = currentTheme) }
                 val mode = when(currentTheme) {
                     "Light" -> AppCompatDelegate.MODE_NIGHT_NO

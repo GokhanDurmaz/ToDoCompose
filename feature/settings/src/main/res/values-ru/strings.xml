@@ -17,4 +17,5 @@
     <string name="privacy_policy">Политика конфиденциальности</string>
     <string name="terms_service">Условия использования</string>
     <string name="check_updates">Проверить обновления</string>
+    <string name="search_placeholder">Поиск языка…</string>
 </resources>

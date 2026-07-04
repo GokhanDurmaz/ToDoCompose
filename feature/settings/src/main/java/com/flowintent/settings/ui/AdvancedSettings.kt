@@ -6,25 +6,29 @@ package com.flowintent.settings.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material.icons.filled.DarkMode
@@ -34,6 +38,7 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PrivacyTip
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material3.AlertDialog
@@ -45,7 +50,9 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -302,33 +309,112 @@ private fun LanguageSelection(currentLanguage: String, onLanguageChange: (String
         codes.zip(names)
     }
 
+    var showDialog by remember { mutableStateOf(false) }
+
+    val currentLanguageName = remember(currentLanguage, languages) {
+        languages.find { (code, _) ->
+            if (currentLanguage.isEmpty()) code == "en" else currentLanguage.startsWith(code)
+        }?.second ?: "English"
+    }
+
     SettingsSection(title = stringResource(R.string.language_label), icon = Icons.Default.Language) {
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+        Surface(
+            onClick = { showDialog = true },
+            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = RoundedCornerShape(VAL_12.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            languages.forEach { (code, name) ->
-                val isSelected = if (currentLanguage.isEmpty()) code == "en" else currentLanguage.startsWith(code)
-                FilterChip(
-                    selected = isSelected,
-                    onClick = { onLanguageChange(code) },
-                    label = {
-                        Text(
-                            text = name,
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    },
-                    colors = FilterChipDefaults.filterChipColors(
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        labelColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(VAL_16.dp)
+            ) {
+                Text(
+                    text = currentLanguageName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
     }
+
+    if (showDialog) {
+        LanguageDialog(
+            currentLanguage = currentLanguage,
+            languages = languages,
+            onLanguageChange = {
+                onLanguageChange(it)
+                showDialog = false
+            },
+            onDismiss = { showDialog = false }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LanguageDialog(
+    currentLanguage: String,
+    languages: List<Pair<String, String>>,
+    onLanguageChange: (String) -> Unit,
+    onDismiss: () -> Unit
+) {
+    var searchQuery by remember { mutableStateOf("") }
+    val filteredLanguages = remember(searchQuery, languages) {
+        if (searchQuery.isEmpty()) {
+            languages
+        } else {
+            languages.filter { it.second.contains(searchQuery, ignoreCase = true) }
+        }
+    }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.language_label)) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(VAL_8.dp)) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    placeholder = { Text(stringResource(R.string.search_placeholder)) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(VAL_12.dp),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(VAL_8.dp))
+
+                LazyColumn(modifier = Modifier.heightIn(max = 400.dp)) {
+                    items(filteredLanguages) { (code, name) ->
+                        val isSelected = if (currentLanguage.isEmpty()) code == "en" else currentLanguage.startsWith(code)
+                        ListItem(
+                            headlineContent = { Text(name) },
+                            trailingContent = {
+                                if (isSelected) {
+                                    Icon(
+                                        Icons.Default.Check,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            },
+                            modifier = Modifier.clickable { onLanguageChange(code) }
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
 }
 
 @Composable
