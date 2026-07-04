@@ -9,6 +9,8 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,6 +41,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -68,6 +71,7 @@ import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
 import com.flowintent.uikit.util.VAL_24
+import com.flowintent.uikit.util.VAL_32
 import com.flowintent.uikit.util.VAL_36
 import com.flowintent.uikit.util.VAL_4
 import com.flowintent.uikit.util.VAL_50
@@ -116,6 +120,7 @@ fun HomeScreen(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     shape = CircleShape,
+                    elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 8.dp),
                     modifier = Modifier.padding(bottom = VAL_50.dp)
                 ) {
                     Icon(
@@ -246,6 +251,7 @@ private fun HomeCategoryCard(
     isExpanded: Boolean = false,
     onClick: () -> Unit
 ) {
+    val isDark = isSystemInDarkTheme()
     val icon = when (category.title) {
         "Gym" -> Icons.Default.FitnessCenter
         "Art" -> Icons.Default.Brush
@@ -260,6 +266,24 @@ private fun HomeCategoryCard(
         else -> category.title to category.content.text
     }
 
+    val containerColor = if (isDark) {
+        MaterialTheme.colorScheme.surfaceContainerHigh
+    } else {
+        Color(category.cardColor)
+    }
+
+    val contentColor = if (isDark) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        Color(category.textColor)
+    }
+
+    val accentColor = if (isDark) {
+        Color(category.iconColor)
+    } else {
+        Color(category.iconColor)
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -267,9 +291,10 @@ private fun HomeCategoryCard(
             .clickable { onClick() },
         shape = RoundedCornerShape(VAL_24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(category.cardColor).copy(alpha = 0.9f)
+            containerColor = containerColor
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        border = if (isDark) BorderStroke(0.5.dp, Color.White.copy(alpha = 0.1f)) else null
     ) {
         Box(modifier = Modifier.fillMaxSize().padding(VAL_20.dp)) {
             Row(
@@ -284,13 +309,16 @@ private fun HomeCategoryCard(
                         modifier = Modifier
                             .size(VAL_50.dp)
                             .clip(RoundedCornerShape(VAL_12.dp))
-                            .background(Color.White.copy(alpha = 0.2f)),
+                            .background(
+                                if (isDark) accentColor.copy(alpha = 0.15f) 
+                                else Color.White.copy(alpha = 0.25f)
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = icon,
                             contentDescription = null,
-                            tint = Color(category.iconColor),
+                            tint = if (isDark) accentColor else Color.White,
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -301,13 +329,13 @@ private fun HomeCategoryCard(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color(category.textColor)
+                        color = contentColor
                     )
                     
                     Text(
                         text = description,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color(category.textColor).copy(alpha = 0.7f),
+                        color = contentColor.copy(alpha = 0.85f),
                         maxLines = if (isExpanded) 3 else 2
                     )
                 }
@@ -318,38 +346,50 @@ private fun HomeCategoryCard(
                         modifier = Modifier
                             .weight(0.7f)
                             .clip(RoundedCornerShape(VAL_12.dp))
-                            .background(Color.White.copy(alpha = 0.1f))
+                            .background(
+                                if (isDark) MaterialTheme.colorScheme.surfaceContainerLowest 
+                                else Color.White.copy(alpha = 0.2f)
+                            )
                             .padding(VAL_12.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         when (category.title) {
                             "Gym" -> {
-                                Text("Weekly Goal", style = MaterialTheme.typography.labelSmall, color = Color(category.textColor))
+                                Text("Weekly Goal", style = MaterialTheme.typography.labelSmall, color = contentColor)
                                 Spacer(modifier = Modifier.height(4.dp))
                                 LinearProgressIndicator(
                                     progress = { 0.6f },
                                     modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
-                                    color = Color(category.iconColor),
-                                    trackColor = Color.White.copy(alpha = 0.2f)
+                                    color = if (isDark) accentColor else Color.White,
+                                    trackColor = contentColor.copy(alpha = 0.2f)
                                 )
-                                Text("3/5 days", style = MaterialTheme.typography.bodySmall, color = Color(category.textColor))
+                                Text("3/5 days", style = MaterialTheme.typography.bodySmall, color = contentColor)
                             }
                             "Art" -> {
-                                Text("Inspiration", style = MaterialTheme.typography.labelSmall, color = Color(category.textColor))
-                                Text("Daily Sketch", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color(category.textColor))
+                                Text("Inspiration", style = MaterialTheme.typography.labelSmall, color = contentColor)
+                                Text("Daily Sketch", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = contentColor)
                                 Spacer(modifier = Modifier.height(4.dp))
-                                Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.2f)), contentAlignment = Alignment.Center) {
-                                    Icon(Icons.Default.Brush, null, tint = Color(category.iconColor), modifier = Modifier.size(20.dp))
+                                Box(
+                                    modifier = Modifier.size(40.dp).clip(CircleShape)
+                                        .background(if (isDark) accentColor.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.2f)), 
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(Icons.Default.Brush, null, tint = if (isDark) accentColor else Color.White, modifier = Modifier.size(20.dp))
                                 }
                             }
                             "Health" -> {
-                                Text("Daily Metrics", style = MaterialTheme.typography.labelSmall, color = Color(category.textColor))
+                                Text("Daily Metrics", style = MaterialTheme.typography.labelSmall, color = contentColor)
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Icon(Icons.Default.Favorite, null, tint = Color.Red.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
+                                    Icon(
+                                        Icons.Default.Favorite, 
+                                        null, 
+                                        tint = if (isDark) Color.Red.copy(alpha = 0.6f) else Color.White, 
+                                        modifier = Modifier.size(16.dp)
+                                    )
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("72 bpm", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color(category.textColor))
+                                    Text("72 bpm", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = contentColor)
                                 }
-                                Text("Optimal", style = MaterialTheme.typography.bodySmall, color = Color(category.textColor))
+                                Text("Optimal", style = MaterialTheme.typography.bodySmall, color = contentColor)
                             }
                         }
                     }

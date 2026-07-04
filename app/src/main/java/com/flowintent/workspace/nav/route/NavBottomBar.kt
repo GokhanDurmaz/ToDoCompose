@@ -4,6 +4,8 @@
 
 package com.flowintent.workspace.nav.route
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,13 +32,21 @@ fun BottomNavigationBar(
     navigationDispatcher: NavigationDispatcher,
     modifier: Modifier = Modifier
 ) {
+    val isDark = isSystemInDarkTheme()
+    
     Surface(
         modifier = modifier
             .padding(bottom = 20.dp, start = 16.dp, end = 16.dp)
             .height(64.dp),
         shape = RoundedCornerShape(50.dp),
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 4.dp
+        color = if (isDark) {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        border = if (isDark) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)) else null,
+        tonalElevation = if (isDark) 12.dp else 4.dp,
+        shadowElevation = 8.dp
     ) {
         NavigationBar(
             containerColor = Color.Transparent,
@@ -63,12 +72,7 @@ fun BottomNavigationBar(
                             contentDescription = stringResource(item.contentDescriptionRes)
                         )
                     },
-                    label = {
-                        Text(
-                            text = stringResource(item.labelRes),
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
+                    label = null
                 )
             }
         }

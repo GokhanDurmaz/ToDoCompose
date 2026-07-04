@@ -95,7 +95,7 @@ fun TaskInputBar(
 ) {
     var text by remember { mutableStateOf("") }
     Surface(
-        modifier = modifier.fillMaxWidth().padding(start = 24.dp, bottom = 84.dp, end = 24.dp),
+        modifier = modifier.fillMaxWidth().padding(start = 24.dp, bottom = 90.dp, end = 24.dp),
         shape = RoundedCornerShape(28.dp),
         color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.95f),
         tonalElevation = 4.dp
