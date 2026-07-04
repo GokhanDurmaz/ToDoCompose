@@ -4,25 +4,30 @@
 
 package com.flowintent.home.ui
 
+import android.content.Intent
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.ArtTrack
 import androidx.compose.material.icons.filled.Brush
 import androidx.compose.material.icons.filled.Favorite
@@ -33,8 +38,10 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -46,6 +53,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,6 +69,7 @@ import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
 import com.flowintent.uikit.util.VAL_24
 import com.flowintent.uikit.util.VAL_36
+import com.flowintent.uikit.util.VAL_4
 import com.flowintent.uikit.util.VAL_50
 import com.flowintent.uikit.util.VAL_8
 import com.flowintent.uikit.util.VAL_80
@@ -76,6 +86,20 @@ fun HomeScreen(
 ) {
     val uiState by homeViewModel.uiState.collectAsStateWithLifecycle()
     val username by homeViewModel.userName.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val columns = if (isLandscape) 4 else 2
+
+    val onShareTasks = {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "Check out my tasks: https://todoapp.flowintent.com/tasks/shared")
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        context.startActivity(shareIntent)
+    }
 
     ToDoTheme {
         Scaffold(
@@ -86,41 +110,65 @@ fun HomeScreen(
                     onProfileClick = { homeViewModel.onProfileClicked() }
                 )
             },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = onShareTasks,
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                    shape = CircleShape,
+                    modifier = Modifier.padding(bottom = VAL_50.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = stringResource(R.string.category_sent)
+                    )
+                }
+            },
             containerColor = MaterialTheme.colorScheme.background
         ) { padding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(columns),
+                contentPadding = PaddingValues(
+                    top = padding.calculateTopPadding(),
+                    bottom = padding.calculateBottomPadding() + VAL_80.dp + 100.dp,
+                    start = VAL_16.dp,
+                    end = VAL_16.dp
+                ),
+                horizontalArrangement = Arrangement.spacedBy(VAL_16.dp),
+                verticalArrangement = Arrangement.spacedBy(VAL_16.dp),
+                modifier = Modifier.fillMaxSize()
             ) {
-                WelcomeHeader(username)
-                
-                Text(
-                    text = stringResource(R.string.categories_label),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = VAL_20.dp, vertical = VAL_12.dp)
-                )
-
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(horizontal = VAL_16.dp, vertical = VAL_8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(VAL_16.dp),
-                    verticalArrangement = Arrangement.spacedBy(VAL_16.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    items(uiState.categories) { category ->
-                        HomeCategoryCard(
-                            category = category,
-                            onClick = { 
-                                homeViewModel.onCategoryClicked(category.title)
-                                onCategoryClick(category.title) 
-                            }
-                        )
-                    }
+                item(span = { GridItemSpan(columns) }) {
+                    WelcomeHeader(username)
                 }
-                
-                Spacer(modifier = Modifier.height(VAL_80.dp))
+
+                item(span = { GridItemSpan(columns) }) {
+                    Text(
+                        text = stringResource(R.string.categories_label),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = VAL_4.dp, vertical = VAL_12.dp)
+                    )
+                }
+
+                val filteredCategories = uiState.categories.filter { it.title != "Sent" }
+                items(
+                    items = filteredCategories,
+                    span = { category ->
+                        val isWidget = category.title in listOf("Gym", "Art", "Health")
+                        GridItemSpan(if (isWidget) columns else 1)
+                    }
+                ) { category ->
+                    val isWidget = category.title in listOf("Gym", "Art", "Health")
+                    HomeCategoryCard(
+                        category = category,
+                        isExpanded = isWidget,
+                        onClick = {
+                            homeViewModel.onCategoryClicked(category.title)
+                            onCategoryClick(category.title)
+                        }
+                    )
+                }
             }
         }
     }
@@ -195,6 +243,7 @@ private fun WelcomeHeader(username: String?) {
 @Composable
 private fun HomeCategoryCard(
     category: TaskCategory,
+    isExpanded: Boolean = false,
     onClick: () -> Unit
 ) {
     val icon = when (category.title) {
@@ -208,14 +257,13 @@ private fun HomeCategoryCard(
         "Gym" -> stringResource(R.string.category_gym) to stringResource(R.string.category_gym_desc)
         "Art" -> stringResource(R.string.category_art) to stringResource(R.string.category_art_desc)
         "Health" -> stringResource(R.string.category_health) to stringResource(R.string.category_health_desc)
-        "Sent" -> stringResource(R.string.category_sent) to stringResource(R.string.category_sent_desc)
         else -> category.title to category.content.text
     }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(0.9f)
+            .height(if (isExpanded) 200.dp else 160.dp)
             .clickable { onClick() },
         shape = RoundedCornerShape(VAL_24.dp),
         colors = CardDefaults.cardColors(
@@ -223,42 +271,89 @@ private fun HomeCategoryCard(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .padding(VAL_20.dp)
-                    .align(Alignment.TopStart)
+        Box(modifier = Modifier.fillMaxSize().padding(VAL_20.dp)) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(VAL_50.dp)
-                        .clip(RoundedCornerShape(VAL_12.dp))
-                        .background(Color.White.copy(alpha = 0.2f)),
-                    contentAlignment = Alignment.Center
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = Color(category.iconColor),
-                        modifier = Modifier.size(28.dp)
+                    Box(
+                        modifier = Modifier
+                            .size(VAL_50.dp)
+                            .clip(RoundedCornerShape(VAL_12.dp))
+                            .background(Color.White.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = Color(category.iconColor),
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                    
+                    Spacer(modifier = Modifier.height(VAL_12.dp))
+                    
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(category.textColor)
+                    )
+                    
+                    Text(
+                        text = description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color(category.textColor).copy(alpha = 0.7f),
+                        maxLines = if (isExpanded) 3 else 2
                     )
                 }
-                
-                Spacer(modifier = Modifier.height(VAL_16.dp))
-                
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(category.textColor)
-                )
-                
-                Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color(category.textColor).copy(alpha = 0.7f),
-                    maxLines = 2
-                )
+
+                if (isExpanded) {
+                    Spacer(modifier = Modifier.width(VAL_20.dp))
+                    Column(
+                        modifier = Modifier
+                            .weight(0.7f)
+                            .clip(RoundedCornerShape(VAL_12.dp))
+                            .background(Color.White.copy(alpha = 0.1f))
+                            .padding(VAL_12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        when (category.title) {
+                            "Gym" -> {
+                                Text("Weekly Goal", style = MaterialTheme.typography.labelSmall, color = Color(category.textColor))
+                                Spacer(modifier = Modifier.height(4.dp))
+                                LinearProgressIndicator(
+                                    progress = { 0.6f },
+                                    modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
+                                    color = Color(category.iconColor),
+                                    trackColor = Color.White.copy(alpha = 0.2f)
+                                )
+                                Text("3/5 days", style = MaterialTheme.typography.bodySmall, color = Color(category.textColor))
+                            }
+                            "Art" -> {
+                                Text("Inspiration", style = MaterialTheme.typography.labelSmall, color = Color(category.textColor))
+                                Text("Daily Sketch", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color(category.textColor))
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Box(modifier = Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.2f)), contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Default.Brush, null, tint = Color(category.iconColor), modifier = Modifier.size(20.dp))
+                                }
+                            }
+                            "Health" -> {
+                                Text("Daily Metrics", style = MaterialTheme.typography.labelSmall, color = Color(category.textColor))
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Icon(Icons.Default.Favorite, null, tint = Color.Red.copy(alpha = 0.6f), modifier = Modifier.size(16.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("72 bpm", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold, color = Color(category.textColor))
+                                }
+                                Text("Optimal", style = MaterialTheme.typography.bodySmall, color = Color(category.textColor))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
