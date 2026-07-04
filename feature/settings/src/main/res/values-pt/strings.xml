@@ -17,4 +17,5 @@
     <string name="privacy_policy">Política de Privacidade</string>
     <string name="terms_service">Termos de Serviço</string>
     <string name="check_updates">Verificar atualizações</string>
+    <string name="search_placeholder">Pesquisar idioma…</string>
 </resources>

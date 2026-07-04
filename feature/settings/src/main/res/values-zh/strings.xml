@@ -17,4 +17,5 @@
     <string name="privacy_policy">隐私政策</string>
     <string name="terms_service">服务条款</string>
     <string name="check_updates">检查更新</string>
+    <string name="search_placeholder">搜索语言…</string>
 </resources>

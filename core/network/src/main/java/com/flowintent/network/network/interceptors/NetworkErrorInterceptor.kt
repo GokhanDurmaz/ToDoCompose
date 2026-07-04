@@ -4,7 +4,6 @@
 
 package com.flowintent.network.network.interceptors
 
-import android.os.Bundle
 import com.flowintent.core.util.AppEventTracker
 import okhttp3.Interceptor
 import okhttp3.Response
