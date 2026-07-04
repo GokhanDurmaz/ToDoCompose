@@ -9,4 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="navigation_bar_scrim_light">#33000000</color>
     <color name="navigation_bar_scrim_dark">#33FFFFFF</color>
+
+    <!-- Splash Screen Colors -->
+    <color name="splash_background">#FFFFFF</color>
 </resources>
