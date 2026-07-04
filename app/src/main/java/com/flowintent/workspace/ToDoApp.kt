@@ -9,12 +9,20 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import com.flowintent.data.secure.SecurityInterceptor
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
-@HiltAndroidApp
+ @HiltAndroidApp
 class ToDoApp: Application() {
+
+    @Inject
+    lateinit var securityInterceptor: SecurityInterceptor
+
     override fun onCreate() {
         super.onCreate()
+        securityInterceptor.initialize(this)
+
         createNotificationChannel()
     }
 

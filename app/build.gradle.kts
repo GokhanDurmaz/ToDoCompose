@@ -109,6 +109,7 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.material3.window.size.class1.android)
     implementation(project(":core:common"))
     implementation(project(":core:navigation"))
@@ -143,8 +144,6 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.accompanist.systemuicontroller)
-
-    implementation(libs.androidx.core.splashscreen)
 
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.paging.compose)
