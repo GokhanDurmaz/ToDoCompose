@@ -22,8 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.flowintent.navigation.NavigationDispatcher
-import com.flowintent.navigation.nav.MainNavigation
 import com.flowintent.workspace.ui.bottombar.bottomNavItems
 
 @Composable
@@ -61,7 +61,13 @@ fun BottomNavigationBar(
                     alwaysShowLabel = false,
                     onClick = {
                         navigationDispatcher.navigateTo(item.navigation.route) {
-                            popUpTo(MainNavigation.HOME.route) { saveState = true }
+                            // Standard navigation pattern to avoid stack buildup
+                            val startId = currentDestination?.parent?.findStartDestination()?.id
+                            if (startId != null) {
+                                popUpTo(startId) {
+                                    saveState = true
+                                }
+                            }
                             launchSingleTop = true
                             restoreState = true
                         }

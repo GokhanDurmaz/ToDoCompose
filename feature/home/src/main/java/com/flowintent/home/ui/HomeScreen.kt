@@ -39,7 +39,6 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
@@ -47,11 +46,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -75,6 +74,7 @@ import com.flowintent.uikit.util.VAL_32
 import com.flowintent.uikit.util.VAL_36
 import com.flowintent.uikit.util.VAL_4
 import com.flowintent.uikit.util.VAL_50
+import com.flowintent.uikit.util.VAL_60
 import com.flowintent.uikit.util.VAL_8
 import com.flowintent.uikit.util.VAL_80
 import java.util.Calendar
@@ -82,7 +82,6 @@ import java.util.Calendar
 /**
  * Main Home screen listing categories with an improved dashboard design.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onCategoryClick: (String) -> Unit,
@@ -107,13 +106,6 @@ fun HomeScreen(
 
     ToDoTheme {
         Scaffold(
-            topBar = {
-                HomeTopBar(
-                    onSearchClick = { homeViewModel.onSearchClicked() },
-                    onNotificationsClick = { homeViewModel.onNotificationsClicked() },
-                    onProfileClick = { homeViewModel.onProfileClicked() }
-                )
-            },
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = onShareTasks,
@@ -121,7 +113,7 @@ fun HomeScreen(
                     contentColor = MaterialTheme.colorScheme.onPrimary,
                     shape = CircleShape,
                     elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 8.dp),
-                    modifier = Modifier.padding(bottom = VAL_50.dp)
+                    modifier = Modifier.padding(bottom = VAL_60.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
@@ -131,91 +123,116 @@ fun HomeScreen(
             },
             containerColor = MaterialTheme.colorScheme.background
         ) { padding ->
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(columns),
-                contentPadding = PaddingValues(
-                    top = padding.calculateTopPadding(),
-                    bottom = padding.calculateBottomPadding() + VAL_80.dp + 100.dp,
-                    start = VAL_16.dp,
-                    end = VAL_16.dp
-                ),
-                horizontalArrangement = Arrangement.spacedBy(VAL_16.dp),
-                verticalArrangement = Arrangement.spacedBy(VAL_16.dp),
-                modifier = Modifier.fillMaxSize()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
             ) {
-                item(span = { GridItemSpan(columns) }) {
-                    WelcomeHeader(username)
-                }
-
-                item(span = { GridItemSpan(columns) }) {
-                    Text(
-                        text = stringResource(R.string.categories_label),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = VAL_4.dp, vertical = VAL_12.dp)
-                    )
-                }
-
-                val filteredCategories = uiState.categories.filter { it.title != "Sent" }
-                items(
-                    items = filteredCategories,
-                    span = { category ->
-                        val isWidget = category.title in listOf("Gym", "Art", "Health")
-                        GridItemSpan(if (isWidget) columns else 1)
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(columns),
+                    contentPadding = PaddingValues(
+                        top = VAL_80.dp,
+                        bottom = VAL_80.dp + 100.dp,
+                        start = VAL_16.dp,
+                        end = VAL_16.dp
+                    ),
+                    horizontalArrangement = Arrangement.spacedBy(VAL_16.dp),
+                    verticalArrangement = Arrangement.spacedBy(VAL_16.dp),
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    item(span = { GridItemSpan(columns) }) {
+                        WelcomeHeader(username)
                     }
-                ) { category ->
-                    val isWidget = category.title in listOf("Gym", "Art", "Health")
-                    HomeCategoryCard(
-                        category = category,
-                        isExpanded = isWidget,
-                        onClick = {
-                            homeViewModel.onCategoryClicked(category.title)
-                            onCategoryClick(category.title)
+
+                    item(span = { GridItemSpan(columns) }) {
+                        Text(
+                            text = stringResource(R.string.categories_label),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = VAL_4.dp, vertical = VAL_12.dp)
+                        )
+                    }
+
+                    val filteredCategories = uiState.categories.filter { it.title != "Sent" }
+                    items(
+                        items = filteredCategories,
+                        span = { category ->
+                            val isWidget = category.title in listOf("Gym", "Art", "Health")
+                            GridItemSpan(if (isWidget) columns else 1)
                         }
-                    )
+                    ) { category ->
+                        val isWidget = category.title in listOf("Gym", "Art", "Health")
+                        HomeCategoryCard(
+                            category = category,
+                            isExpanded = isWidget,
+                            onClick = {
+                                homeViewModel.onCategoryClicked(category.title)
+                                onCategoryClick(category.title)
+                            }
+                        )
+                    }
                 }
+
+                QuickActionContainer(
+                    onSearchClick = { homeViewModel.onSearchClicked() },
+                    onNotificationsClick = { homeViewModel.onNotificationsClicked() },
+                    onProfileClick = { homeViewModel.onProfileClicked() },
+                    modifier = Modifier
+                        .align(AbsoluteAlignment.TopRight)
+                        .padding(end = VAL_20.dp, top = VAL_12.dp)
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeTopBar(
+private fun QuickActionContainer(
     onSearchClick: () -> Unit,
     onNotificationsClick: () -> Unit,
-    onProfileClick: () -> Unit
+    onProfileClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    TopAppBar(
-        title = {},
-        actions = {
+    val isDark = isSystemInDarkTheme()
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(VAL_50.dp),
+        color = if (isDark) {
+            MaterialTheme.colorScheme.surfaceContainerHighest
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        border = if (isDark) BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.2f)) else null,
+        tonalElevation = if (isDark) 12.dp else 4.dp,
+        shadowElevation = 8.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = VAL_8.dp, vertical = VAL_4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(VAL_4.dp)
+        ) {
             IconButton(onClick = onSearchClick) {
-                Icon(Icons.Default.Search, contentDescription = stringResource(R.string.search_desc))
-            }
-            IconButton(onClick = onNotificationsClick) {
-                Icon(Icons.Default.Notifications, contentDescription = stringResource(R.string.notifications_desc))
-            }
-            Box(
-                modifier = Modifier
-                    .padding(end = VAL_12.dp)
-                    .size(VAL_36.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .clickable { onProfileClick() },
-                contentAlignment = Alignment.Center
-            ) {
                 Icon(
-                    Icons.Default.Person,
-                    contentDescription = stringResource(R.string.profile_desc),
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    imageVector = Icons.Default.Search,
+                    contentDescription = stringResource(R.string.search_desc)
                 )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent
-        )
-    )
+            IconButton(onClick = onNotificationsClick) {
+                Icon(
+                    imageVector = Icons.Default.Notifications,
+                    contentDescription = stringResource(R.string.notifications_desc)
+                )
+            }
+            IconButton(onClick = onProfileClick) {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = stringResource(R.string.profile_desc)
+                )
+            }
+        }
+    }
 }
 
 @Composable
