@@ -28,6 +28,7 @@ import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.navigation.nav.AuthNavigation
 import com.flowintent.navigation.nav.MainNavigation
 import com.flowintent.workspace.nav.route.BottomNavigationBar
+import com.flowintent.workspace.ui.bottombar.bottomNavItems
 
  @Composable
 fun ToDoNavigationBar(
@@ -52,7 +53,9 @@ fun ToDoNavigationBar(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
-    val shouldShowBottomBar = MainNavigation.entries.any { it.route == currentRoute }
+    val shouldShowBottomBar = remember(currentRoute) {
+        bottomNavItems.any { it.navigation.route == currentRoute }
+    }
 
     Scaffold { contentPadding ->
         Box(modifier = Modifier.fillMaxSize()) {

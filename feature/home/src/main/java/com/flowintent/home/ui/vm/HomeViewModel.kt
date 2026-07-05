@@ -10,6 +10,9 @@ import com.flowintent.core.db.auth.GetNameUseCase
 import com.flowintent.core.db.home.GetHomeCategoriesUseCase
 import com.flowintent.core.util.AppEventTracker
 import com.flowintent.core.util.Resource
+import com.flowintent.navigation.NavigationDispatcher
+import com.flowintent.navigation.nav.MainNavigation
+import com.flowintent.navigation.nav.ProfileNavigation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,6 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getHomeCategoriesUseCase: GetHomeCategoriesUseCase,
+    private val navigationDispatcher: NavigationDispatcher,
     private val getNameUseCase: GetNameUseCase,
     private val eventTracker: AppEventTracker
 ) : ViewModel() {
@@ -52,10 +56,12 @@ class HomeViewModel @Inject constructor(
 
     fun onNotificationsClicked() {
         eventTracker.logEvent("home_notifications_clicked")
+        navigationDispatcher.navigateTo(MainNavigation.PENDING.route)
     }
 
     fun onProfileClicked() {
         eventTracker.logEvent("home_profile_clicked")
+        navigationDispatcher.navigateTo(ProfileNavigation.PROFILE_MAIN.route)
     }
 
     private fun loadCategories() {

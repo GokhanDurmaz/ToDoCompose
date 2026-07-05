@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class TaskViewModel @Inject constructor(
@@ -49,7 +50,7 @@ class TaskViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
     val tasks: StateFlow<PagingData<Task>> = _uiState
         .map { it.searchQuery to it.selectedType }
-        .debounce(300)
+        .debounce(300.milliseconds)
         .flatMapLatest { (query, type) ->
             getTasksUseCase(query, type)
         }.cachedIn(viewModelScope)
@@ -151,7 +152,7 @@ class TaskViewModel @Inject constructor(
         hasTriggeredPermissionDialog = true
 
         viewModelScope.launch {
-            delay(PERMISSION_DIALOG_DELAY)
+            delay(PERMISSION_DIALOG_DELAY.milliseconds)
             _uiState.update { it.copy(showPermissionConsent = true) }
         }
     }
