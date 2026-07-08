@@ -29,29 +29,9 @@ import javax.net.ssl.X509TrustManager
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    @Provides
-    @Singleton
-    fun provideX509TrustManager(): X509TrustManager {
-        return object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {}
-            override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        }
-    }
-
-    @Provides
-    @Singleton
-    fun provideSSLSocketFactory(trustManager: X509TrustManager): SSLSocketFactory {
-        val sslContext = SSLContext.getInstance("TLS")
-        sslContext.init(null, arrayOf(trustManager), SecureRandom())
-        return sslContext.socketFactory
-    }
-
     @Singleton
     @Provides
     fun provideOkHttpClient(
-        sslSocketFactory: SSLSocketFactory,
-        trustManager: X509TrustManager,
         networkErrorInterceptor: NetworkErrorInterceptor
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
@@ -63,7 +43,6 @@ object NetworkModule {
             .addInterceptor(networkErrorInterceptor)
             .callTimeout(NetworkUtil.CALL_TIMEOUT, TimeUnit.SECONDS)
             .connectTimeout(NetworkUtil.CONNECT_TIMEOUT, TimeUnit.SECONDS)
-            .sslSocketFactory(sslSocketFactory, trustManager)
             .build()
     }
 

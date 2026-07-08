@@ -19,6 +19,7 @@ import com.flowintent.core.db.auth.SignInUseCase
 import com.flowintent.core.db.auth.SignUpUseCase
 import com.flowintent.core.db.auth.UpdateTokenUseCase
 import com.flowintent.core.db.auth.UpdateUidUseCase
+import com.flowintent.core.util.AnalyticsEvent
 import com.flowintent.core.util.AppEventTracker
 import com.flowintent.core.util.Resource
 import com.flowintent.navigation.NavigationDispatcher
@@ -141,13 +142,13 @@ class AuthViewModel @Inject constructor(
                 when (resource) {
                     is Resource.Loading -> _signUpUiState.update { it.copy(isLoading = true, errorMessage = null) }
                     is Resource.Success -> {
-                        eventTracker.logEvent("sign_up_success")
+                        eventTracker.logEvent(AnalyticsEvent.SignUpSuccess("email"))
                         _signUpUiState.update { it.copy(isLoading = false) }
                         saveUser(state.firstName, state.lastName, state.email)
                         onNavigateBack()
                     }
                     is Resource.Error -> {
-                        eventTracker.logEvent("sign_up_error")
+                        eventTracker.logEvent(AnalyticsEvent.SignUpError("email", resource.message))
                         eventTracker.logMessage("Sign up failed: ${resource.message}")
                         _signUpUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
                     }
@@ -163,7 +164,7 @@ class AuthViewModel @Inject constructor(
                 when (resource) {
                     is Resource.Loading -> _signInUiState.update { it.copy(isLoading = true, errorMessage = null) }
                     is Resource.Success -> {
-                        eventTracker.logEvent("login_success")
+                        eventTracker.logEvent(AnalyticsEvent.LoginSuccess("email"))
                         _signInUiState.update { it.copy(isLoading = false) }
                         if (resource.data.isNotEmpty()) {
                             saveToken(resource.data)
@@ -171,7 +172,7 @@ class AuthViewModel @Inject constructor(
                         }
                     }
                     is Resource.Error -> {
-                        eventTracker.logEvent("login_error")
+                        eventTracker.logEvent(AnalyticsEvent.LoginError("email", resource.message))
                         eventTracker.logMessage("Login failed: ${resource.message}")
                         _signInUiState.update { it.copy(isLoading = false, errorMessage = resource.message) }
                     }
@@ -269,7 +270,7 @@ class AuthViewModel @Inject constructor(
                         }
                     }
                     is Resource.Error -> {
-                        eventTracker.logEvent("logout_error")
+                        eventTracker.logEvent("logout_error", mapOf("error" to (resource.message)))
                         eventTracker.logMessage("Logout failed: ${resource.message}")
                     }
                 }

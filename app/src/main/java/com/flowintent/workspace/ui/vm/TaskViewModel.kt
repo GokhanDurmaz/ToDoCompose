@@ -16,6 +16,7 @@ import com.flowintent.core.db.task.GetTasksUseCase
 import com.flowintent.core.db.task.InsertSmartTaskUseCase
 import com.flowintent.core.db.task.InsertTaskUseCase
 import com.flowintent.core.db.task.UpdateTaskUseCase
+import com.flowintent.core.util.AnalyticsEvent
 import com.flowintent.core.util.AppEventTracker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -84,7 +85,7 @@ class TaskViewModel @Inject constructor(
     }
 
     fun insertTask(task: Task) {
-        eventTracker.logEvent("task_created")
+        eventTracker.logEvent(AnalyticsEvent.TaskCreated(source = "manual", isAiGenerated = false))
         viewModelScope.launch {
             insertTaskUseCase(task)
         }
@@ -92,10 +93,13 @@ class TaskViewModel @Inject constructor(
 
     fun insertSmartTask(userInput: String) {
         if (userInput.isBlank()) return
-        eventTracker.logEvent("smart_task_input")
+        eventTracker.logEvent("smart_task_input", mapOf("input_length" to userInput.length))
 
         viewModelScope.launch {
             insertSmartTaskUseCase(userInput).collect { resource ->
+                if (resource is com.flowintent.core.util.Resource.Success) {
+                    eventTracker.logEvent(AnalyticsEvent.TaskCreated(source = "ai", isAiGenerated = true))
+                }
                 _uiState.update { it.copy(smartTaskState = resource) }
             }
         }
