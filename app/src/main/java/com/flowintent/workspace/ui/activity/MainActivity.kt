@@ -22,6 +22,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationDispatcher
 import com.flowintent.settings.ui.vm.SettingsViewModel
@@ -36,6 +37,8 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var navigationDispatcher: NavigationDispatcher
+    @Inject
+    lateinit var eventTracker: AppEventTracker
     @Inject
     @JvmSuppressWildcards
     lateinit var featureApi: Set<FeatureApi>
@@ -68,6 +71,7 @@ class MainActivity : AppCompatActivity() {
                 authViewModel = authViewModel,
                 navigationDispatcher = navigationDispatcher,
                 featureApi = featureApi,
+                eventTracker = eventTracker
             )
         }
     }
@@ -112,7 +116,8 @@ fun HomeScreen(
     isDarkTheme: Boolean,
     authViewModel: AuthViewModel,
     navigationDispatcher: NavigationDispatcher,
-    featureApi: Set<FeatureApi>
+    featureApi: Set<FeatureApi>,
+    eventTracker: AppEventTracker
 ) {
     ToDoTheme(darkTheme = isDarkTheme) {
         val isReady by authViewModel.isReady.collectAsStateWithLifecycle()
@@ -126,7 +131,8 @@ fun HomeScreen(
                     ToDoNavigationBar(
                         authViewModel = authViewModel,
                         navigationDispatcher = navigationDispatcher,
-                        featureApis = featureApi
+                        featureApis = featureApi,
+                        eventTracker = eventTracker
                     )
                 }
             } else {

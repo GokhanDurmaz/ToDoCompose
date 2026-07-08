@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationCommand
 import com.flowintent.navigation.NavigationDispatcher
@@ -34,13 +35,15 @@ import com.flowintent.workspace.ui.bottombar.bottomNavItems
 fun ToDoNavigationBar(
     authViewModel: AuthViewModel = hiltViewModel(),
     navigationDispatcher: NavigationDispatcher,
-    featureApis: Set<FeatureApi>
+    featureApis: Set<FeatureApi>,
+    eventTracker: AppEventTracker
 ) {
     val navController = rememberNavController()
     val token by authViewModel.token.collectAsStateWithLifecycle()
     val isReady by authViewModel.isReady.collectAsStateWithLifecycle()
 
     NavigationEventHandler(navController, navigationDispatcher)
+    NavigationObserver(navController, eventTracker)
 
     if (isReady.not()) {
         return

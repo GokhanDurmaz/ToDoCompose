@@ -4,6 +4,7 @@
 
 package com.flowintent.network.network.interceptors
 
+import com.flowintent.core.util.AnalyticsEvent
 import com.flowintent.core.util.AppEventTracker
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -23,12 +24,14 @@ class NetworkErrorInterceptor @Inject constructor(
         }
 
         if (!response.isSuccessful) {
-            val params = mapOf(
-                "url" to request.url.toString(),
-                "code" to response.code,
-                "method" to request.method
+            eventTracker.logEvent(
+                AnalyticsEvent.NetworkError(
+                    url = request.url.toString(),
+                    code = response.code,
+                    method = request.method,
+                    errorMessage = response.message
+                )
             )
-            eventTracker.logEvent("network_error", params)
             eventTracker.logMessage("HTTP Error ${response.code} for ${request.url}")
         }
 
