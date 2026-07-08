@@ -5,6 +5,7 @@
 package com.flowintent.core.util
 
 interface AppEventTracker {
+    fun logEvent(event: AnalyticsEvent)
     fun logEvent(name: String, params: Map<String, Any>? = null)
     fun logException(throwable: Throwable)
     fun logMessage(message: String)

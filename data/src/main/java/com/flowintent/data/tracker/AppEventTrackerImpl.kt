@@ -5,6 +5,7 @@
 package com.flowintent.data.tracker
 
 import android.os.Bundle
+import com.flowintent.core.util.AnalyticsEvent
 import com.flowintent.core.util.AppEventTracker
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -16,6 +17,13 @@ class AppEventTrackerImpl @Inject constructor(
     private val analytics: FirebaseAnalytics,
     private val crashlytics: FirebaseCrashlytics
 ) : AppEventTracker {
+
+    override fun logEvent(event: AnalyticsEvent) {
+        val nonNullParams = event.params.mapNotNull { (key, value) ->
+            value?.let { key to it }
+        }.toMap()
+        logEvent(event.name, nonNullParams)
+    }
 
     override fun logEvent(name: String, params: Map<String, Any>?) {
         val bundle = params?.let {
