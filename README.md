@@ -1,4 +1,4 @@
-# ToDoCompose 🚀
+# ToDoCompose
 
 A modern, modular, and AI-integrated To-Do application built with **Jetpack Compose**, following the latest Android development best practices.
 
