@@ -30,7 +30,8 @@ import com.flowintent.workspace.ui.bottombar.bottomNavItems
 fun BottomNavigationBar(
     currentDestination: NavDestination?,
     navigationDispatcher: NavigationDispatcher,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    startRoute: String? = null
 ) {
     val isDark = isSystemInDarkTheme()
     
@@ -62,9 +63,9 @@ fun BottomNavigationBar(
                     onClick = {
                         navigationDispatcher.navigateTo(item.navigation.route) {
                             // Standard navigation pattern to avoid stack buildup
-                            val startId = currentDestination?.parent?.findStartDestination()?.id
-                            if (startId != null) {
-                                popUpTo(startId) {
+                            val popUpTarget = startRoute ?: currentDestination?.parent?.findStartDestination()?.route
+                            if (popUpTarget != null) {
+                                popUpTo(popUpTarget) {
                                     saveState = true
                                 }
                             }

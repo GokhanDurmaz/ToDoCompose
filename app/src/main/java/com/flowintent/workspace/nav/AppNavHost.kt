@@ -21,7 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.SessionViewModel
 import com.flowintent.core.util.AppEventTracker
 import com.flowintent.navigation.FeatureApi
 import com.flowintent.navigation.NavigationCommand
@@ -33,14 +33,14 @@ import com.flowintent.workspace.ui.bottombar.bottomNavItems
 
  @Composable
 fun ToDoNavigationBar(
-    authViewModel: AuthViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel(),
     navigationDispatcher: NavigationDispatcher,
     featureApis: Set<FeatureApi>,
     eventTracker: AppEventTracker
 ) {
     val navController = rememberNavController()
-    val token by authViewModel.token.collectAsStateWithLifecycle()
-    val isReady by authViewModel.isReady.collectAsStateWithLifecycle()
+    val token by sessionViewModel.token.collectAsStateWithLifecycle()
+    val isReady by sessionViewModel.isReady.collectAsStateWithLifecycle()
 
     NavigationEventHandler(navController, navigationDispatcher)
     NavigationObserver(navController, eventTracker)
@@ -49,7 +49,7 @@ fun ToDoNavigationBar(
         return
     }
 
-    val startRoute = remember(isReady) {
+    val startRoute = remember(token != null) {
         if (token.isNullOrEmpty()) AuthNavigation.SIGN_IN.route else MainNavigation.HOME.route
     }
 
@@ -80,7 +80,8 @@ fun ToDoNavigationBar(
                 ) {
                     BottomNavigationBar(
                         currentDestination = navBackStackEntry?.destination,
-                        navigationDispatcher = navigationDispatcher
+                        navigationDispatcher = navigationDispatcher,
+                        startRoute = startRoute
                     )
                 }
             }
