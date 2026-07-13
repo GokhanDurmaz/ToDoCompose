@@ -8,9 +8,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.flowintent.auth.ui.ForgotPasswordScreen
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.ForgotPasswordViewModel
 import com.flowintent.auth.ui.vm.ForgotPasswordUiState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,12 +23,12 @@ class ForgotPasswordScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val mockViewModel = mock(AuthViewModel::class.java)
+    private val mockViewModel = mock(ForgotPasswordViewModel::class.java)
     private val forgotPasswordUiState = MutableStateFlow(ForgotPasswordUiState())
 
     @Before
     fun setUp() {
-        whenever(mockViewModel.forgotPasswordUiState).thenReturn(forgotPasswordUiState)
+        whenever(mockViewModel.uiState).thenReturn(forgotPasswordUiState.asStateFlow())
     }
 
     @Test

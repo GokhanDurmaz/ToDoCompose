@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.R
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.SignUpViewModel
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -55,9 +55,9 @@ import com.flowintent.uikit.util.VAL_8
 
 @Composable
 fun SignUpScreen(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.signUpUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -74,10 +74,10 @@ fun SignUpScreen(
             lastName = uiState.lastName,
             email = uiState.email,
             password = uiState.password,
-            onFirstNameChange = viewModel::onSignUpFirstNameChange,
-            onLastNameChange = viewModel::onSignUpLastNameChange,
-            onEmailChange = viewModel::onSignUpEmailChange,
-            onPasswordChange = viewModel::onSignUpPasswordChange
+            onFirstNameChange = viewModel::onFirstNameChange,
+            onLastNameChange = viewModel::onLastNameChange,
+            onEmailChange = viewModel::onEmailChange,
+            onPasswordChange = viewModel::onPasswordChange
         )
 
         ErrorMessage(uiState.errorMessage)
