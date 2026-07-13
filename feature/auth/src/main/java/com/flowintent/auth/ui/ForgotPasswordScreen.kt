@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.R
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.ForgotPasswordViewModel
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -49,9 +49,9 @@ import com.flowintent.uikit.util.isValidEmail
 
 @Composable
 fun ForgotPasswordScreen(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: ForgotPasswordViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.forgotPasswordUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val errorInvalidEmail = stringResource(R.string.error_invalid_email)
 
     Column(
@@ -66,7 +66,7 @@ fun ForgotPasswordScreen(
 
         PasswordResetForm(
             email = uiState.email,
-            onEmailChange = viewModel::onForgotPasswordEmailChange
+            onEmailChange = viewModel::onEmailChange
         )
 
         StatusIndicator(uiState.statusMessage)
@@ -78,7 +78,7 @@ fun ForgotPasswordScreen(
             isEnabled = uiState.email.isNotEmpty(),
             onClick = {
                 if (!uiState.email.isValidEmail()) {
-                    viewModel.setForgotPasswordStatus(errorInvalidEmail to true)
+                    viewModel.setStatus(errorInvalidEmail to true)
                 } else {
                     viewModel.resetPassword()
                 }
@@ -183,4 +183,3 @@ private fun HeaderSection(onBack: () -> Unit) {
         Spacer(modifier = Modifier.height(VAL_40.dp))
     }
 }
-

@@ -4,6 +4,8 @@
 
 package com.flowintent.network.di
 
+import android.util.Log
+import com.flowintent.core.util.AppEventTracker
 import com.flowintent.network.network.interceptors.NetworkErrorInterceptor
 import com.flowintent.network.network.services.GroqApiService
 import com.flowintent.network.util.NativeConfig
@@ -17,17 +19,15 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import javax.net.ssl.SSLContext
-import javax.net.ssl.SSLSocketFactory
-import javax.net.ssl.X509TrustManager
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+
+    private const val TAG = "NetworkModule"
+    private const val FALLBACK_URL = "https://invalid.config/"
 
     @Singleton
     @Provides
@@ -48,11 +48,25 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient, gson: Gson): Retrofit = Retrofit.Builder()
-        .baseUrl(NativeConfig.getBaseUrl())
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .build()
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson,
+        eventTracker: AppEventTracker
+    ): Retrofit {
+        val builder = Retrofit.Builder()
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+
+        return try {
+            val baseUrl = NativeConfig.getBaseUrl()
+            builder.baseUrl(baseUrl).build()
+        } catch (e: Exception) {
+            Log.e(TAG, "Invalid Base URL provided: ${e.message}. Using fallback.")
+            eventTracker.logException(e)
+            eventTracker.logMessage("Invalid Base URL provided: ${e.message}")
+            builder.baseUrl(FALLBACK_URL).build()
+        }
+    }
 
     @Provides
     @Singleton

@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.R
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.SignInViewModel
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -49,9 +49,9 @@ import com.flowintent.uikit.util.isValidEmail
 
 @Composable
 fun SignInScreen(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: SignInViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.signInUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val errorInvalidEmail = stringResource(R.string.error_invalid_email)
 
     Column(
@@ -67,8 +67,8 @@ fun SignInScreen(
         SignInForm(
             email = uiState.email,
             password = uiState.password,
-            onEmailChange = viewModel::onSignInEmailChange,
-            onPasswordChange = viewModel::onSignInPasswordChange,
+            onEmailChange = viewModel::onEmailChange,
+            onPasswordChange = viewModel::onPasswordChange,
             onForgotClick = viewModel::onForgotPasswordClicked
         )
 
@@ -81,7 +81,7 @@ fun SignInScreen(
             isEnabled = uiState.isSubmitEnabled,
             onClick = {
                 if (!uiState.email.isValidEmail()) {
-                    viewModel.setSignInError(errorInvalidEmail)
+                    viewModel.setError(errorInvalidEmail)
                 } else {
                     viewModel.loginUser()
                 }
