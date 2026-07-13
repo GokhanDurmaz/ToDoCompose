@@ -1,4 +1,4 @@
-# ToDoCompose 🚀
+# To-Do Compose
 
 A modern, modular, and AI-integrated To-Do application built with **Jetpack Compose**, following the latest Android development best practices.
 
@@ -9,7 +9,7 @@ A modern, modular, and AI-integrated To-Do application built with **Jetpack Comp
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Category | Technology |
 | :--- | :--- |
@@ -25,7 +25,7 @@ A modern, modular, and AI-integrated To-Do application built with **Jetpack Comp
 
 ---
 
-## 🏗️ Architecture & Modularization
+## Architecture & Modularization
 
 This project follows a highly modularized architecture to ensure scalability, testability, and maintainability.
 
@@ -40,7 +40,7 @@ This project follows a highly modularized architecture to ensure scalability, te
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 *   **AI-Powered Task Generation:** Automatically extract tasks and deadlines from natural language input using integrated LLM engines.
 *   **Secure Authentication:** Full sign-in, sign-up, and password recovery flows powered by Supabase/Firebase logic.
@@ -50,7 +50,7 @@ This project follows a highly modularized architecture to ensure scalability, te
 
 ---
 
-## 🧪 Testing
+## Testing
 
 The project emphasizes quality through a robust testing setup located in the `:test` module.
 
@@ -66,7 +66,7 @@ Run tests using:
 
 ---
 
-## ⚙️ Getting Started
+## Getting Started
 
 1.  **Clone the repository:**
     ```bash
