@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flowintent.auth.R
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.TwoFactorViewModel
 import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
@@ -53,9 +53,9 @@ import com.flowintent.uikit.util.VAL_80
 
 @Composable
 fun TwoFactorScreen(
-    viewModel: AuthViewModel = hiltViewModel()
+    viewModel: TwoFactorViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.twoFactorUiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -69,7 +69,7 @@ fun TwoFactorScreen(
 
         TwoFactorForm(
             code = uiState.code,
-            onCodeChange = viewModel::onTwoFactorCodeChange
+            onCodeChange = viewModel::onCodeChange
         )
 
         ErrorMessage(uiState.errorMessage)

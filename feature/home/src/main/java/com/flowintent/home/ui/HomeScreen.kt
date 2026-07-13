@@ -6,11 +6,11 @@ package com.flowintent.home.ui
 
 import android.content.Intent
 import android.content.res.Configuration
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -70,8 +70,6 @@ import com.flowintent.uikit.util.VAL_12
 import com.flowintent.uikit.util.VAL_16
 import com.flowintent.uikit.util.VAL_20
 import com.flowintent.uikit.util.VAL_24
-import com.flowintent.uikit.util.VAL_32
-import com.flowintent.uikit.util.VAL_36
 import com.flowintent.uikit.util.VAL_4
 import com.flowintent.uikit.util.VAL_50
 import com.flowintent.uikit.util.VAL_60

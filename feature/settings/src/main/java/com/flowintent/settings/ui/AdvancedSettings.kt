@@ -80,7 +80,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.SessionViewModel
 import com.flowintent.profile.ui.vm.ProfileViewModel
 import com.flowintent.settings.R
 import com.flowintent.settings.ui.vm.SettingsViewModel
@@ -96,15 +96,15 @@ import com.flowintent.uikit.util.VAL_80
  @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdvancedSettingsScreen(
-    authViewModel: AuthViewModel = hiltViewModel(),
+    sessionViewModel: SessionViewModel = hiltViewModel(),
     settingsViewModel: SettingsViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
-    val username by authViewModel.userName.collectAsStateWithLifecycle()
-    val email by authViewModel.userEmail.collectAsStateWithLifecycle()
-    val profileImageUrl by authViewModel.profileImageUrl.collectAsStateWithLifecycle()
+    val username by sessionViewModel.userName.collectAsStateWithLifecycle()
+    val email by sessionViewModel.userEmail.collectAsStateWithLifecycle()
+    val profileImageUrl by sessionViewModel.profileImageUrl.collectAsStateWithLifecycle()
     val profileUiState by profileViewModel.uiState.collectAsStateWithLifecycle()
     val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
@@ -118,7 +118,7 @@ fun AdvancedSettingsScreen(
             confirmButton = {
                 TextButton(onClick = {
                     showLogoutDialog = false
-                    authViewModel.onLogoutClicked()
+                    sessionViewModel.onLogoutClicked()
                 }) {
                     Text(stringResource(R.string.logout), color = MaterialTheme.colorScheme.error)
                 }
@@ -132,7 +132,7 @@ fun AdvancedSettingsScreen(
     }
 
     LaunchedEffect(Unit) {
-        authViewModel.fetchAndSaveUserProfileIfEmpty()
+        sessionViewModel.fetchAndSaveUserProfileIfEmpty()
         profileViewModel.reloadProfileImageIfNull()
     }
 

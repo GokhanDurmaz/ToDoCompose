@@ -56,7 +56,13 @@ class HomeViewModel @Inject constructor(
 
     fun onNotificationsClicked() {
         eventTracker.logEvent("home_notifications_clicked")
-        navigationDispatcher.navigateTo(MainNavigation.PENDING.route)
+        navigationDispatcher.navigateTo(MainNavigation.PENDING.route) {
+            popUpTo(MainNavigation.HOME.route) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
     }
 
     fun onProfileClicked() {

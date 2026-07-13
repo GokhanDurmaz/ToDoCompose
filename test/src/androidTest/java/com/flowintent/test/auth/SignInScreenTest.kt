@@ -8,9 +8,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.flowintent.auth.ui.SignInScreen
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.SignInViewModel
 import com.flowintent.auth.ui.vm.SignInUiState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,12 +23,12 @@ class SignInScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val mockViewModel = mock(AuthViewModel::class.java)
+    private val mockViewModel = mock(SignInViewModel::class.java)
     private val signInUiState = MutableStateFlow(SignInUiState())
 
     @Before
     fun setUp() {
-        whenever(mockViewModel.signInUiState).thenReturn(signInUiState)
+        whenever(mockViewModel.uiState).thenReturn(signInUiState.asStateFlow())
     }
 
     @Test

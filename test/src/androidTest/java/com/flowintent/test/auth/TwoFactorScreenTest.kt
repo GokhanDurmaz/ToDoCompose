@@ -8,9 +8,10 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.flowintent.auth.ui.TwoFactorScreen
-import com.flowintent.auth.ui.vm.AuthViewModel
+import com.flowintent.auth.ui.vm.TwoFactorViewModel
 import com.flowintent.auth.ui.vm.TwoFactorUiState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,12 +23,12 @@ class TwoFactorScreenTest {
     @get:Rule
     val composeTestRule = createComposeRule()
 
-    private val mockViewModel = mock(AuthViewModel::class.java)
+    private val mockViewModel = mock(TwoFactorViewModel::class.java)
     private val twoFactorUiState = MutableStateFlow(TwoFactorUiState())
 
     @Before
     fun setUp() {
-        whenever(mockViewModel.twoFactorUiState).thenReturn(twoFactorUiState)
+        whenever(mockViewModel.uiState).thenReturn(twoFactorUiState.asStateFlow())
     }
 
     @Test
